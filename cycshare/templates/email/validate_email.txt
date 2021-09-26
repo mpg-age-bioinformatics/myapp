@@ -1,0 +1,13 @@
+Hi {{ user.firstname }},
+
+Welcome! Thanks for signing up. Please follow this link to activate your account:
+
+{{ url_for('confirm', token=token, _external=True) }}
+
+cycshare works better on Google Chrome, both on your laptop, on your iPad or on your phone.
+
+Cheers!
+
+Sincerely,
+
+cycshare

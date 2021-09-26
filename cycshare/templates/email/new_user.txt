@@ -1,0 +1,7 @@
+New user registration:
+
+First name: {{user.firstname}}
+Last name: {{user.lastname}}
+Email: {{user.email}}
+
+cycshare
