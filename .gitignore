@@ -1,0 +1,25 @@
+# Compiled python modules.
+*.pyc
+
+# Setuptools distribution folder.
+/dist/
+/build/
+/venv/
+/src
+site
+tmp
+migrations
+__pycache__
+/services/nginx/certs/
+*.ipynb_checkpoints*
+
+# environment
+.env
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+
+# Other
+*.swp
+.DS_Store
+*~$*.xlsx
