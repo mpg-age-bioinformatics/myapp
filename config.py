@@ -4,8 +4,12 @@ import redis
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-with open(basedir+"/.git/refs/heads/master", "r") as f:
-    commit=f.readline().split("\n")[0]
+if os.path.isfile(basedir+"/.git/refs/heads/master" ):
+    with open(basedir+"/.git/refs/heads/master", "r") as f:
+        commit=f.readline().split("\n")[0]
+else:
+    with open(basedir+"/.git/refs/heads/main", "r") as f:
+        commit=f.readline().split("\n")[0]
 
 class Config(object):
     USERS_DATA = os.environ.get('USERS_DATA') or "/cycshare/users/"

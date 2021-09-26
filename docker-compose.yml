@@ -69,14 +69,14 @@ services:
 
  backup:
   container_name: backup
-  image: cycshare/backup:latest
+  image: flaski/backup:latest
   depends_on:
    - mariadb
    - init
   volumes:
    - ~/cycshare_backup/mariadb:/backup/mariadb
    - ~/cycshare_backup/users_data:/backup/users_data
-   - data:/cycshare_data/users:ro
+   - data:/flaski_data/users:ro
   environment:
    - MYSQL_HOST=mariadb
    - MYSQL_USER=cycshare

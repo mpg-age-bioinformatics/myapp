@@ -56,11 +56,8 @@ COPY requirements.txt /cycshare/
 RUN pip3 install -r /cycshare/requirements.txt
 
 COPY LICENSE.md README.md config.py cycshare.py MANIFEST.in requirements.txt setup.py .flaskenv /cycshare/
-COPY pycycshare /cycshare/pycycshare
 COPY services /cycshare/services
-COPY utils /cycshare/utils
 COPY cycshare /cycshare/cycshare
-COPY data /cycshare/data
 COPY .git /cycshare/.git
 
 # Setup default user, when enter docker container
