@@ -4,6 +4,6 @@ Submission form attached.
 
 Cheers!
 
-Flaski
+cycshare
 
-FLASKI: {{ attachment_path }}
+cycshare: {{ attachment_path }}

@@ -20,7 +20,7 @@ mail = Mail(app)
 sess = Session()
 sess.init_app(app)
 
-from cycshare import routes, models, errors
+from cycshare import routes, models, errors, index
 
 if not app.debug:
     if app.config['MAIL_SERVER']:
