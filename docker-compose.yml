@@ -41,7 +41,6 @@ services:
     dockerfile: services/server/dockerfiles/Dockerfile
   restart: always
   volumes:
-   - ./utils/dev.py:/cycshare/cycshare/apps/external.py # this needs to be the first volume as otherwise it will be overwritten by `- ./:/cycshare`
    - data:/cycshare_data/users
    - ./:/cycshare
    - ~/cycshare_private:/cycshare_private:ro
