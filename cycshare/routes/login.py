@@ -44,7 +44,7 @@ keppsigned=dcc.Checklist(
 footer=html.Div([
     dbc.Row( 
         html.Footer( [ html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register"),
-                     html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgotpassword"),
+                     html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot"),
                      html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact")] , 
         style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
         ),
@@ -79,8 +79,6 @@ style={"min-height": "100vh", 'verticalAlign': 'center'})
     Input('url', 'pathname'))
 def verify_email_token(pathname):
     if pathname == "/login/logout/":
-        session.clear()
-        logout_user()
         return dbc.Alert( "You've been logged out." ,color="primary")
     if "/login/admin/" in pathname:
         token=pathname.split("/login/admin/")[-1]

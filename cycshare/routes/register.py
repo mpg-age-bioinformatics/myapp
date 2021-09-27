@@ -76,7 +76,7 @@ read=dcc.Checklist(
 footer=html.Div([
     dbc.Row( 
         html.Footer( [ html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login"),
-                     html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgotpassword"),
+                     html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot"),
                      html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact")] , 
         style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
         ),
