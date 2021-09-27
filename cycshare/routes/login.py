@@ -1,6 +1,6 @@
 from cycshare import app, db
-from flask import session, request, url_for
-from flask_login import current_user, login_user
+from flask import session, request
+from flask_login import current_user, login_user, logout_user
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
@@ -10,7 +10,7 @@ from cycshare.models import User
 from cycshare.email import send_validate_email
 from datetime import datetime
 from werkzeug.urls import url_parse
-from ._utils import META_TAGS, check_email, password_check
+from ._utils import META_TAGS, check_email
 
 dashapp = dash.Dash("login",url_base_pathname='/login/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="cycshare")# , assets_folder="/flaski/flaski/static/dash/")
 
@@ -76,17 +76,13 @@ align="center",
 style={"min-height": "100vh", 'verticalAlign': 'center'})
 
 @dashapp.callback(
-    Output('logged-feedback', 'children'),
-    Input('url', 'pathname'))
-def check_logged(pathname):
-    if current_user:
-        if current_user.is_authenticated:
-            return dcc.Location(pathname="/index/", id='index')
-
-@dashapp.callback(
     Output('token-feedback', 'children'),
     Input('url', 'pathname'))
 def verify_email_token(pathname):
+    if pathname == "/login/logout/":
+        session.clear()
+        logout_user()
+        return dbc.Alert( "You've been logged out." ,color="primary")
     if "/login/admin/" in pathname:
         token=pathname.split("/login/admin/")[-1]
         if token:
@@ -118,6 +114,14 @@ def verify_email_token(pathname):
     db.session.add(user)
     db.session.commit()
     return dbc.Alert( 'You have confirmed your account. Thanks!' ,color="success")
+
+@dashapp.callback(
+    Output('logged-feedback', 'children'),
+    Input('url', 'pathname'))
+def check_logged(pathname):
+    if current_user:
+        if current_user.is_authenticated:
+            return dcc.Location(pathname="/index/", id='index')
 
 @dashapp.callback(
     Output('username-feedback', 'children'),
