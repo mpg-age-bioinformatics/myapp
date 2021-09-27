@@ -38,26 +38,27 @@ def send_password_reset_email(user):
                                          user=user, token=token),\
                reply_to=app.config['MAIL_USERNAME'] )
 
-def send_validate_email(user):
+def send_validate_email(user, step="user"):
     token = user.get_email_validation_token()
     token_= user.get_allow_user_token()
-    send_email('Welcome to cycshare!',
-               sender=app.config['MAIL_USERNAME'],
-               recipients=[user.email],
-               text_body=render_template('email/validate_email.txt',
-                                         user=user, token=token),
-               html_body=render_template('email/validate_email.html',
-                                         user=user, token=token),\
-               reply_to=app.config['MAIL_USERNAME'] )
-
-    send_email('[cycshare] New user registration',
-            sender=app.config['MAIL_USERNAME'],
-            recipients=app.config['ADMINS'],
-            text_body=render_template('email/new_user.txt',
-                                        user=user, token=token_),
-            html_body=render_template('email/new_user.html',
-                                        user=user, token=token_),\
-            reply_to=app.config['MAIL_USERNAME'] )
+    if step=="user":
+        send_email('Welcome to cycshare!',
+                sender=app.config['MAIL_USERNAME'],
+                recipients=[user.email],
+                text_body=render_template('email/validate_email.txt',
+                                            user=user, token=token),
+                html_body=render_template('email/validate_email.html',
+                                            user=user, token=token),\
+                reply_to=app.config['MAIL_USERNAME'] )
+    elif step=="admin":
+        send_email('[cycshare] New user registration',
+                sender=app.config['MAIL_USERNAME'],
+                recipients=app.config['ADMINS'],
+                text_body=render_template('email/new_user.txt',
+                                            user=user, token=token_),
+                html_body=render_template('email/new_user.html',
+                                            user=user, token=token_),\
+                reply_to=app.config['MAIL_USERNAME'] )
 
 
 def send_files_deletion_email(user,files):

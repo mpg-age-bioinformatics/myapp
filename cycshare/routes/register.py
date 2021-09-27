@@ -4,73 +4,11 @@ from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from cycshare.models import User, UserLogging
-from cycshare.email import send_password_reset_email, send_validate_email, send_help_email
-import uuid
+from cycshare.models import User
+from cycshare.email import send_validate_email
 from datetime import datetime
-from werkzeug.utils import secure_filename
-import json
-from flask import session
-from ._utils import META_TAGS
-import re
-
-regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-
-def check_email(email):
-    # pass the regular expression
-    # and the string into the fullmatch() method
-    if(re.fullmatch(regex, email)):
-        return True
-    else:
-        return False
-
-def password_check(password):
-    """
-    Verify the strength of 'password'
-    Returns a dict indicating the wrong criteria
-    A password is considered strong if:
-        8 characters length or more
-        1 digit or more
-        1 symbol or more
-        1 uppercase letter or more
-        1 lowercase letter or more
-    """
-
-    # calculating the length
-    length_error = len(password) < 8
-
-    # searching for digits
-    digit_error = re.search(r"\d", password) is None
-
-    # searching for uppercase
-    uppercase_error = re.search(r"[A-Z]", password) is None
-
-    # searching for lowercase
-    lowercase_error = re.search(r"[a-z]", password) is None
-
-    # searching for symbols
-    symbol_error = re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~"+r'"]', password) is None
-
-    # overall result
-    password_ok = not ( length_error or digit_error or uppercase_error or lowercase_error or symbol_error )
-
-    if length_error or digit_error :
-        pass_type="weak"
-    elif uppercase_error or lowercase_error or symbol_error:
-        pass_type="medium"
-    else:
-        pass_type="strong"   
-
-    return {
-        'password_ok' : password_ok,
-        'length_error' : length_error,
-        'digit_error' : digit_error,
-        'uppercase_error' : uppercase_error,
-        'lowercase_error' : lowercase_error,
-        'symbol_error' : symbol_error,
-        'passtype' : pass_type
-    }
-
+from ._utils import META_TAGS, check_email, password_check
+from flask_login import current_user
 
 dashapp = dash.Dash("register",url_base_pathname='/register/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="cycshare")# , assets_folder="/flaski/flaski/static/dash/")
 
@@ -151,6 +89,8 @@ footer=html.Div([
 dashapp.layout=dbc.Row( [
     dbc.Col( md=4),
     dbc.Col( [ html.Div(id="app_access"),
+               dcc.Location(id='url', refresh=False),
+               html.Div(id="logged-feedback"),
                dbc.Card(  dbc.Form([ html.H2("Register", style={'textAlign': 'center'} ),
                                     dbc.Row([ 
                                         dbc.Col([ firstname_input,html.Div(id="firstname-feedback")] ),  
@@ -176,6 +116,14 @@ dashapp.layout=dbc.Row( [
 ],
 align="center",
 style={"min-height": "100vh", 'verticalAlign': 'center'})
+
+@dashapp.callback(
+    Output('logged-feedback', 'children'),
+    Input('url', 'pathname'))
+def check_logged(pathname):
+    if current_user:
+        if current_user.is_authenticated:
+            return dcc.Location(pathname="/index/", id='index')
 
 @dashapp.callback(
     Output('pass-power', 'children'),
@@ -282,14 +230,9 @@ def submit_register(n_clicks,first_name, last_name, username, email,passA, passB
     user.registered_on=datetime.utcnow()
     db.session.add(user)
     db.session.commit()
-    send_validate_email(user)
+    send_validate_email(user, step="admin")
 
     submission_=dbc.Alert( "Success! To finish your registration please check your email." , style={"margin-top":"20px"},color="success")
     return first_name_,last_name_,username_, email_,passA_,passB_,agree_,submission_
-    
-
-    
-    # dbc.Alert( first_name , color="warning"), dbc.Alert( last_name , color="warning"), dbc.Alert( email , color="warning"), dbc.Alert( passA , color="warning"), dbc.Alert( passB , color="warning"), dbc.Alert( agree , color="warning"), dbc.Alert( "submission" , color="warning")
-
 
 
