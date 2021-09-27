@@ -20,7 +20,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstname = db.Column(db.String(64), index=True)
     lastname = db.Column(db.String(64), index=True)
-    organization = db.Column(db.String(120), index=True)
+    username = db.Column(db.String(64), index=True,unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     disk_quota = db.Column(db.Float, nullable=False, default=2.5e+8)
     mailed_files = db.Column( PickleType )
@@ -62,6 +62,11 @@ class User(UserMixin, db.Model):
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
 
+    def get_allow_user_token(self, expires_in=600):
+        return jwt.encode(
+            {'allow_user': self.id, 'uname':self.username, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+
     @staticmethod
     def verify_reset_password_token(token):
         try:
@@ -76,6 +81,15 @@ class User(UserMixin, db.Model):
         try:
             id = jwt.decode(token, app.config['SECRET_KEY'],
                             algorithms=['HS256'])['reset_password']
+        except:
+            return
+        return User.query.get(id)
+
+    @staticmethod
+    def verify_allow_user_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithms=['HS256'])['allow_user']
         except:
             return
         return User.query.get(id)

@@ -40,6 +40,7 @@ def send_password_reset_email(user):
 
 def send_validate_email(user):
     token = user.get_email_validation_token()
+    token_= user.get_allow_user_token()
     send_email('Welcome to cycshare!',
                sender=app.config['MAIL_USERNAME'],
                recipients=[user.email],
@@ -53,9 +54,9 @@ def send_validate_email(user):
             sender=app.config['MAIL_USERNAME'],
             recipients=app.config['ADMINS'],
             text_body=render_template('email/new_user.txt',
-                                        user=user),
+                                        user=user, token=token_),
             html_body=render_template('email/new_user.html',
-                                        user=user),\
+                                        user=user, token=token_),\
             reply_to=app.config['MAIL_USERNAME'] )
 
 
@@ -98,7 +99,7 @@ def send_submission_email(user,submission_type,submission_file, attachment_path,
     with app.app_context():
         send_email('[cycshare][Automation][{submission_type}] Files have been submited for analysis.'.format(submission_type=submission_type),
                 sender=app.config['MAIL_USERNAME'],
-                recipients=[user.email, 'automation@age.mpg.de' ], 
+                recipients=[user.email]+ app.config['ADMINS'], 
                 text_body=render_template('email/submissions.txt',
                                             user=user, submission_type=submission_type, attachment_path=attachment_path),
                 html_body=render_template('email/submissions.html',
