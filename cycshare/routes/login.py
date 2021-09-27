@@ -78,6 +78,8 @@ style={"min-height": "100vh", 'verticalAlign': 'center'})
     Output('token-feedback', 'children'),
     Input('url', 'pathname'))
 def verify_email_token(pathname):
+    if pathname == "/login/forgot/":
+        return dbc.Alert( "You're password has been reset." ,color="success")
     if pathname == "/login/logout/":
         return dbc.Alert( "You've been logged out." ,color="primary")
     if "/login/admin/" in pathname:

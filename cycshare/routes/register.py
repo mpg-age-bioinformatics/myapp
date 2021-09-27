@@ -212,10 +212,16 @@ def submit_register(n_clicks,first_name, last_name, username, email,passA, passB
             email_=dbc.Alert( "email already in use" ,color="warning")
     if not passA:
         passA_=dbc.Alert( "*required" ,color="warning")
+        passdic=password_check(passA)
+    else:
+        passdic=password_check(passA)
+        if passdic["passtype"] != "strong" :
+            passA_=dbc.Alert( "please use a strong password" ,color="warning")
     if not passB:
         passB_=dbc.Alert( "*required" ,color="warning")
-    elif passA_ != passB_:
+    elif passA != passB:
         passB_=dbc.Alert( "Passwords do not match" ,color="warning")
+
     if not agree:
         agree_=dbc.Alert( "*required" ,color="warning")
     if first_name_ or last_name_ or username_ or email_ or passA_ or passB_ or agree_ or submission_ :
