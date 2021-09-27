@@ -1,0 +1,14 @@
+Hi {{ firstname }},
+
+Thank you for contacting us.
+
+We wil do our best to get back to you as soon as possible.
+
+Best,
+
+The cycshare team.
+
+
+MESSAGE
+
+{{ msg }}

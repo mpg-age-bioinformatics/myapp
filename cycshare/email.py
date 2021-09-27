@@ -27,6 +27,24 @@ def send_email(subject, sender, recipients, text_body, html_body, reply_to, atta
         
     Thread(target=send_async_email, args=(app, msg)).start()
 
+def send_contact(firstname, lastname, email, msg):
+    send_email('[cycshare] contact',
+                sender=app.config['MAIL_USERNAME'],
+               recipients=app.config['ADMINS'],
+               text_body=render_template('email/contact.txt',
+                                         firstname=firstname, lastname=lastname, email=email, msg=msg),
+               html_body=render_template('email/contact.html',
+                                         firstname=firstname, lastname=lastname, email=email, msg=msg),\
+               reply_to=app.config['MAIL_USERNAME'] )
+    send_email('[cycshare] contact',
+            sender=app.config['MAIL_USERNAME'],
+            recipients=[email],
+            text_body=render_template('email/contact_user.txt',
+                                        firstname=firstname, msg=msg),
+            html_body=render_template('email/contact_user.html',
+                                        firstname=firstname, msg=msg),\
+            reply_to=app.config['MAIL_USERNAME'] )
+
 def send_password_reset_email(user):
     token = user.get_reset_password_token()
     send_email('[cycshare] Reset Your Password',

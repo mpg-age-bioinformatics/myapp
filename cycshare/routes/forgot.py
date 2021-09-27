@@ -43,9 +43,9 @@ password_input_2 = dbc.FormGroup(
 
 footer=html.Div([
     dbc.Row( 
-        html.Footer( [ html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login"),
-                     html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register"),
-                     html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact")] , 
+        html.Footer( [ html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
+                     html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/"),
+                     html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")] , 
         style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
         ),
         style={"justify-content":"center"}
