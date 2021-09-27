@@ -111,7 +111,7 @@ dashapp.layout=dbc.Row( [
                                     html.Div(id="submission-feedback"),
                                 ])
                         , body=True), footer ],
-             md=4, align="center"),
+             md=4, align="center",style={ "margin-left":2, "margin-right":2 }),
     dbc.Col( md=4),
 ],
 align="center",

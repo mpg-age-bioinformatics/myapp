@@ -57,7 +57,6 @@ footer=html.Div([
 dashapp.layout=dbc.Row( [
     dbc.Col( md=4),
     dbc.Col( [ dcc.Location(id='url', refresh=False),
-               html.Div(id="logged-feedback"),
                dbc.Card(  dbc.Form([ html.H2("Login", style={'textAlign': 'center'} ),
                                     html.Div(id="token-feedback"),
                                     username_input,
@@ -69,7 +68,7 @@ dashapp.layout=dbc.Row( [
                                     html.Div(id="submission-feedback"),
                                 ])
                         , body=True), footer ],
-             md=4, align="center"),
+             md=4, align="center", style={ "margin-left":2, "margin-right":2 }),
     dbc.Col( md=4),
 ],
 align="center",
@@ -98,6 +97,10 @@ def verify_email_token(pathname):
         else:
             return dbc.Alert( "Could not find user!" ,color="danger")
 
+    if current_user:
+        if current_user.is_authenticated:
+            return dcc.Location(pathname="/index/", id='index')
+
     token=pathname.split("/login/")[-1]
     if not token:
         return None
@@ -115,13 +118,13 @@ def verify_email_token(pathname):
     db.session.commit()
     return dbc.Alert( 'You have confirmed your account. Thanks!' ,color="success")
 
-@dashapp.callback(
-    Output('logged-feedback', 'children'),
-    Input('url', 'pathname'))
-def check_logged(pathname):
-    if current_user:
-        if current_user.is_authenticated:
-            return dcc.Location(pathname="/index/", id='index')
+# @dashapp.callback(
+#     Output('logged-feedback', 'children'),
+#     Input('url', 'pathname'))
+# def check_logged(pathname):
+#     if current_user:
+#         if current_user.is_authenticated:
+#             return dcc.Location(pathname="/index/", id='index')
 
 @dashapp.callback(
     Output('username-feedback', 'children'),
