@@ -2,7 +2,7 @@ import re
 from flask_login import login_required
 import dash_bootstrap_components as dbc
 import dash_html_components as html
-
+from cycshare import app
 
 META_TAGS=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,'} ]
 
@@ -70,7 +70,7 @@ def protect_dashviews(dashapp):
                 dashapp.server.view_functions[view_func])
 
 navbar_A = dbc.NavbarSimple(
-    [ dbc.NavItem( html.A("cycshare", style={"color":"gray"},href="/index/")) ],
+    [ dbc.NavItem( html.A(app.config['APP_NAME'], style={"color":"gray"},href="/index/")) ],
     fixed='bottom',
     color='white',
     expand="xs"

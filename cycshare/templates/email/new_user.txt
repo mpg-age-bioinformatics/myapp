@@ -3,6 +3,6 @@ New user registration:
 First name: {{user.firstname}}
 Last name: {{user.lastname}}
 Email: {{user.email}}
-Enable: https://0.0.0.0/login/admin/{{token}}
+Enable: {{app_url}}/login/admin/{{token}}
 
-cycshare
+{{app_name}}

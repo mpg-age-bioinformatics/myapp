@@ -2,7 +2,7 @@ Hi {{ user.firstname }},
 
 Welcome! Thanks for signing up. Please follow this link to activate your account:
 
-https://0.0.0.0/login/{{token}}
+{{app_url}}/login/{{token}}
 
 cycshare works better on Google Chrome, both on your laptop, on your iPad or on your phone.
 
@@ -10,4 +10,4 @@ Cheers!
 
 Sincerely,
 
-cycshare
+{{app_name}}

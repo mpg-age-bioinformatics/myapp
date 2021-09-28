@@ -6,7 +6,7 @@ We wil do our best to get back to you as soon as possible.
 
 Best,
 
-The cycshare team.
+The {{app_name}} team.
 
 
 MESSAGE

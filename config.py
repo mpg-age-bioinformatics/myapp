@@ -12,6 +12,8 @@ else:
         commit=f.readline().split("\n")[0]
 
 class Config(object):
+    APP_NAME=os.environ.get('APP_NAME') or "appName"
+    APP_URL=os.environ.get('APP_URL')  or 'https://0.0.0.0'
     USERS_DATA = os.environ.get('USERS_DATA') or "/cycshare/users/"
     LOGS = os.environ.get('LOGS') or '/var/log/cycshare/'
     session_token=secrets.token_urlsafe(16)
@@ -24,7 +26,7 @@ class Config(object):
     redis_password = os.environ.get('REDIS_PASSWORD') or 'REDIS_PASSWORD'
     REDIS_ADDRESS = os.environ.get('REDIS_ADDRESS') or '127.0.0.1:6379/0'
     SESSION_REDIS = redis.from_url('redis://:%s@%s' %(redis_password,REDIS_ADDRESS))
-    MYSQL_USER = os.environ.get('MYSQL_USER') or 'flaski'
+    MYSQL_USER = os.environ.get('MYSQL_USER') or 'cycshare'
     MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'mypass'
     MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'mariadb'
     MYSQL_PORT = os.environ.get('MYSQL_PORT') or '3306'
