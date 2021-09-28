@@ -70,7 +70,7 @@ def protect_dashviews(dashapp):
                 dashapp.server.view_functions[view_func])
 
 navbar_A = dbc.NavbarSimple(
-    [ dbc.NavItem( html.A(app.config['APP_TITLE'], style={"color":"gray","textAlign":"right","margin-bottom":"25px","margin-top":"0px", "margin-right":"20px"},href="/index/")) ],
+    [ dbc.NavItem( html.A(app.config['APP_TITLE'], style={"color":"gray","text-decoration": "none","textAlign":"right","margin-bottom":"25px","margin-top":"0px", "margin-right":"20px"},href="/index/")) ],
     fixed='bottom',
     color='white',
     expand="xs",
@@ -78,13 +78,3 @@ navbar_A = dbc.NavbarSimple(
     style={"textAlign":"right" , "height":"50px"},
     # fluid=True
 )
-
-# navbar_A = dbc.NavbarSimple(
-#     [ dbc.NavItem( html.A(app.config['APP_TITLE'], style={"color":"gray","textAlign":"right"},href="/index/")) ],
-#     fixed='bottom',
-#     color='white',
-#     expand="xs",
-#     # sticky ='bottom',
-#     style={"textAlign":"right", "margin-bottom":"25px","margin-right":"20px"},
-#     # fluid=True
-# )
