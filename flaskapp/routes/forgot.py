@@ -10,7 +10,7 @@ from flaskapp.email import send_password_reset_email
 from datetime import datetime
 from ._utils import META_TAGS, check_email, password_check, navbar_A
 
-dashapp = dash.Dash("forgot",url_base_pathname='/forgot/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("forgot",url_base_pathname='/forgot/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 username_input = dbc.FormGroup(
     [

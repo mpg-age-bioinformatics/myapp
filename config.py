@@ -15,6 +15,7 @@ class Config(object):
     APP_NAME=os.environ.get('APP_NAME') or "flaskapp"
     APP_TITLE=os.environ.get('APP_TITLE') or "FlaskApp"
     APP_URL=os.environ.get('APP_URL')  or 'https://0.0.0.0'
+    APP_ASSETS=os.environ.get('APP_ASSETS') or f'/{APP_NAME}/{APP_NAME}/static/'
     USERS_DATA = os.environ.get('USERS_DATA') or "/cycshare/users/"
     LOGS = os.environ.get('LOGS') or '/var/log/cycshare/'
     session_token=secrets.token_urlsafe(16)

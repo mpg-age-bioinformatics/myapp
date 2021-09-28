@@ -10,7 +10,7 @@ from flaskapp.models import User
 from ._utils import META_TAGS
 import time
 
-dashapp = dash.Dash("logout",url_base_pathname='/logout/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("logout",url_base_pathname='/logout/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 dashapp.layout=html.Div([ dcc.Location(id='url', refresh=False),  
                           dcc.Loading( id="loading-output-1",
