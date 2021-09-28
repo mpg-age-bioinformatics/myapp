@@ -5,9 +5,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from cycshare.models import User
-from cycshare.email import send_validate_email
+from cycshare.email import send_contact
 from datetime import datetime
-from ._utils import META_TAGS, check_email, password_check
+from ._utils import META_TAGS ,check_email
 from flask_login import current_user
 
 dashapp = dash.Dash("contact",url_base_pathname='/contact/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="cycshare")# , assets_folder="/flaski/flaski/static/dash/")
@@ -51,10 +51,19 @@ footer=html.Div([
         )
     ])
 
+# navbar = dbc.Nav(
+#     [
+#         dbc.NavItem(dbc.NavLink("cycsahre", href="/index/")),
+#     ],
+#     horizontal='end',
+# )
+
 dashapp.layout=dbc.Row( [
     dbc.Col( md=2, lg=3, xl=4),
     dbc.Col( [ dbc.Card(  dbc.Form([ dcc.Location(id='url', refresh=False),
+                                    html.Div(id="page-redirect"),
                                     html.H2("Contact", style={'textAlign': 'center'} ),
+                                    html.Div(id="submission-feedback"),
                                     dbc.Row([ 
                                         dbc.Col([ firstname_input,html.Div(id="firstname-feedback")] ),  
                                         dbc.Col([ lastname_input,html.Div(id="lastname-feedback")] )] ),
@@ -63,11 +72,10 @@ dashapp.layout=dbc.Row( [
                                     message,
                                     html.Div(id="message-feedback"),
                                     html.Button(id='submit-button-state', n_clicks=0, children='Send', style={"width":"auto","margin-top":4, "margin-bottom":4}),
-                                    html.Div(id="submission-feedback"),
                                 ])
                         , body=True), footer ],
              md=8, lg=6, xl=4, align="center",style={ "margin-left":2, "margin-right":2 }),
-    dbc.Col( md=2, lg=3, xl=4),
+    dbc.Col(md=2, lg=3, xl=4)
 ],
 align="center",
 style={"min-height": "100vh", 'verticalAlign': 'center'})
@@ -91,38 +99,39 @@ def check_sent(pathname):
     if pathname == "/contact/sent/":
         return dbc.Alert( "You're message has been sent." ,color="success")
 
-# @dashapp.callback(
-#     Output('firstname-feedback', 'children'),
-#     Output('lastname-feedback', 'children'),
-#     Output('email-feedback', 'children'),
-#     Output('message-feedback', 'children'),
-#     Input('submit-button-state', 'n_clicks'),
-#     State('first_name', 'value'),
-#     State('last_name', 'value'),
-#     State('input-email', 'value'),
-#     State('input-text', 'value'))
-# def send_contact_email(n_clicks, firstname, lastname, email, message):
-#     first_name_=None
-#     last_name_=None
-#     email_=None
-#     message_=None
+@dashapp.callback(
+    Output('firstname-feedback', 'children'),
+    Output('lastname-feedback', 'children'),
+    Output('email-feedback', 'children'),
+    Output('message-feedback', 'children'),
+    Output('page-redirect', 'children'),
+    Input('submit-button-state', 'n_clicks'),
+    State('first_name', 'value'),
+    State('last_name', 'value'),
+    State('input-email', 'value'),
+    State('input-text', 'value'),
+    prevent_initial_call=True)
+def send_contact_email(n_clicks, firstname, lastname, email, message):
+    first_name_=None
+    last_name_=None
+    email_=None
+    message_=None
 
-#     if not firstname:
-#         first_name_=dbc.Alert( "*required" ,color="warning") # style={"font-size":"10px"}
-#     if not lastname:
-#         last_name_=dbc.Alert( "*required" ,color="warning")
-#     if not email:
-#         email_=dbc.Alert( "*required" ,color="warning")
-#     elif not check_email(email):
-#         email_=dbc.Alert( "invalid email address" ,color="warning")
-#     if not message:
-#         message_=dbc.Alert( "*required" ,color="warning")
+    if not firstname:
+        first_name_=dbc.Alert( "*required" ,color="warning") # style={"font-size":"10px"}
+    if not lastname:
+        last_name_=dbc.Alert( "*required" ,color="warning")
+    if not email:
+        email_=dbc.Alert( "*required" ,color="warning")
+    elif not check_email(email):
+        email_=dbc.Alert( "invalid email address" ,color="warning")
+    if not message:
+        message_=dbc.Alert( "*required" ,color="warning")
 
-#     if first_name_ or last_name_ or email_ or message_ :
-#         return first_name_ , last_name_, email_, message_
+    if first_name_ or last_name_ or email_ or message_ :
+        return first_name_ , last_name_, email_, message_, None
 
-    #### keep on here
-    #### call send email function
-    #### reset all the values
-    #### create subpath for sent
+    # send_contact(firstname, lastname, email, message)
+
+    return first_name_ , last_name_, email_, message_, dcc.Location(pathname="/contact/sent/", id='index')
     
