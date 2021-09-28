@@ -69,6 +69,12 @@ def protect_dashviews(dashapp):
             dashapp.server.view_functions[view_func] = login_required(
                 dashapp.server.view_functions[view_func])
 
+def make_options(valuesin):
+    opts=[]
+    for c in valuesin:
+        opts.append( {"label":c, "value":c} )
+    return opts
+
 navbar_A = dbc.NavbarSimple(
     [ dbc.NavItem( html.A(app.config['APP_TITLE'], style={"color":"gray","text-decoration": "none","textAlign":"right","margin-bottom":"25px","margin-top":"0px", "margin-right":"20px"},href="/index/")) ],
     fixed='bottom',
