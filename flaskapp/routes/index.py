@@ -1,5 +1,5 @@
 import re
-from cycshare import app
+from flaskapp import app
 from flask_login import current_user
 from flask_caching import Cache
 import dash
@@ -17,7 +17,7 @@ import os
 
 META_TAGS=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,'} ]
 
-dashapp = dash.Dash("index",url_base_pathname='/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="cycshare")# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("index",url_base_pathname='/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"])# , assets_folder="/flaski/flaski/static/dash/")
 # protect_dashviews(dashapp)
 
 # cache = Cache(dashapp.server, config={
@@ -26,7 +26,7 @@ dashapp = dash.Dash("index",url_base_pathname='/', meta_tags=META_TAGS, server=a
 # })
 
 dashapp.layout=dbc.Row( 
-                    dbc.Col( html.H1(app.config["APP_NAME"], style={"textAlign":"center"}), align="center" ),
+                    dbc.Col( html.H1(app.config["APP_TITLE"], style={"textAlign":"center"}), align="center" ),
                     justify="center",
                     style={"min-height": "100vh"})
 

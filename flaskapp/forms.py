@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, widgets
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from cycshare.models import User
+from flaskapp.models import User
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()], render_kw={'class': 'form-control form-control-user', "placeholder": "Enter Email Address..." })

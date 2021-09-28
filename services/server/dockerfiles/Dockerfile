@@ -36,32 +36,32 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && ba
 /miniconda/bin/conda install -c plotly plotly-orca psutil requests && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
+ARG BUILD_NAME
+ENV BUILD_NAME $BUILD_NAME
+
 # Add cycshare user for running the service
-RUN groupadd cycshare --gid=1000 && useradd -m cycshare --uid=1000 --gid=1000 && echo "cycshare:4.iMkMm4zFoNViof" | \
+RUN groupadd ${BUILD_NAME} --gid=1000 && useradd -m ${BUILD_NAME} --uid=1000 --gid=1000 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
     chpasswd
 
-RUN mkdir /submissions
-RUN chown -R cycshare:cycshare /submissions
-
 # remove old cycshare files
-RUN rm -rf /cycshare
+RUN rm -rf /${BUILD_NAME}
 
 # data folders and access rights
-RUN mkdir -p /var/log/cycshare /cycshare/.git /cycshare/data /cycshare/cycshare /cycshare/migrations /cycshare/utils /cycshare/services /cycshare/pycycshare /cycshare_data/users /backup/users_data /backup/mariadb
+RUN mkdir -p /var/log/${BUILD_NAME} /${BUILD_NAME}/.git /${BUILD_NAME}/data /${BUILD_NAME}/${BUILD_NAME} /${BUILD_NAME}/migrations /${BUILD_NAME}/utils /${BUILD_NAME}/services /${BUILD_NAME}_data/users /backup/users_data /backup/mariadb
 RUN touch /mysql_backup.log && touch /rsync.log
-RUN chown -R cycshare:cycshare /cycshare_data /cycshare_data/users /cycshare/migrations /var/log/cycshare /mysql_backup.log /rsync.log
+RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data /${BUILD_NAME}_data/users /${BUILD_NAME}/migrations /var/log/${BUILD_NAME} /mysql_backup.log /rsync.log
 
 # comment during development
-COPY requirements.txt /cycshare/
-RUN pip3 install -r /cycshare/requirements.txt
+COPY requirements.txt /${BUILD_NAME}/
+RUN pip3 install -r /${BUILD_NAME}/requirements.txt
 
-COPY LICENSE.md README.md config.py cycshare.py MANIFEST.in requirements.txt setup.py .flaskenv /cycshare/
-COPY services /cycshare/services
-COPY cycshare /cycshare/cycshare
-COPY .git /cycshare/.git
+COPY LICENSE.md README.md config.py ${BUILD_NAME}.py requirements.txt setup.py .flaskenv /${BUILD_NAME}/
+COPY services /${BUILD_NAME}/services
+COPY ${BUILD_NAME} /${BUILD_NAME}/${BUILD_NAME}
+COPY .git /${BUILD_NAME}/.git
 
 # Setup default user, when enter docker container
-USER cycshare:cycshare
-WORKDIR /cycshare
+USER ${BUILD_NAME}:${BUILD_NAME}
+WORKDIR /${BUILD_NAME}
 
-ENTRYPOINT /cycshare/services/server/docker-entrypoint.sh
+ENTRYPOINT /${BUILD_NAME}/services/server/docker-entrypoint.sh

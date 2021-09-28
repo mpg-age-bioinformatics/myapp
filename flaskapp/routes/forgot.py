@@ -1,16 +1,16 @@
-from cycshare import app, db
+from flaskapp import app, db
 from flask_login import current_user
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from cycshare.models import User
-from cycshare.email import send_password_reset_email
+from flaskapp.models import User
+from flaskapp.email import send_password_reset_email
 from datetime import datetime
 from ._utils import META_TAGS, check_email, password_check, navbar_A
 
-dashapp = dash.Dash("forgot",url_base_pathname='/forgot/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="cycshare")# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("forgot",url_base_pathname='/forgot/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"])# , assets_folder="/flaski/flaski/static/dash/")
 
 username_input = dbc.FormGroup(
     [

@@ -1,16 +1,16 @@
-from cycshare import app, db
+from flaskapp import app, db
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from cycshare.models import User
-from cycshare.email import send_contact
+from flaskapp.models import User
+from flaskapp.email import send_contact
 from datetime import datetime
 from ._utils import META_TAGS ,check_email, navbar_A
 from flask_login import current_user
 
-dashapp = dash.Dash("contact",url_base_pathname='/contact/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="cycshare")# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("contact",url_base_pathname='/contact/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"])# , assets_folder="/flaski/flaski/static/dash/")
 
 firstname_input = dbc.FormGroup(
     [

@@ -12,7 +12,8 @@ else:
         commit=f.readline().split("\n")[0]
 
 class Config(object):
-    APP_NAME=os.environ.get('APP_NAME') or "appName"
+    APP_NAME=os.environ.get('APP_NAME') or "flaskapp"
+    APP_TITLE=os.environ.get('APP_TITLE') or "FlaskApp"
     APP_URL=os.environ.get('APP_URL')  or 'https://0.0.0.0'
     USERS_DATA = os.environ.get('USERS_DATA') or "/cycshare/users/"
     LOGS = os.environ.get('LOGS') or '/var/log/cycshare/'
@@ -26,11 +27,11 @@ class Config(object):
     redis_password = os.environ.get('REDIS_PASSWORD') or 'REDIS_PASSWORD'
     REDIS_ADDRESS = os.environ.get('REDIS_ADDRESS') or '127.0.0.1:6379/0'
     SESSION_REDIS = redis.from_url('redis://:%s@%s' %(redis_password,REDIS_ADDRESS))
-    MYSQL_USER = os.environ.get('MYSQL_USER') or 'cycshare'
+    MYSQL_USER = os.environ.get('MYSQL_USER') or APP_NAME
     MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'mypass'
     MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'mariadb'
     MYSQL_PORT = os.environ.get('MYSQL_PORT') or '3306'
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://%s:%s@%s:%s/cycshare' %(MYSQL_USER,MYSQL_PASSWORD,MYSQL_HOST,MYSQL_PORT)
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://%s:%s@%s:%s/%s' %(MYSQL_USER,MYSQL_PASSWORD,MYSQL_HOST,MYSQL_PORT,APP_NAME)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'localhost'
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 8025)

@@ -1,12 +1,12 @@
 from hashlib import md5
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-from cycshare import db
-from cycshare import login
+from flaskapp import db
+from flaskapp import login
 from flask_login import UserMixin
 from time import time
 import jwt
-from cycshare import app
+from flaskapp import app
 from sqlalchemy.types import PickleType
 
 

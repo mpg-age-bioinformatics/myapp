@@ -7,15 +7,17 @@ services:
   build:
     context: ./
     dockerfile: services/server/dockerfiles/Dockerfile
+    args:
+      - BUILD_NAME=${APP_NAME}
   user: root
   volumes:
-    - data:/cycshare_data/users
-    - ./:/cycshare
+    - data:/${APP_NAME}_data/users
+    - ./:/${APP_NAME}
     - ~/cycshare_backup/stats:/backup/stats
     - ~/cycshare_backup/users_data:/backup/users_data
     - ~/cycshare_backup/mariadb:/backup/mariadb:ro
   environment:
-    - APP_NAME=cycshare
+    - APP_NAME=${APP_NAME}
     - APP_URL=https://0.0.0.0
     - FLASK_ENV=init
     - RESTORE_DB=1
@@ -24,7 +26,7 @@ services:
     - SECRET_KEY=${SECRET_KEY}
     - REDIS_ADDRESS=redis:6379/0
     - REDIS_PASSWORD=${REDIS_PASSWORD}
-    - MYSQL_USER=cycshare
+    - MYSQL_USER=${APP_NAME}
     - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     - MYSQL_HOST=mariadb
     - MYSQL_PORT=3306
@@ -41,25 +43,28 @@ services:
   build:
     context: ./
     dockerfile: services/server/dockerfiles/Dockerfile
+    args:
+      - BUILD_NAME=${APP_NAME}
   restart: always
   volumes:
-   - data:/cycshare_data/users
-   - ./:/cycshare
-   - ~/cycshare_private:/cycshare_private:ro
+   - data:/${APP_NAME}_data/users
+   - ./:/${APP_NAME}
+   - ~/cycshare_private:/${APP_NAME}_private:ro
   environment:
-   - APP_NAME=cycshare
+   - APP_NAME=${APP_NAME}
+   - APP_TITLE=myapp
    - APP_URL=https://0.0.0.0
-   - LOGS=/var/log/cycshare/
+   - LOGS=/var/log/${APP_NAME}/
    - SECRET_KEY=${SECRET_KEY}
    - REDIS_ADDRESS=redis:6379/0
    - REDIS_PASSWORD=${REDIS_PASSWORD}
    - MAIL_USERNAME=cycshare@gmail.com
-   - MYSQL_USER=cycshare
+   - MYSQL_USER=${APP_NAME}
    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
    - MYSQL_HOST=mariadb
    - MYSQL_PORT=3306
    - FLASK_ENV=development
-   - PRIVATE_APPS=/cycshare_private/private.apps.tsv
+   - PRIVATE_APPS=/${APP_NAME}_private/private.apps.tsv
    - INSTANCE=(DEV)
    - ADMINS=cycshare@gmail.com
   links:
@@ -79,10 +84,10 @@ services:
   volumes:
    - ~/cycshare_backup/mariadb:/backup/mariadb
    - ~/cycshare_backup/users_data:/backup/users_data
-   - data:/cycshare_data/users:ro
+   - data:/${APP_NAME}_data/users:ro
   environment:
    - MYSQL_HOST=mariadb
-   - MYSQL_USER=cycshare
+   - MYSQL_USER=${APP_NAME}
    - MYSQL_PASS=${MYSQL_PASSWORD}
    - MAX_BACKUPS=15
    - INIT_BACKUP=0

@@ -20,8 +20,8 @@ mail = Mail(app)
 sess = Session()
 sess.init_app(app)
 
-from cycshare import models, errors #, index, routes
-from cycshare.routes import index, register, login, forgot, logout, contact
+from flaskapp import models, errors #, index, routes
+from flaskapp.routes import index, register, login, forgot, logout, contact
 
 if not app.debug:
     if app.config['MAIL_SERVER']:
@@ -34,21 +34,21 @@ if not app.debug:
         mail_handler = SMTPHandler(
             mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
             fromaddr=app.config['ADMINS'][0],
-            toaddrs=app.config['ADMINS'], subject='%s :: cycshare Failure' %(app.config['INSTANCE']),
+            toaddrs=app.config['ADMINS'], subject=f'{app.config["INSTANCE"]} :: {app.config["APP_TITLE"]} Failure',
             credentials=auth, secure=secure)
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
 
     if not os.path.exists(app.config['LOGS']):
         os.mkdir(app.config['LOGS'])
-    file_handler = RotatingFileHandler(app.config['LOGS']+'cycshare.log', maxBytes=10240, backupCount=10)
+    file_handler = RotatingFileHandler(app.config['LOGS']+f'{app.config["APP_NAME"]}.log', maxBytes=10240, backupCount=10)
     file_handler.setFormatter(logging.Formatter(
         '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
 
     app.logger.setLevel(logging.INFO)
-    app.logger.info('cycshare startup')
+    app.logger.info(f'{app.config["APP_NAME"]} startup')
 
 # if __name__ == "__main__":
 #    #app.run() ##Replaced with below code to run it using waitress 

@@ -1,5 +1,5 @@
 from flask import render_template
-from cycshare import app, db
+from flaskapp import app, db
 
 @app.errorhandler(404)
 def not_found_error(error):

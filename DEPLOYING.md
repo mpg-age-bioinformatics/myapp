@@ -1,14 +1,20 @@
-# cycshare
+# flaskapp
 
-cycshare is a flask based App for sharing cycling workouts. cycshare can be deployed using the `docker-compose.yml` or on a [kubernetes](https://github.com/jorgeboucas/cycshare/tree/master/kubernetes#kubernetes) cluster.
+flaskapp is a universal backbone for flask-dash based apps with user level authentication. flaskapp can be deployed using the `docker-compose.yml` or on a [kubernetes](https://github.com/jorgeboucas/cycshare/tree/master/kubernetes#kubernetes) cluster.
 
 ## Deploying cycshare
 
+Start by defining your apps folder name 
+```
+export APP_NAME="flaskapp"
+```
+as seen in the base folder of this repo.
+
 If you need to generate self-signed certificates you can do so by:
 ```
-mkdir -p ~/cycshare_data/certificates 
-openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -keyout ~/cycshare_data/certificates/key.pem -out ~/cycshare_data/certificates/cert.pem -subj "/C=DE/ST=NRW/L=Cologne/O=MPS/CN=cycshare"
-openssl dhparam -out ~/cycshare_data/certificates/dhparam.pem 2048
+mkdir -p ~/${APP_NAME}_data/certificates 
+openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -keyout ~/${APP_NAME}_data/certificates/key.pem -out ~/${APP_NAME}_data/certificates/cert.pem -subj "/C=DE/ST=NRW/L=Cologne/O=MPS/CN=${APP_NAME}"
+openssl dhparam -out ~/${APP_NAME}_data/certificates/dhparam.pem 2048
 ```
 
 On a Mac double click on the cert.pem file to open it and add it to the Keychain. In key chain double click on the certificate to change Trust : When using this certificate : Always trust. 
@@ -18,6 +24,7 @@ If running cycshare on development mode make sure that you change the variable `
 Export secret variables:
 ```bash
 cat << EOF > .env
+APP_NAME="${APP_NAME}"
 MAIL_PASSWORD="<mail password>"
 MYSQL_PASSWORD=$(openssl rand -base64 20)
 MYSQL_ROOT_PASSWORD=$(openssl rand -base64 20)
@@ -29,6 +36,7 @@ EOF
 or, for local development (quote all mail related entries in the `docker-compose.yml`):
 ```bash
 cat << EOF > .env
+APP_NAME="${APP_NAME}"
 MYSQL_PASSWORD=$(openssl rand -base64 20)
 MYSQL_ROOT_PASSWORD=$(openssl rand -base64 20)
 REDIS_PASSWORD=$(openssl rand -base64 20)
@@ -78,13 +86,7 @@ docker volume rm db
 
 ```bash
 docker-compose exec backup /backup.sh
-docker-compose exec backup rsync -rtvh --delete /cycshare_data/users/ /backup/users_data/
-```
-
-## Looking for and removing old files
-
-```bash
-docker-compose run --entrypoint="python3 /cycshare/cycshare.py clean" init
+docker-compose exec backup rsync -rtvh --delete /${APP_NAME}_data/users/ /backup/users_data/
 ```
 
 ## Email logging
@@ -104,8 +106,8 @@ docker-compose exec server flask shell
 ```
 make the required imports:
 ```python
-from cycshare import app, db
-from cycshare.models import User, UserLogging
+from flaskapp import app, db
+from flaskapp.models import User, UserLogging
 ```
 and then for removing a user from the db:
 ```python
@@ -123,7 +125,7 @@ db.session.commit()
 
 Collecting usage entries:
 ```bash
-docker-compose run --entrypoint="python3 /cycshare/cycshare.py stats /backup/stats" init
+docker-compose run --entrypoint="python3 /${APP_NAME}/${APP_NAME}.py stats /backup/stats" init
 ```
 
 If you need to re-initiate your database
@@ -139,21 +141,13 @@ flask db upgrade
 
 Manually backup a database:
 ```bash
-docker-compose exec mariadb /usr/bin/mysqldump -u root --password=mypass cycshare > dump.sql
+docker-compose exec mariadb /usr/bin/mysqldump -u root --password=mypass ${APP_NAME} > dump.sql
 ```
 
 Manually restore a database from backup:
 ```bash
-cat dump.sql | docker-compose exec mariadb mysql --user=root --password=mypass cycshare
+cat dump.sql | docker-compose exec mariadb mysql --user=root --password=mypass ${APP_NAME}
 ```
-
-## Build and Install
-
-```bash
-python3 setup.py bdist_wheel
-pip3 install cycshare-0.1.0-py3-none-any.whl
-```
-Static files need to be included in the `MANIFEST.in`.
 
 
 
