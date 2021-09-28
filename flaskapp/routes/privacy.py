@@ -10,7 +10,7 @@ from datetime import datetime
 from ._utils import META_TAGS, check_email, password_check, navbar_A
 from flask_login import current_user
 
-dashapp = dash.Dash("gdpr",url_base_pathname='/gdpr/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/{APP_TITLE}/{APP_TITLE}/static/dash/")
+dashapp = dash.Dash("privacy",url_base_pathname='/privacy/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/{APP_TITLE}/{APP_TITLE}/static/dash/")
 
 APP_TITLE=app.config["APP_TITLE"]
 
