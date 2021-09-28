@@ -72,7 +72,7 @@ dashapp.layout=dbc.Row( [
     dbc.Col( [ dcc.Location(id='url', refresh=False),
                dbc.Card(  dbc.Form(id="forgot-form")
                         , body=True), footer ],
-             md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 }),
+             md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
     navbar_A
 ],
 align="center",

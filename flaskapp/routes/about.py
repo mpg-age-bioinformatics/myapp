@@ -22,7 +22,7 @@ dashapp.layout=dbc.Row(
                     [ dbc.Col( 
                         [ html.H1("About", style={"textAlign":"center", "margin-bottom":"30px"}), about ],  # 
                         align="top", 
-                        style={"textAlign":"justify",'margin-left':"15px", 'margin-right':"15px","margin-top":"100px"},
+                        style={"textAlign":"justify",'margin-left':"15px", 'margin-right':"15px","margin-top":"100px",'margin-bottom':"50px"},
                         md=8, lg=6, xl=4), 
                     navbar_A ] ,
                     justify="center")

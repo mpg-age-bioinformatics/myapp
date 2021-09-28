@@ -66,7 +66,7 @@ dashapp.layout=dbc.Row( [
                                     html.Div(id="submission-feedback"),
                                 ])
                         , body=True), footer ],
-             md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 }),
+             md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
     navbar_A
 ],
 align="center",
