@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from cycshare.models import User
 from cycshare.email import send_password_reset_email
 from datetime import datetime
-from ._utils import META_TAGS, check_email, password_check
+from ._utils import META_TAGS, check_email, password_check, navbar_A
 
 dashapp = dash.Dash("forgot",url_base_pathname='/forgot/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="cycshare")# , assets_folder="/flaski/flaski/static/dash/")
 
@@ -74,7 +74,7 @@ dashapp.layout=dbc.Row( [
                dbc.Card(  dbc.Form(id="forgot-form")
                         , body=True), footer ],
              md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 }),
-    dbc.Col( md=2, lg=3, xl=4),
+    dbc.Col( md=2, lg=3, xl=4), navbar_A
 ],
 align="center",
 style={"min-height": "100vh", 'verticalAlign': 'center'})

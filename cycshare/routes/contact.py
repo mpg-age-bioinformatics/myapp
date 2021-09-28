@@ -7,7 +7,7 @@ import dash_bootstrap_components as dbc
 from cycshare.models import User
 from cycshare.email import send_contact
 from datetime import datetime
-from ._utils import META_TAGS ,check_email
+from ._utils import META_TAGS ,check_email, navbar_A
 from flask_login import current_user
 
 dashapp = dash.Dash("contact",url_base_pathname='/contact/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="cycshare")# , assets_folder="/flaski/flaski/static/dash/")
@@ -51,13 +51,6 @@ footer=html.Div([
         )
     ])
 
-# navbar = dbc.Nav(
-#     [
-#         dbc.NavItem(dbc.NavLink("cycsahre", href="/index/")),
-#     ],
-#     horizontal='end',
-# )
-
 dashapp.layout=dbc.Row( [
     dbc.Col( md=2, lg=3, xl=4),
     dbc.Col( [ dbc.Card(  dbc.Form([ dcc.Location(id='url', refresh=False),
@@ -75,7 +68,7 @@ dashapp.layout=dbc.Row( [
                                 ])
                         , body=True), footer ],
              md=8, lg=6, xl=4, align="center",style={ "margin-left":2, "margin-right":2 }),
-    dbc.Col(md=2, lg=3, xl=4)
+    dbc.Col(md=2, lg=3, xl=4),navbar_A
 ],
 align="center",
 style={"min-height": "100vh", 'verticalAlign': 'center'})
