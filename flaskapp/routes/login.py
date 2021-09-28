@@ -53,9 +53,7 @@ footer=html.Div([
     ])
 
 
-#[dbc.Form([email_input, password_input])]
 dashapp.layout=dbc.Row( [
-    dbc.Col( md=2, lg=3, xl=4),
     dbc.Col( [ dcc.Location(id='url', refresh=False),
                dbc.Card(  dbc.Form([ html.H2("Login", style={'textAlign': 'center'} ),
                                     html.Div(id="token-feedback"),
@@ -69,10 +67,11 @@ dashapp.layout=dbc.Row( [
                                 ])
                         , body=True), footer ],
              md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 }),
-    dbc.Col( md=2, lg=3, xl=4), navbar_A
+    navbar_A
 ],
 align="center",
-style={"min-height": "100vh", 'verticalAlign': 'center'})
+justify="center",
+style={"min-height": "95vh", 'verticalAlign': 'center'}) #, 
 
 @dashapp.callback(
     Output('token-feedback', 'children'),
