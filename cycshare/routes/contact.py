@@ -52,7 +52,7 @@ footer=html.Div([
     ])
 
 dashapp.layout=dbc.Row( [
-    dbc.Col( md=4),
+    dbc.Col( md=2, lg=3, xl=4),
     dbc.Col( [ dbc.Card(  dbc.Form([ dcc.Location(id='url', refresh=False),
                                     html.H2("Contact", style={'textAlign': 'center'} ),
                                     dbc.Row([ 
@@ -66,8 +66,8 @@ dashapp.layout=dbc.Row( [
                                     html.Div(id="submission-feedback"),
                                 ])
                         , body=True), footer ],
-             md=4, align="center",style={ "margin-left":2, "margin-right":2 }),
-    dbc.Col( md=4),
+             md=8, lg=6, xl=4, align="center",style={ "margin-left":2, "margin-right":2 }),
+    dbc.Col( md=2, lg=3, xl=4),
 ],
 align="center",
 style={"min-height": "100vh", 'verticalAlign': 'center'})
@@ -88,38 +88,38 @@ def check_logged(pathname):
     Output('submission-feedback', 'children'),
     Input('url', 'pathname'))
 def check_sent(pathname):
-    if 
+    if pathname == "/contact/sent/":
+        return dbc.Alert( "You're message has been sent." ,color="success")
 
+# @dashapp.callback(
+#     Output('firstname-feedback', 'children'),
+#     Output('lastname-feedback', 'children'),
+#     Output('email-feedback', 'children'),
+#     Output('message-feedback', 'children'),
+#     Input('submit-button-state', 'n_clicks'),
+#     State('first_name', 'value'),
+#     State('last_name', 'value'),
+#     State('input-email', 'value'),
+#     State('input-text', 'value'))
+# def send_contact_email(n_clicks, firstname, lastname, email, message):
+#     first_name_=None
+#     last_name_=None
+#     email_=None
+#     message_=None
 
-@dashapp.callback(
-    Output('firstname-feedback', 'children'),
-    Output('lastname-feedback', 'children'),
-    Output('email-feedback', 'children'),
-    Output('message-feedback', 'children'),
-    Input('submit-button-state', 'n_clicks'),
-    State('first_name', 'value'),
-    State('last_name', 'value'),
-    State('input-email', 'value'),
-    State('input-text', 'value'))
-def send_contact_email(n_clicks, firstname, lastname, email, message):
-    first_name_=None
-    last_name_=None
-    email_=None
-    message_=None
+#     if not firstname:
+#         first_name_=dbc.Alert( "*required" ,color="warning") # style={"font-size":"10px"}
+#     if not lastname:
+#         last_name_=dbc.Alert( "*required" ,color="warning")
+#     if not email:
+#         email_=dbc.Alert( "*required" ,color="warning")
+#     elif not check_email(email):
+#         email_=dbc.Alert( "invalid email address" ,color="warning")
+#     if not message:
+#         message_=dbc.Alert( "*required" ,color="warning")
 
-    if not firstname:
-        first_name_=dbc.Alert( "*required" ,color="warning") # style={"font-size":"10px"}
-    if not lastname:
-        last_name_=dbc.Alert( "*required" ,color="warning")
-    if not email:
-        email_=dbc.Alert( "*required" ,color="warning")
-    elif not check_email(email):
-        email_=dbc.Alert( "invalid email address" ,color="warning")
-    if not message:
-        message_=dbc.Alert( "*required" ,color="warning")
-
-    if first_name_ or last_name_ or email_ or message_ :
-        return irst_name_ , last_name_, email_, message_
+#     if first_name_ or last_name_ or email_ or message_ :
+#         return first_name_ , last_name_, email_, message_
 
     #### keep on here
     #### call send email function

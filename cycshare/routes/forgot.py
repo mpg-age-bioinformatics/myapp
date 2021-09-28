@@ -69,12 +69,12 @@ change_form=[ html.H2("Forgot password", style={'textAlign': 'center'} ),
 
 
 dashapp.layout=dbc.Row( [
-    dbc.Col( md=4),
+    dbc.Col( md=2, lg=3, xl=4),
     dbc.Col( [ dcc.Location(id='url', refresh=False),
                dbc.Card(  dbc.Form(id="forgot-form")
                         , body=True), footer ],
-             md=4, align="center", style={ "margin-left":2, "margin-right":2 }),
-    dbc.Col( md=4),
+             md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 }),
+    dbc.Col( md=2, lg=3, xl=4),
 ],
 align="center",
 style={"min-height": "100vh", 'verticalAlign': 'center'})
