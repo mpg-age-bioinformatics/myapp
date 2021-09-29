@@ -2,7 +2,7 @@ from hashlib import md5
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flaskapp import db
-from flaskapp import login
+from flaskapp import login_manager
 from flask_login import UserMixin
 from time import time
 import jwt
@@ -94,6 +94,21 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+# @login_manager.user_loader
+# def load_user(id):
+#     return User.query.get(int(id))
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Check if user is logged-in on every page load."""
+    if user_id is not None:
+        user=User.query.get(user_id)
+        if not user.active:
+            return None
+        return User.query.get(user_id)
+    return None
+
+# @login_manager.unauthorized_handler
+# def unauthorized():
+#     """Redirect unauthorized users to Login page."""
+#     return redirect(f'{app.config["APP_URL"]}/login/')
