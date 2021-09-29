@@ -410,11 +410,13 @@ def change_admins(mk_clicks,rm_clicks,admin_emails, non_admin_emails):
     Output('opt-noroutes-emails', 'placeholder'),
     Output('opt-routes-emails', 'options'),
     Output('opt-routes-emails', 'placeholder'),
+    Output('opt-noroutes-emails', 'value'),
+    Output('opt-routes-emails', 'value'),
     Input('opt-routes', 'value')    )
 def toggle_private_routes(route):
     if not route:
         empty_=make_options([])
-        return True, empty_, "select a route first", empty_, "select a route first"
+        return True, empty_, "select a route first", empty_, "select a route first", None, None
     
     route_obj=PrivateRoutes.query.filter_by(route=route).first()
     if not route_obj :
@@ -423,7 +425,7 @@ def toggle_private_routes(route):
         emails=make_options(emails)
         empty_=make_options([])
 
-        return True, emails, "select user", empty_, "no users here"
+        return True, emails, "select user", empty_, "no users here", None, None
     
     if not route_obj.users :
         emails= [ u.email for u in User.query.all() ]
@@ -431,7 +433,7 @@ def toggle_private_routes(route):
         emails=make_options(emails)
         empty_=make_options([])
 
-        return True, emails, "select user", empty_, "no users here"
+        return True, emails, "select user", empty_, "no users here", None, None 
 
     users=route_obj.users
     granted_emails=[]
@@ -453,7 +455,7 @@ def toggle_private_routes(route):
     no_granted_emails=make_options(no_granted_emails)
 
 
-    return False, no_granted_emails, su, granted_emails, "select user"
+    return False, no_granted_emails, su, granted_emails, "select user", None, None
 
 
 @dashapp.callback(
@@ -509,8 +511,8 @@ def change_routes(l_clicks, g_clicks, r_clicks, route, grant_emails, revoke_emai
 
         msg=f'''{route}: {", ".join(grant_emails)}\nGranted!'''
 
-        print(msg)
-        import sys ; sys.stdout.flush()
+        # print(msg)
+        # import sys ; sys.stdout.flush()
 
         msg=dbc.Alert( msg ,color="success", style={"max-width":"458px"},  dismissable=True)
 
@@ -543,7 +545,7 @@ def change_routes(l_clicks, g_clicks, r_clicks, route, grant_emails, revoke_emai
     Output('grant_route-button-state',"disabled"),
     Input('opt-noroutes-emails','value')  )
 def toggle_grant_route(value):
-    print("!!!!!", value)
+    # print("!!!!!", value)
     if value:
         return False
     else:
