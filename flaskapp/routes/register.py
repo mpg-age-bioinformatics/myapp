@@ -231,6 +231,7 @@ def submit_register(n_clicks,first_name, last_name, username, email,passA, passB
         lastname=last_name,\
         username=username,\
         email=email,\
+        domain=email.split("@")[-1],\
         privacy=True)
     user.set_password(passA)
     user.registered_on=datetime.utcnow()

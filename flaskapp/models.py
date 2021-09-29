@@ -1,19 +1,26 @@
 from hashlib import md5
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-from flaskapp import db
-from flaskapp import login_manager
+from flaskapp import app, db, login_manager
 from flask_login import UserMixin
 from time import time
 import jwt
-from flaskapp import app
 from sqlalchemy.types import PickleType
+from flask import request
 
+PRIVATE_ROUTES=['about']
+PUBLIC_VIEWS=[ 'about']
 
 class PrivateRoutes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     route = db.Column(db.String(64), index=True,unique=True)
     users = db.Column(PickleType, index=True, unique=False)
+    users_domains = db.Column(PickleType, index=True, unique=False)
+
+    # viewers_ids = db.Column(PickleType, index=True, unique=False)
+    # users_domains = db.Column(PickleType, index=True, unique=False)
+    # viewers_domains = db.Column(PickleType, index=True, unique=False)
+    # public_view=db.Column(db.Boolean, nullable=False, default=False)
 
 class UserLogging(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,6 +48,8 @@ class User(UserMixin, db.Model):
     multipleapps=db.Column(db.Boolean, nullable=False, default=False)
     notifyme=db.Column(db.Boolean, nullable=False, default=True)
     user_apps = db.Column( PickleType )
+    view_apps = db.Column( PickleType )
+    domain = db.Column(db.String(120), index=True, unique=False)
     administrator=db.Column(db.Boolean, nullable=False, default=False)
 
 
@@ -106,10 +115,25 @@ class User(UserMixin, db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     """Check if user is logged-in on every page load."""
+
     if user_id is not None:
         user=User.query.get(user_id)
         if not user.active:
             return None
+        r=request.endpoint
+        r=r.split("/")[1]
+        if ( r in PRIVATE_ROUTES ) and ( r not in PUBLIC_VIEWS ):
+            r_obj=PrivateRoutes.query.filter_by(route=r).first()
+            if not r_obj :
+                return None
+
+            if r_obj.users_domains:
+                if user.domain in r_obj.users_domains :
+                    return User.query.get(user_id)
+            
+            if user.id not in r_obj.users :
+                return None
+                    
         return User.query.get(user_id)
     return None
 

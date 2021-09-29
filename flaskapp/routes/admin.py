@@ -5,7 +5,7 @@ from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from flaskapp.models import User, PrivateRoutes
+from flaskapp.models import User, PrivateRoutes, PRIVATE_ROUTES
 from flaskapp.email import send_contact
 from datetime import datetime
 from ._utils import META_TAGS ,check_email, navbar_A, protect_dashviews, make_options
@@ -82,7 +82,7 @@ def make_layout(pathname):
         id="change_active_status_form"
     )])
 
-    deactivate_msg=dcc.Textarea( id='text-reason', placeholder="deactivate reason..",style={ "margin-right":"8px", "max-width":"542px", "min-width":"350px", 'height': 32 } )
+    deactivate_msg=dcc.Textarea( id='text-reason', placeholder="  deactivate reason..",style={ "margin-right":"8px", "max-width":"542px", "min-width":"350px", 'height': 32 } )
     deactivate_bt=html.Button(id='reason-button-state', n_clicks=0, children='Deactivate', style={"width":"100px"})
 
     deactivate=html.Div([ 
@@ -101,8 +101,8 @@ def make_layout(pathname):
 
     ### private routes
 
-    routes=get_urls(app)
-    routes_=make_options(routes)
+    # routes=get_urls(app)
+    routes_=make_options(PRIVATE_ROUTES)
 
     empty_=make_options([])
 
@@ -116,6 +116,14 @@ def make_layout(pathname):
 
     private_email_options = dcc.Dropdown( options=empty_, placeholder="select a route first", id='opt-routes-emails', multi=True, style={"width":"350px", "margin-right":"8px"})
     revoke_route_button=html.Button(id='revoke_route-button-state', disabled=True,  n_clicks=0, children='Revoke', style={"width":"100px", "margin-right":"4px"})
+
+    grant_domain_text=dbc.Input(type="text", id="domain-text", placeholder="select a route first",style={"width":"350px", "margin-right":"8px"})
+    grant_domain_button=html.Button(id='grant_domain-button-state', disabled=True,  n_clicks=0, children='Add', style={"width":"100px", "margin-right":"4px"})
+
+    private_domain_options = dcc.Dropdown( options=empty_, placeholder="select a route first", id='opt-routes-domains', multi=True, style={"width":"350px", "margin-right":"8px"})
+    revoke_domain_button=html.Button(id='revoke_domain-button-state', disabled=True,  n_clicks=0, children='Remove', style={"width":"100px", "margin-right":"4px"})
+
+
 
     routes_form = html.Div([ 
         dbc.Label(html.H4("Private routes"),html_for="list_route_form", style={"margin-top":"40px"}), 
@@ -147,6 +155,30 @@ def make_layout(pathname):
                         [
                             private_email_options,
                             revoke_route_button
+                        ],
+                        className="mr-3"
+                    ),
+                ],
+                inline=True,
+                id="rm_route_form",
+                style={"width":"auto","margin-top":"10px"}
+                ),
+        dbc.Form( [ dbc.FormGroup(
+                        [
+                            grant_domain_text,
+                            grant_domain_button
+                        ],
+                        className="mr-3"
+                    ),
+                ],
+                inline=True,
+                id="rm_route_form",
+                style={"width":"auto","margin-top":"10px"}
+                ),
+        dbc.Form( [ dbc.FormGroup(
+                        [
+                            private_domain_options,
+                            revoke_domain_button
                         ],
                         className="mr-3"
                     ),
@@ -402,6 +434,26 @@ def change_admins(mk_clicks,rm_clicks,admin_emails, non_admin_emails):
 
     return admin_emails, non_admin_emails, 0, 0, None, None, msg
 
+@dashapp.callback(
+    Output('grant_domain-button-state', 'disabled'),
+    Input('domain-text', 'value'),
+)
+def toggle_add_domain(value):
+    if value :
+        return False
+    else:
+        return True
+
+@dashapp.callback(
+    Output('revoke_domain-button-state', 'disabled'),
+    Input('opt-routes-domains', 'value'),
+)
+def toggle_rm_domain(value):
+    if value :
+        return False
+    else:
+        return True
+
 
 ##### this needs to output n_clicks of grant and revoke instead of doing it in the next call
 @dashapp.callback(
@@ -412,20 +464,35 @@ def change_admins(mk_clicks,rm_clicks,admin_emails, non_admin_emails):
     Output('opt-routes-emails', 'placeholder'),
     Output('opt-noroutes-emails', 'value'),
     Output('opt-routes-emails', 'value'),
+    Output('opt-routes-domains', 'options'),
+    Output('opt-routes-domains', 'value'),
+    Output('opt-routes-domains', 'placeholder'),
+    Output('domain-text', 'placeholder'),
+    Output('domain-text', 'value'),
     Input('opt-routes', 'value')    )
 def toggle_private_routes(route):
     if not route:
         empty_=make_options([])
-        return True, empty_, "select a route first", empty_, "select a route first", None, None
+        return True, empty_, "select a route first", empty_, "select a route first", None, None, empty_, None, "select a route first", "select a route first", None
     
     route_obj=PrivateRoutes.query.filter_by(route=route).first()
     if not route_obj :
+        print("!!!! No routes")
         emails= [ u.email for u in User.query.all() ]
         emails.sort()
         emails=make_options(emails)
         empty_=make_options([])
 
-        return True, emails, "select user", empty_, "no users here", None, None
+        return True, emails, "select user", empty_, "no users here", None, None, empty_, None, "no domains here", "add domain, eg. gmail.com",  None
+
+    if not route_obj.users_domains :
+        print("!!!! No routes")
+        users_domains=make_options([])
+        users_domains_placeholder="no domains here"
+    else:
+        users_domains=make_options(route_obj.users_domains)
+        users_domains_placeholder="remove a domain"
+    users_domains_value=None
     
     if not route_obj.users :
         emails= [ u.email for u in User.query.all() ]
@@ -433,7 +500,7 @@ def toggle_private_routes(route):
         emails=make_options(emails)
         empty_=make_options([])
 
-        return True, emails, "select user", empty_, "no users here", None, None 
+        return True, emails, "select user", empty_, "no users here", None, None, users_domains, users_domains_value, users_domains_placeholder, "add domain, eg. gmail.com", None
 
     users=route_obj.users
     granted_emails=[]
@@ -446,16 +513,17 @@ def toggle_private_routes(route):
     no_granted_emails=[ u for u in no_granted_emails if u not in granted_emails ]
     no_granted_emails.sort()
 
-    if len(no_granted_emails) == 0:
-        su="no users here"
-    else:
+    if no_granted_emails:
         su="select user"
+    else:
+        su="no users here"
+
 
     granted_emails=make_options(granted_emails)
     no_granted_emails=make_options(no_granted_emails)
 
 
-    return False, no_granted_emails, su, granted_emails, "select user", None, None
+    return False, no_granted_emails, su, granted_emails, "select user", None, None, users_domains, users_domains_value, users_domains_placeholder, "add domain, eg. gmail.com", None
 
 
 @dashapp.callback(
@@ -464,15 +532,21 @@ def toggle_private_routes(route):
     Output('list_route-button-state',"n_clicks"),
     Output('grant_route-button-state',"n_clicks"),
     Output('revoke_route-button-state',"n_clicks"),
+    Output('grant_domain-button-state',"n_clicks"),
+    Output('revoke_domain-button-state',"n_clicks"),
     Input('list_route-button-state',"n_clicks"),
     Input('grant_route-button-state',"n_clicks"),
     Input('revoke_route-button-state',"n_clicks"),
+    Input('grant_domain-button-state',"n_clicks"),
+    Input('revoke_domain-button-state',"n_clicks"),
     State('opt-routes', 'value'),
     State('opt-noroutes-emails', 'value'),
     State('opt-routes-emails', 'value'),
+    State('domain-text', 'value'),
+    State('opt-routes-domains', 'value'),
     prevent_initial_call=True
     )
-def change_routes(l_clicks, g_clicks, r_clicks, route, grant_emails, revoke_emails):
+def change_routes(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domain_clicks ,route, grant_emails, revoke_emails, domain, domains_out ):
     if l_clicks == 1:
         route_obj=PrivateRoutes.query.filter_by(route=route).first()
         users=route_obj.users
@@ -482,11 +556,17 @@ def change_routes(l_clicks, g_clicks, r_clicks, route, grant_emails, revoke_emai
                 email=User.query.filter_by(id=u).first()
                 emails.append(email.email)
             emails.sort()
-
+        domains=[]
+        if route_obj.users_domains :
+            domains=domains+route_obj.users_domains
+            domains=f'''\n\n-domains- {", ".join(domains)}'''
+        else:
+            domains=""
         msg=f'''{route}: {", ".join(emails)}'''
+        msg=msg+domains
         msg=dbc.Alert( msg ,color="primary", style={"max-width":"458px"},  dismissable=True)
 
-        return None, msg, 0, 0 ,0 
+        return None, msg, 0, 0 ,0, 0, 0
     
     if g_clicks == 1:
         route_obj=PrivateRoutes.query.filter_by(route=route).first()
@@ -511,12 +591,42 @@ def change_routes(l_clicks, g_clicks, r_clicks, route, grant_emails, revoke_emai
 
         msg=f'''{route}: {", ".join(grant_emails)}\nGranted!'''
 
-        # print(msg)
-        # import sys ; sys.stdout.flush()
+        msg=dbc.Alert( msg ,color="success", style={"max-width":"458px"},  dismissable=True)
+
+        return None, msg, 0, 0, 0, 0, 0
+
+    if add_domain_clicks == 1:
+        route_obj=PrivateRoutes.query.filter_by(route=route).first()
+        if not route_obj:
+            route_obj=PrivateRoutes(route=route)
+        if route_obj.users_domains:
+            domains=route_obj.users_domains
+        else:
+            domains=[]
+        domains.append(domain)
+        route_obj.users_domains=domains
+        db.session.add(route_obj)
+        db.session.commit()
+
+        msg=f'''{route}: {domain}\nGranted!'''
 
         msg=dbc.Alert( msg ,color="success", style={"max-width":"458px"},  dismissable=True)
 
-        return None, msg, 0, 0, 0
+        return None, msg, 0, 0, 0, 0, 0
+
+    if rm_domain_clicks == 1:
+        route_obj=PrivateRoutes.query.filter_by(route=route).first()
+        domains=route_obj.users_domains
+        domains=[s for s in domains if s not in domains_out ]
+        route_obj.users_domains=domains
+        db.session.add(route_obj)
+        db.session.commit()
+
+        msg=f'''{route}: {", ".join(domains_out)}\nRemoved!'''
+
+        msg=dbc.Alert( msg ,color="danger", style={"max-width":"458px"},  dismissable=True)
+
+        return None, msg, 0, 0, 0, 0, 0
 
     if r_clicks == 1:
         route_obj=PrivateRoutes.query.filter_by(route=route).first()
@@ -538,7 +648,7 @@ def change_routes(l_clicks, g_clicks, r_clicks, route, grant_emails, revoke_emai
         msg=f'''{route}: {", ".join(revoke_emails)}\nRevoked!'''
         msg=dbc.Alert( msg ,color="danger", style={"max-width":"458px"},  dismissable=True)
 
-        return None, msg, 0, 0, 0
+        return None, msg, 0, 0, 0, 0, 0
             
 
 @dashapp.callback(
