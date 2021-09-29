@@ -104,7 +104,7 @@ dashapp.layout=dbc.Row( [
                                     password_input_2,
                                     html.Div(id="pass2-feedback"),
                                     dbc.Row([ read , 
-                                              html.A("User Agreement and Data Privacy Statment.", href="/privacy/",style={"margin-left":"4px",'whiteSpace': 'pre-wrap'})]),
+                                              html.A("Privacy Statment.", href="/privacy/",style={"margin-left":"4px",'whiteSpace': 'pre-wrap'})]),
                                     html.Div(id="checkbox-feedback"),
                                     html.Button(id='submit-button-state', n_clicks=0, children='Submit', style={"width":"auto","margin-top":4, "margin-bottom":4}),
                                     html.Div(id="submission-feedback"),
