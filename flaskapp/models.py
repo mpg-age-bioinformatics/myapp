@@ -10,6 +10,11 @@ from flaskapp import app
 from sqlalchemy.types import PickleType
 
 
+class PrivateRoutes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    route = db.Column(db.String(64), index=True,unique=True)
+    users = db.Column(PickleType, index=True, unique=False)
+
 class UserLogging(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=False)
