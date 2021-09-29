@@ -8,8 +8,8 @@ import jwt
 from sqlalchemy.types import PickleType
 from flask import request
 
-PRIVATE_ROUTES=['about']
-PUBLIC_VIEWS=[ 'about']
+PRIVATE_ROUTES=[ ]
+PUBLIC_VIEWS=[ ]
 
 class PrivateRoutes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
