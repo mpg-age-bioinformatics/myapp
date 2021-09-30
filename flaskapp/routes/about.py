@@ -21,9 +21,22 @@ flaskapp is a backbone for flask-dash mixed apps with user level authentication 
 
 ''')
 
+links_style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px", "font-weight": "bold","text-decoration": "none"}
+privacy_impressum=html.Div([
+                dbc.Row( 
+                    html.Footer( [ 
+                        html.A("Impressum", style=links_style, href="/impressum/"),
+                        html.A("Privacy", style=links_style, href="/privacy/"),
+                    ] , 
+                    style={"margin-top": 25, "margin-bottom": 5,},
+                    ),
+                    style={"justify-content":"center"}
+                )
+            ])
+
 dashapp.layout=dbc.Row(
                     [ dbc.Col( 
-                        [ html.H1("About", style={"textAlign":"center", "margin-bottom":"30px"}), about ],  # 
+                        [ html.H1("About", style={"textAlign":"center", "margin-bottom":"30px"}), about, privacy_impressum ],  # 
                         align="top", 
                         style={"textAlign":"justify",'margin-left':"15px", 'margin-right':"15px","margin-top":"100px",'margin-bottom':"50px"},
                         md=8, lg=6, xl=4), 

@@ -32,7 +32,6 @@ def make_layout(pathname):
     )
     return protected_content
 
-
 @dashapp.callback(
     Output("navbar-collapse", "is_open"),
     [Input("navbar-toggler", "n_clicks")],
