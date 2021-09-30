@@ -78,7 +78,7 @@ def make_layout(pathname):
     activate_button=html.Button(id='status-activate-button', n_clicks=0, children='Activate', style={"width":"100px", "margin-right":"4px"})
 
     deactivate_msg=dcc.Textarea( id='status-deactivate-text', placeholder="  deactivate reason..",style={ "margin-right":"8px", "max-width":"542px", "min-width":"350px", 'height': 32 } )
-    deactivate_bt=html.Button(id='status-activate-button', n_clicks=0, children='Deactivate', style={"width":"100px"})
+    deactivate_bt=html.Button(id='status-deactivate-button', n_clicks=0, children='Deactivate', style={"width":"100px"})
 
     change_active_status = html.Div([ 
         dbc.Label(html.H4("User status"),html_for="change-status-form"), 
@@ -302,7 +302,7 @@ def activate_user(n_clicks, emails):
 @dashapp.callback(
     Output('status-deactivate-feedback', 'children'),
     Output('status-deactivate-text-feedback', 'children'),
-    Input('status-activate-button', 'n_clicks'),
+    Input('status-deactivate-button', 'n_clicks'),
     State('status-deactivate-text', 'value'),
     State('opt-status-emails', 'value'),
     prevent_initial_call=True
