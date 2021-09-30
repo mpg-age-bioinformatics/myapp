@@ -75,20 +75,19 @@ def make_layout(pathname):
     emails=make_options(emails)
 
     email_options = dcc.Dropdown( options=emails, placeholder="select user", id='opt-status-emails', multi=True, style={"width":"350px", "margin-right":"8px"})
-    activate_button=html.Button(id='activate-button-state', n_clicks=0, children='Activate', style={"width":"100px", "margin-right":"4px"})
+    activate_button=html.Button(id='status-activate-button', n_clicks=0, children='Activate', style={"width":"100px", "margin-right":"4px"})
 
-    deactivate_msg=dcc.Textarea( id='text-reason', placeholder="  deactivate reason..",style={ "margin-right":"8px", "max-width":"542px", "min-width":"350px", 'height': 32 } )
-    deactivate_bt=html.Button(id='reason-button-state', n_clicks=0, children='Deactivate', style={"width":"100px"})
+    deactivate_msg=dcc.Textarea( id='status-deactivate-text', placeholder="  deactivate reason..",style={ "margin-right":"8px", "max-width":"542px", "min-width":"350px", 'height': 32 } )
+    deactivate_bt=html.Button(id='status-activate-button', n_clicks=0, children='Deactivate', style={"width":"100px"})
 
     change_active_status = html.Div([ 
-        dbc.Label(html.H4("User status"),html_for="change_active_status_form"), 
+        dbc.Label(html.H4("User status"),html_for="change-status-form"), 
         dbc.Form( [ dbc.FormGroup(
                         [ email_options,activate_button ],
                         className="mr-3"
                         ),
                     ],
                 inline=True,
-                id="change_active_status_form",
                 style={"width":"auto","margin-top":"10px"}
                 ),
         dbc.Form( [ dbc.FormGroup(
@@ -99,11 +98,11 @@ def make_layout(pathname):
                 style={"width":"auto","margin-top":"10px"},
                 inline=True,
                 ),
-        html.Div(id="input-reason-feedback",style={'margin-top':"10px"}),
-        html.Div(id="activate-feedback",style={'margin-top':"10px"}),
-        html.Div(id="deactivate-feedback",style={'margin-top':"10px"}),
-        html.Div(id="current-status-feedback",style={'margin-top':"10px"})
-        ] )
+        html.Div(id="status-deactivate-text-feedback",style={'margin-top':"10px"}),
+        html.Div(id="status-activate-feedback",style={'margin-top':"10px"}),
+        html.Div(id='status-deactivate-feedback',style={'margin-top':"10px"}),
+        html.Div(id='status-current-feedback',style={'margin-top':"10px"})
+        ], id="change-status-form" )
 
     ### private routes
 
@@ -260,7 +259,7 @@ def make_layout(pathname):
     return protected_content
 
 @dashapp.callback(
-    Output('current-status-feedback', 'children'),
+    Output('status-current-feedback', 'children'),
     Input('opt-status-emails', 'value'),
     prevent_initial_call=True
     )
@@ -278,8 +277,8 @@ def current_status(emails):
     return dbc.Alert( status ,color="#EFEFEF",  dismissable=True)
 
 @dashapp.callback(
-    Output('activate-feedback', 'children'),
-    Input('activate-button-state', 'n_clicks'),
+    Output('status-activate-feedback', 'children'),
+    Input('status-activate-button', 'n_clicks'),
     State('opt-status-emails', 'value'),
     prevent_initial_call=True
     )
@@ -301,10 +300,10 @@ def activate_user(n_clicks, emails):
     return dbc.Alert( status ,color="success",  dismissable=True)
 
 @dashapp.callback(
-    Output('deactivate-feedback', 'children'),
-    Output('input-reason-feedback', 'children'),
-    Input('reason-button-state', 'n_clicks'),
-    State('text-reason', 'value'),
+    Output('status-deactivate-feedback', 'children'),
+    Output('status-deactivate-text-feedback', 'children'),
+    Input('status-activate-button', 'n_clicks'),
+    State('status-deactivate-text', 'value'),
     State('opt-status-emails', 'value'),
     prevent_initial_call=True
     )
