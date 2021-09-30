@@ -514,7 +514,7 @@ def routes_change_btns(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domai
             user_apps=u.user_apps
             if not user_apps:
                 user_apps=[route_obj.id]
-            u.user_apps=user_apps
+            u.user_apps=list(set(user_apps))
             db.session.add(u)
             db.session.commit()
             users_ids.append(u.id)
@@ -537,7 +537,7 @@ def routes_change_btns(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domai
         else:
             domains=[]
         domains.append(domain)
-        route_obj.users_domains=domains
+        route_obj.users_domains=list(set(domains))
         db.session.add(route_obj)
         db.session.commit()
 

@@ -61,6 +61,11 @@ If running cycshare on development mode you will have to start flask from inside
 docker-compose exec server /bin/bash
 flask run --host 0.0.0.0 --port 8000
 ```
+Adding administrator user:
+```
+docker-compose run --entrypoint="python3 /flaskapp/flaskapp.py admin --add myemail@gemail.com" init 
+```
+
 You can connect to any of the running containers by eg. 
 ```bash
 docker-compose exec mariadb /bin/bash
