@@ -74,42 +74,36 @@ def make_layout(pathname):
     emails=[ "all" ] + emails
     emails=make_options(emails)
 
-    email_options = dcc.Dropdown( options=emails, placeholder="select user", id='opt-emails', multi=True, style={"width":"350px", "margin-right":"8px"})
-
+    email_options = dcc.Dropdown( options=emails, placeholder="select user", id='opt-status-emails', multi=True, style={"width":"350px", "margin-right":"8px"})
     activate_button=html.Button(id='activate-button-state', n_clicks=0, children='Activate', style={"width":"100px", "margin-right":"4px"})
-    # deactivate_button=html.Button(id='deactivate-button-state', n_clicks=0, children='Deactivate', style={"width":"auto", "margin-left":"4px"})
-
-    # dbc.Label("User status",html_for="change_active_status_form")
-    change_active_status = html.Div([ 
-        dbc.Label(html.H4("User status"),html_for="change_active_status_form"), 
-        dbc.Form( [ dbc.FormGroup(
-                [
-                    email_options,
-                    activate_button
-                ],
-                className="mr-3"
-            ),
-        ],
-        inline=True,
-        id="change_active_status_form"
-    )])
 
     deactivate_msg=dcc.Textarea( id='text-reason', placeholder="  deactivate reason..",style={ "margin-right":"8px", "max-width":"542px", "min-width":"350px", 'height': 32 } )
     deactivate_bt=html.Button(id='reason-button-state', n_clicks=0, children='Deactivate', style={"width":"100px"})
 
-    deactivate=html.Div([ 
+    change_active_status = html.Div([ 
+        dbc.Label(html.H4("User status"),html_for="change_active_status_form"), 
         dbc.Form( [ dbc.FormGroup(
-                [
-                    deactivate_msg,deactivate_bt
-                ],
-                className="mr-3"
-            ),
-        ],
-        style={"width":"auto",},
-        inline=True,
-        id="change_active_status_form"
-    )],style={"width":"auto","margin-top":"10px"})
-
+                        [ email_options,activate_button ],
+                        className="mr-3"
+                        ),
+                    ],
+                inline=True,
+                id="change_active_status_form",
+                style={"width":"auto","margin-top":"10px"}
+                ),
+        dbc.Form( [ dbc.FormGroup(
+                        [ deactivate_msg,deactivate_bt ],
+                        className="mr-3"
+                        ),
+                    ],
+                style={"width":"auto","margin-top":"10px"},
+                inline=True,
+                ),
+        html.Div(id="input-reason-feedback",style={'margin-top':"10px"}),
+        html.Div(id="activate-feedback",style={'margin-top':"10px"}),
+        html.Div(id="deactivate-feedback",style={'margin-top':"10px"}),
+        html.Div(id="current-status-feedback",style={'margin-top':"10px"})
+        ] )
 
     ### private routes
 
@@ -117,8 +111,6 @@ def make_layout(pathname):
     routes_=make_options(PRIVATE_ROUTES)
 
     empty_=make_options([])
-
-
 
     routes_options = dcc.Dropdown( options=routes_, value=None, placeholder="route", id='opt-routes', multi=False, style={"width":"350px", "margin-right":"8px"})
     list_route_button=html.Button(id='list_route-button-state', disabled=True,  n_clicks=0, children='List', style={"width":"100px", "margin-right":"4px"})
@@ -140,10 +132,7 @@ def make_layout(pathname):
     routes_form = html.Div([ 
         dbc.Label(html.H4("Private routes"),html_for="list_route_form", style={"margin-top":"40px"}), 
         dbc.Form( [ dbc.FormGroup(
-                        [
-                            routes_options,
-                            list_route_button
-                        ],
+                        [ routes_options, list_route_button],
                         className="mr-3"
                         ),
                   ],
@@ -152,10 +141,7 @@ def make_layout(pathname):
                   style={"width":"auto","margin-top":"10px"}
                 ),
         dbc.Form( [ dbc.FormGroup(
-                        [
-                            no_access_email_options,
-                            grant_route_button
-                        ],
+                        [ no_access_email_options, grant_route_button ],
                         className="mr-3"
                     ),
                 ],
@@ -164,10 +150,7 @@ def make_layout(pathname):
                 style={"width":"auto","margin-top":"10px"}
                 ),
         dbc.Form( [ dbc.FormGroup(
-                        [
-                            private_email_options,
-                            revoke_route_button
-                        ],
+                        [ private_email_options, revoke_route_button ],
                         className="mr-3"
                     ),
                 ],
@@ -176,10 +159,7 @@ def make_layout(pathname):
                 style={"width":"auto","margin-top":"10px"}
                 ),
         dbc.Form( [ dbc.FormGroup(
-                        [
-                            grant_domain_text,
-                            grant_domain_button
-                        ],
+                        [ grant_domain_text, grant_domain_button ],
                         className="mr-3"
                     ),
                 ],
@@ -188,10 +168,7 @@ def make_layout(pathname):
                 style={"width":"auto","margin-top":"10px"}
                 ),
         dbc.Form( [ dbc.FormGroup(
-                        [
-                            private_domain_options,
-                            revoke_domain_button
-                        ],
+                        [ private_domain_options, revoke_domain_button ],
                         className="mr-3"
                     ),
                 ],
@@ -201,8 +178,6 @@ def make_layout(pathname):
                 ),
         html.Div(id="routes-feedback",style={'margin-top':"10px"}) ])
 
-
-    # routes=PrivateRoutes()
 
     #### Administrators
 
@@ -259,29 +234,22 @@ def make_layout(pathname):
 
                 ],
                 className="mr-3"
-            )
+            ),
+ 
         ],
         inline=True,
         id="notify_form"
-    )])
+    ),
+    html.Div(id="notify-feedback",style={'margin-top':"10px"}),
+    html.Div(id="notifyall-feedback",style={'margin-top':"10px"})])
 
     protected_content=dbc.Row( [
-        dbc.Col( [ dbc.Form([  html.Div(id="submission-feedback"),
-                                change_active_status,
-                                deactivate,
-                                html.Div(id="input-reason-feedback",style={'margin-top':"10px"}),
-                                html.Div(id="activate-feedback",style={'margin-top':"10px"}),
-                                html.Div(id="deactivate-feedback",style={'margin-top':"10px"}),
-                                html.Div(id="current-status-feedback",style={'margin-top':"10px"}),
-                            ]),
+        dbc.Col( [ html.Div(id="submission-feedback"), 
+                    change_active_status,
                     routes_form, 
                     make_admin_form,
-
-                    dbc.Form([  notify_section,
-                                html.Div(id="notify-feedback",style={'margin-top':"10px"}),
-                                html.Div(id="notifyall-feedback",style={'margin-top':"10px"}),
-                            ])
-                ],
+                    notify_section,
+                    ],
                 md=10, lg=9, xl=8, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
         navbar_A
     ],
@@ -293,7 +261,7 @@ def make_layout(pathname):
 
 @dashapp.callback(
     Output('current-status-feedback', 'children'),
-    Input('opt-emails', 'value'),
+    Input('opt-status-emails', 'value'),
     prevent_initial_call=True
     )
 def current_status(emails):
@@ -312,7 +280,7 @@ def current_status(emails):
 @dashapp.callback(
     Output('activate-feedback', 'children'),
     Input('activate-button-state', 'n_clicks'),
-    State('opt-emails', 'value'),
+    State('opt-status-emails', 'value'),
     prevent_initial_call=True
     )
 def activate_user(n_clicks, emails):
@@ -337,7 +305,7 @@ def activate_user(n_clicks, emails):
     Output('input-reason-feedback', 'children'),
     Input('reason-button-state', 'n_clicks'),
     State('text-reason', 'value'),
-    State('opt-emails', 'value'),
+    State('opt-status-emails', 'value'),
     prevent_initial_call=True
     )
 def submit_deactivate(n_clicks, reason, emails):
