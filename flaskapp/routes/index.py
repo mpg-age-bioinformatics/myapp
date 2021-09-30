@@ -30,10 +30,35 @@ image_filename = f'{app.config["APP_ASSETS"]}logo.png' # replace with your own i
 encoded_image = base64.b64encode(open(image_filename, 'rb').read())
 image=html.A( html.Img( src='data:image/png;base64,{}'.format(encoded_image.decode()) , height="300px", style={ "margin-bottom":5}), href="/index/")
 
-dashapp.layout=dbc.Row(
-                    dbc.Col( dcc.Link([ image, html.H1(app.config["APP_TITLE"], style={"textAlign":"center"}) ], href="/index/", style={"color":"black","text-decoration": "none"}), align="center", style={"textAlign":"center"}), # 
+dashapp.layout=html.Div( [ dcc.Location(id='url', refresh=False), html.Div(id="page-content") ] )
+
+
+logo=dcc.Link([ image, html.H1(app.config["APP_TITLE"], style={"textAlign":"center"}) ], href="/index/", style={"color":"black","text-decoration": "none"})
+
+@dashapp.callback(
+    Output('page-content', 'children'),
+    Input('url', 'pathname'))
+def make_layout(pathname):
+
+    page_content=html.Div(
+        [
+            dbc.Row(
+                    dbc.Col( logo, align="center", style={"textAlign":"center"}), # 
                     justify="center",
-                    style={"min-height": "100vh"})
+                    style={"min-height": "100vh"}
+                )
+        ]
+    )
+
+    return page_content
+    # if current_user:
+    #     if ( current_user.active ) & ( current_user.is_authenticated ) :
+
+
+
+
+
+
 
 # @dashapp.callback(
 #         Output("navbar-collapse", "is_open"),
