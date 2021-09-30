@@ -48,11 +48,13 @@ def make_layout(pathname):
             if current_user.active :
                 target="/home/"
                 open_content=html.Div(id="page-footer")
+                refresh=True
 
     if not target:
         if pathname not in ['/index/open/', '/open/'] :
             target="/index/open/"
             open_content=html.Div(id="page-footer")
+            refresh=False
 
         else :
             target="/index/"
@@ -69,25 +71,28 @@ def make_layout(pathname):
                                 style={"justify-content":"center"}
                             )
                         ])
+            refresh=False
 
 
     page_content=html.Div(
         [
             dbc.Row(
-                dbc.Col( [
-                    dcc.Link([ 
-                        html.A( html.Img( src='data:image/png;base64,{}'.format(encoded_image.decode()) , height="300px", style={ "margin-bottom":5}), href=target), 
-                        html.H1(app.config["APP_TITLE"], style={"textAlign":"center"}) 
-                        ], 
-                        href=target,
-                        refresh=True,
-                        style={"color":"black","text-decoration": "none"}
-                    ),
-                    open_content
+                dbc.Col( 
+                    [
+                        dcc.Link(
+                            [
+                                html.Img( src='data:image/png;base64,{}'.format(encoded_image.decode() ) , height="300px", style={ "margin-bottom":5}),
+                                html.H1(app.config["APP_TITLE"], style={"textAlign":"center"}),
+                            ],
+                            href=target,
+                            refresh=refresh,
+                            style={"color":"black","text-decoration": "none"}
+                        ),
+                        open_content
                     ], 
                     align="center",
                     style={"textAlign":"center"}
-                ), # 
+                ), 
                 justify="center",
                 style={"min-height": "100vh"}
             )
@@ -95,13 +100,6 @@ def make_layout(pathname):
     )
 
     return page_content
-    # if current_user:
-    #     if ( current_user.active ) & ( current_user.is_authenticated ) :
-
-
-
-
-
 
 
 # @dashapp.callback(
