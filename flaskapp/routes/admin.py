@@ -1,4 +1,3 @@
-from dash_html_components.H3 import H3
 from flaskapp import app, db
 import dash
 from dash.dependencies import Input, Output, State
@@ -6,10 +5,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from flaskapp.models import User, PrivateRoutes, PRIVATE_ROUTES
-from flaskapp.email import send_contact
 from datetime import datetime
-from ._utils import META_TAGS ,check_email, navbar_A, protect_dashviews, make_options
-from flask_login import current_user, logout_user
+from ._utils import META_TAGS, navbar_A, protect_dashviews, make_options
 
 def get_urls(app):
     urls=['%s' % rule for rule in app.url_map.iter_rules()]
@@ -257,6 +254,10 @@ def make_layout(pathname):
 
     return protected_content
 
+###########################
+####### User status #######
+###########################
+
 @dashapp.callback(
     Output('status-current-feedback', 'children'),
     Input('opt-status-emails', 'value'),
@@ -325,91 +326,11 @@ def status_deactivate(n_clicks, reason, emails):
     status=dcc.Markdown(status)
     return dbc.Alert( status ,color="danger",  dismissable=True), None
 
-@dashapp.callback(
-    Output('notify-feedback', 'children'),
-    Input('notify-button', 'n_clicks'),
-    prevent_initial_call=True
-    )
-def notify_users(n_clicks):
-    emails= [ u.email for u in User.query.all() ]
-    emails=", ".join(emails)
-    return dbc.Alert( emails ,color="primary", style=alert_short_style,  dismissable=True)
 
-@dashapp.callback(
-    Output('notify-all-feedback', 'children'),
-    Input('notify-all-button', 'n_clicks'),
-    prevent_initial_call=True
-    )
-def notify_all_users(n_clicks):
-    emails= [ u.email for u in User.query.all() if u.notifyme ]
-    emails=", ".join(emails)
-    return dbc.Alert( emails ,color="warning", style=alert_short_style,  dismissable=True)
 
-@dashapp.callback(
-    Output('admin-grant-button', 'disabled'),
-    Input('opt-admin-std-emails', 'value'),
-    prevent_initial_call=True
-    )
-def admin_toggle_grant_btn(value):
-    if value:
-        return False
-    else:
-        return True
-
-@dashapp.callback(
-    Output('admin-revoke-button', 'disabled'),
-    Input('opt-admin-emails', 'value'),
-    prevent_initial_call=True
-    )
-def admin_toggle_revoke_btn(value):
-    if value:
-        return False
-    else:
-        return True
-
-@dashapp.callback(
-    Output('opt-admin-emails', 'options'),
-    Output('opt-admin-std-emails', 'options'),
-    Output('admin-grant-button', 'n_clicks'),
-    Output('admin-revoke-button', 'n_clicks'),
-    Output('opt-admin-emails', 'value'),
-    Output('opt-admin-std-emails', 'value'),
-    Output('admin-feedback', 'children'),
-    Input('admin-grant-button', 'n_clicks'),
-    Input('admin-revoke-button', 'n_clicks'),
-    State('opt-admin-emails', 'value'),
-    State('opt-admin-std-emails', 'value'),
-    prevent_initial_call=True
-    )
-def admin_change_btns(mk_clicks,rm_clicks,admin_emails, non_admin_emails):
-    if mk_clicks == 1:
-        for email in non_admin_emails:
-            user=User.query.filter_by(email=email).first()
-            user.administrator=True
-            db.session.add(user)
-            db.session.commit()
-        msg="Granted: "+", ".join(non_admin_emails)
-        msg=dbc.Alert( msg ,color="success",  dismissable=True,style=alert_short_style)
-        mk_clicks=0
-    if rm_clicks == 1:
-        for email in admin_emails:
-            user=User.query.filter_by(email=email).first()
-            user.administrator=False
-            db.session.add(user)
-            db.session.commit()
-        mk_clicks=0
-        msg="Revoked: "+", ".join(admin_emails)
-        msg=dbc.Alert( msg ,color="danger",  dismissable=True, style=alert_short_style)
-
-    non_admin_emails= [ u.email for u in User.query.all() if not u.administrator ]
-    non_admin_emails.sort()
-    non_admin_emails=make_options(non_admin_emails)
-
-    admin_emails= [ u.email for u in User.query.all() if u.administrator ]
-    admin_emails.sort()
-    admin_emails=make_options(admin_emails)
-
-    return admin_emails, non_admin_emails, 0, 0, None, None, msg
+##############################
+####### Private routes #######
+##############################
 
 @dashapp.callback(
     Output('routes-add-button', 'disabled'),
@@ -431,8 +352,6 @@ def routes_toggle_rm_domain_btn(value):
     else:
         return True
 
-
-##### this needs to output n_clicks of grant and revoke instead of doing it in the next call
 @dashapp.callback(
     Output('routes-list-button', 'disabled'),
     Output('opt-routes-no-access', 'options'),
@@ -448,13 +367,13 @@ def routes_toggle_rm_domain_btn(value):
     Output('routes-domain-text', 'value'),
     Input('opt-routes-priv-routes', 'value')    )
 def routes_read_priv_routes(route):
+    
     if not route:
         empty_=make_options([])
         return True, empty_, "select a route first", empty_, "select a route first", None, None, empty_, None, "select a route first", "select a route first", None
     
     route_obj=PrivateRoutes.query.filter_by(route=route).first()
     if not route_obj :
-        print("!!!! No routes")
         emails= [ u.email for u in User.query.all() ]
         emails.sort()
         emails=make_options(emails)
@@ -463,7 +382,6 @@ def routes_read_priv_routes(route):
         return True, emails, "select user", empty_, "no users here", None, None, empty_, None, "no domains here", "add domain, eg. gmail.com",  None
 
     if not route_obj.users_domains :
-        print("!!!! No routes")
         users_domains=make_options([])
         users_domains_placeholder="no domains here"
     else:
@@ -477,7 +395,12 @@ def routes_read_priv_routes(route):
         emails=make_options(emails)
         empty_=make_options([])
 
-        return True, emails, "select user", empty_, "no users here", None, None, users_domains, users_domains_value, users_domains_placeholder, "add domain, eg. gmail.com", None
+        if route_obj.users_domains:
+            list_btn=False
+        else:
+            list_btn=True
+
+        return list_btn, emails, "select user", empty_, "no users here", None, None, users_domains, users_domains_value, users_domains_placeholder, "add domain, eg. gmail.com", None
 
     users=route_obj.users
     granted_emails=[]
@@ -644,3 +567,98 @@ def routes_toggle_revoke_btn(value):
         return False
     else:
         return True
+
+##############################
+####### Administrators #######
+##############################
+
+@dashapp.callback(
+    Output('admin-grant-button', 'disabled'),
+    Input('opt-admin-std-emails', 'value'),
+    prevent_initial_call=True
+    )
+def admin_toggle_grant_btn(value):
+    if value:
+        return False
+    else:
+        return True
+
+@dashapp.callback(
+    Output('admin-revoke-button', 'disabled'),
+    Input('opt-admin-emails', 'value'),
+    prevent_initial_call=True
+    )
+def admin_toggle_revoke_btn(value):
+    if value:
+        return False
+    else:
+        return True
+
+@dashapp.callback(
+    Output('opt-admin-emails', 'options'),
+    Output('opt-admin-std-emails', 'options'),
+    Output('admin-grant-button', 'n_clicks'),
+    Output('admin-revoke-button', 'n_clicks'),
+    Output('opt-admin-emails', 'value'),
+    Output('opt-admin-std-emails', 'value'),
+    Output('admin-feedback', 'children'),
+    Input('admin-grant-button', 'n_clicks'),
+    Input('admin-revoke-button', 'n_clicks'),
+    State('opt-admin-emails', 'value'),
+    State('opt-admin-std-emails', 'value'),
+    prevent_initial_call=True
+    )
+def admin_change_btns(mk_clicks,rm_clicks,admin_emails, non_admin_emails):
+    if mk_clicks == 1:
+        for email in non_admin_emails:
+            user=User.query.filter_by(email=email).first()
+            user.administrator=True
+            db.session.add(user)
+            db.session.commit()
+        msg="Granted: "+", ".join(non_admin_emails)
+        msg=dbc.Alert( msg ,color="success",  dismissable=True,style=alert_short_style)
+        mk_clicks=0
+    if rm_clicks == 1:
+        for email in admin_emails:
+            user=User.query.filter_by(email=email).first()
+            user.administrator=False
+            db.session.add(user)
+            db.session.commit()
+        mk_clicks=0
+        msg="Revoked: "+", ".join(admin_emails)
+        msg=dbc.Alert( msg ,color="danger",  dismissable=True, style=alert_short_style)
+
+    non_admin_emails= [ u.email for u in User.query.all() if not u.administrator ]
+    non_admin_emails.sort()
+    non_admin_emails=make_options(non_admin_emails)
+
+    admin_emails= [ u.email for u in User.query.all() if u.administrator ]
+    admin_emails.sort()
+    admin_emails=make_options(admin_emails)
+
+    return admin_emails, non_admin_emails, 0, 0, None, None, msg
+
+
+##############################
+########### Notify ###########
+##############################
+
+@dashapp.callback(
+    Output('notify-feedback', 'children'),
+    Input('notify-button', 'n_clicks'),
+    prevent_initial_call=True
+    )
+def notify_users(n_clicks):
+    emails= [ u.email for u in User.query.all() ]
+    emails=", ".join(emails)
+    return dbc.Alert( emails ,color="primary", style=alert_short_style,  dismissable=True)
+
+@dashapp.callback(
+    Output('notify-all-feedback', 'children'),
+    Input('notify-all-button', 'n_clicks'),
+    prevent_initial_call=True
+    )
+def notify_all_users(n_clicks):
+    emails= [ u.email for u in User.query.all() if u.notifyme ]
+    emails=", ".join(emails)
+    return dbc.Alert( emails ,color="warning", style=alert_short_style,  dismissable=True)
