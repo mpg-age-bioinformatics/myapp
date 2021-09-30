@@ -7,6 +7,8 @@ import dash_bootstrap_components as dbc
 from flaskapp.models import User, PrivateRoutes, PRIVATE_ROUTES
 from datetime import datetime
 from ._utils import META_TAGS, navbar_A, protect_dashviews, make_options
+import base64
+from flask_login import current_user
 
 def get_urls(app):
     urls=['%s' % rule for rule in app.url_map.iter_rules()]
@@ -58,7 +60,7 @@ protect_dashviews(dashapp)
 dashapp.layout=html.Div( [ dcc.Location(id='url', refresh=False), html.Div(id="protected-content") ] )
 
 options_field_style={"width":"350px", "margin-right":"8px"}
-button_style={"width":"100px", "margin-right":"4px"}
+button_style={"width":"100px", "margin-right":"4px","margin-top":"4px","margin-bottom":"4px"}
 h4_style={"margin-top":"40px"}
 div_feedback_style={'margin-top':"10px"}
 form_style={"width":"auto","margin-top":"10px"}
@@ -68,8 +70,8 @@ alert_short_style={"max-width":"458px"}
     Output('protected-content', 'children'),
     Input('url', 'pathname'))
 def make_layout(pathname):
-    # if not current_user.administrator :
-    #     return dcc.Location(pathname="/index/", id='index')
+    if not current_user.administrator :
+        return dcc.Location(pathname="/index/", id='index')
 
     #### User status
 
@@ -83,11 +85,11 @@ def make_layout(pathname):
     opt_status_emails= dcc.Dropdown( options=emails, placeholder="select user", id='opt-status-emails', multi=True, style=options_field_style)
     status_activate_btn=html.Button(id='status-activate-button', n_clicks=0, children='Activate', style=button_style)
 
-    status_deactivate_text=dcc.Textarea( id='status-deactivate-text', placeholder="  deactivate reason..",style={ "margin-right":"8px", "max-width":"542px", "min-width":"350px", 'height': 32 } )
+    status_deactivate_text=dbc.Input(type="text", id='status-deactivate-text', placeholder="deactivate reason",style=options_field_style)
     status_deactivate_btn=html.Button(id='status-deactivate-button', n_clicks=0, children='Deactivate', style=button_style)
 
     user_status_form = html.Div([ 
-        dbc.Label(html.H4("User status")), 
+        dbc.Label(html.H4("User status"), style=h4_style), 
         dbc.Form( [ dbc.FormGroup(
                         [ opt_status_emails,status_activate_btn ],
                         className="mr-3"
@@ -238,19 +240,50 @@ def make_layout(pathname):
     html.Div(id="notify-feedback",style=div_feedback_style),
     html.Div(id='notify-all-feedback',style=div_feedback_style)])
 
-    protected_content=dbc.Row( [
-        dbc.Col( [ html.Div(id="submission-feedback"), 
-                    user_status_form,
-                    private_routes_form, 
-                    administrators_form,
-                    notify_form,
-                    ],
-                md=10, lg=9, xl=8, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
-        navbar_A
-    ],
-    align="center",
-    justify="center",
-    style={"min-height": "95vh", 'verticalAlign': 'center'})
+    image_filename = f'{app.config["APP_ASSETS"]}logo.png' # replace with your own image
+    encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+
+    navbar_admin=dbc.Navbar(
+                            [
+                                html.A(
+                                    # Use row and col to control vertical alignment of logo / brand
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode()), height="30px")),
+                                            dbc.Col(dbc.NavbarBrand("Administrator Dashboard", className="ml-2")),
+                                        ],
+                                        align="center",
+                                        no_gutters=True,
+                                    ),
+                                    href=app.config["APP_URL"],
+                                ),
+                                # dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+                                # dbc.Collapse(
+                                #     search_bar, id="navbar-collapse", navbar=True, is_open=False
+                                # ),
+                            ],
+                            color="light",
+                            # dark=True,
+                            sticky="top",
+                            # light=True
+                        )
+
+    protected_content=html.Div([ 
+        navbar_admin,
+        dbc.Row( [
+                dbc.Col( [ html.Div(id="submission-feedback"), 
+                            user_status_form,
+                            private_routes_form, 
+                            administrators_form,
+                            notify_form,
+                            ],
+                        md=10, lg=9, xl=8, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
+                navbar_A
+            ],
+            align="center",
+            justify="center",
+            style={"min-height": "95vh", 'verticalAlign': 'center'})
+    ])
 
     return protected_content
 
@@ -367,7 +400,7 @@ def routes_toggle_rm_domain_btn(value):
     Output('routes-domain-text', 'value'),
     Input('opt-routes-priv-routes', 'value')    )
 def routes_read_priv_routes(route):
-    
+
     if not route:
         empty_=make_options([])
         return True, empty_, "select a route first", empty_, "select a route first", None, None, empty_, None, "select a route first", "select a route first", None
