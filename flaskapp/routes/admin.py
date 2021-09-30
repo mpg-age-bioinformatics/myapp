@@ -6,7 +6,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from flaskapp.models import User, PrivateRoutes, PRIVATE_ROUTES
 from datetime import datetime
-from ._utils import META_TAGS, navbar_A, protect_dashviews, make_options
+from ._utils import META_TAGS, navbar_A, protect_dashviews, make_options, make_navbar_logged
 import base64
 from flask_login import current_user
 
@@ -243,33 +243,34 @@ def make_layout(pathname):
     image_filename = f'{app.config["APP_ASSETS"]}logo.png' # replace with your own image
     encoded_image = base64.b64encode(open(image_filename, 'rb').read())
 
-    navbar_admin=dbc.Navbar(
-                            [
-                                html.A(
-                                    # Use row and col to control vertical alignment of logo / brand
-                                    dbc.Row(
-                                        [
-                                            dbc.Col(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode()), height="30px")),
-                                            dbc.Col(dbc.NavbarBrand("Administrator Dashboard", className="ml-2")),
-                                        ],
-                                        align="center",
-                                        no_gutters=True,
-                                    ),
-                                    href=app.config["APP_URL"],
-                                ),
-                                # dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
-                                # dbc.Collapse(
-                                #     search_bar, id="navbar-collapse", navbar=True, is_open=False
-                                # ),
-                            ],
-                            color="light",
-                            # dark=True,
-                            sticky="top",
-                            # light=True
-                        )
+    # navbar_admin=dbc.Navbar(
+    #                         [
+    #                             html.A(
+    #                                 # Use row and col to control vertical alignment of logo / brand
+    #                                 dbc.Row(
+    #                                     [
+    #                                         dbc.Col(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode()), height="30px")),
+    #                                         dbc.Col(dbc.NavbarBrand("Administrator Dashboard", className="ml-2")),
+    #                                     ],
+    #                                     align="center",
+    #                                     no_gutters=True,
+    #                                 ),
+    #                                 href=app.config["APP_URL"],
+    #                             ),
+    #                             # dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+    #                             # dbc.Collapse(
+    #                             #     search_bar, id="navbar-collapse", navbar=True, is_open=False
+    #                             # ),
+    #                         ],
+    #                         color="light",
+    #                         # dark=True,
+    #                         sticky="top",
+    #                         # light=True
+    #                     )
+    navbar=make_navbar_logged("Administrator Dashboard",current_user)
 
     protected_content=html.Div([ 
-        navbar_admin,
+        navbar,
         dbc.Row( [
                 dbc.Col( [ html.Div(id="submission-feedback"), 
                             user_status_form,
@@ -695,3 +696,13 @@ def notify_all_users(n_clicks):
     emails= [ u.email for u in User.query.all() if u.notifyme ]
     emails=", ".join(emails)
     return dbc.Alert( emails ,color="warning", style=alert_short_style,  dismissable=True)
+
+@dashapp.callback(
+    Output("navbar-collapse", "is_open"),
+    [Input("navbar-toggler", "n_clicks")],
+    [State("navbar-collapse", "is_open")],
+    )
+def toggle_navbar_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open

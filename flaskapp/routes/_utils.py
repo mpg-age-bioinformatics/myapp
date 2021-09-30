@@ -3,6 +3,7 @@ from flask_login import login_required
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 from flaskapp import app
+import base64
 
 META_TAGS=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,'} ]
 
@@ -84,3 +85,66 @@ navbar_A = dbc.NavbarSimple(
     style={"textAlign":"right" , "height":"50px"},
     # fluid=True
 )
+
+
+navbar_links={"Home":"/","About":"/about/","Impressum":"/impressum/","Privacy":"/privacy/","Settings":"/settings/","Logout":"/logout/"}
+def make_navbar_logged(page_title, current_user, links=navbar_links):
+    if type(links) == dict:
+        if current_user.administrator :
+            if "Admin" not in list( links.keys() ):
+                del(links["Logout"])
+                links["Admin"]="/admin/"
+                links["Logout"]="/logout/"
+    
+    if links:
+        dropdown_children=[]
+        for l in list( links.keys() ):
+            dropdown_children.append( dbc.DropdownMenuItem(l, href=links[l], external_link=True) )
+
+    else:
+        dropdown=None
+
+    image_filename = f'{app.config["APP_ASSETS"]}logo.png' # replace with your own image
+    encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+    img=html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode()), height="30px")
+    navbar=dbc.Navbar(
+    [
+         html.A(
+            # Use row and col to control vertical alignment of logo / brand
+            dbc.Row(
+                [
+                    dbc.Col(img),
+                    dbc.Col(dbc.NavbarBrand(page_title, className="ml-2")),
+                ],
+                align="center",
+                no_gutters=True,
+            ),
+            href=app.config["APP_URL"]
+        ),
+        dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+        dbc.Collapse(
+            dbc.Nav(
+                [
+                    dbc.DropdownMenu(
+                        label=current_user.username,
+                        children=dropdown_children,
+                        className="mr-1",
+                        nav=True,
+                        in_navbar=True,
+                        right=True
+                    )
+                ],
+                navbar=True,
+                className="ml-auto",
+            ),
+            id="navbar-collapse", navbar=True, is_open=False
+        )
+    ],
+    color="light",
+    # dark=True,
+    sticky="top",
+    # light=True
+    )
+
+    return navbar
+
