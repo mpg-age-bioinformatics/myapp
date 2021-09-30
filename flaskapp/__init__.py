@@ -21,7 +21,7 @@ sess = Session()
 sess.init_app(app)
 
 from flaskapp import models, errors #, index, routes
-from flaskapp.routes import index, register, login, forgot, logout, contact, about, privacy, impressum, admin, settings
+from flaskapp.routes import index, register, login, forgot, logout, contact, about, privacy, impressum, admin, settings, home
 
 if not app.debug:
     if app.config['MAIL_SERVER']:

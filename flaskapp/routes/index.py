@@ -80,6 +80,7 @@ def make_layout(pathname):
                         html.H1(app.config["APP_TITLE"], style={"textAlign":"center"}) 
                         ], 
                         href=target,
+                        refresh=True,
                         style={"color":"black","text-decoration": "none"}
                     ),
                     open_content
