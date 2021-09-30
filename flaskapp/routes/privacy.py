@@ -105,13 +105,10 @@ are given time to properly backup their data.
 Personal data will be deleted too if you ask us to delete it or either above purposes are achieved. Data will be delete once it 
 reaches an age of 10 years.
 
-*Data analysis*
+*Usage*
 
-{APP_TITLE} purpose is to support researchers on the analysis of their data. For this we constantly enhance the number and quality 
-of our app promptly responding to user's requests. {APP_TITLE}, the <ORGANIZATION>, and it's personnel 
-can not be hold responsible for any data analysis performed with {APP_TITLE} nor for any misinterpretation that might come from an 
-undesirable or misunderstood function. {APP_TITLE}'s code is public and open source and we encourage all users to follow it's code 
-as a trace to their analysis.   
+{APP_TITLE}, the <ORGANIZATION>, and it's personnel can not be hold responsible for any misinterpretation that might come from an 
+undesirable or misunderstood function.
 
 *What are my rights as a data subject?*
 
