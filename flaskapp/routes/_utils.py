@@ -88,7 +88,7 @@ navbar_A = dbc.NavbarSimple(
 
 
 navbar_links={"Home":"/home/","About":"/about/","Impressum":"/impressum/","Privacy":"/privacy/","Settings":"/settings/","Logout":"/logout/"}
-def make_navbar_logged(page_title, current_user, links=navbar_links):
+def make_navbar_logged(page_title, current_user, links=navbar_links, expand='sm'):
     if type(links) == dict:
         if current_user.administrator :
             if "Admin" not in list( links.keys() ):
@@ -144,6 +144,7 @@ def make_navbar_logged(page_title, current_user, links=navbar_links):
     # dark=True,
     sticky="top",
     # light=True
+    expand=expand
     )
 
     return navbar
