@@ -60,6 +60,13 @@ protect_dashviews(dashapp)
 
 dashapp.layout=html.Div( [ dcc.Location(id='url', refresh=False), html.Div(id="protected-content") ] )
 
+options_field_style={"width":"350px", "margin-right":"8px"}
+button_style={"width":"100px", "margin-right":"4px"}
+h4_style={"margin-top":"40px"}
+div_feedback_style={'margin-top':"10px"}
+form_style={"width":"auto","margin-top":"10px"}
+alert_short_style={"max-width":"458px"}
+
 @dashapp.callback(
     Output('protected-content', 'children'),
     Input('url', 'pathname'))
@@ -69,113 +76,108 @@ def make_layout(pathname):
 
     #### User status
 
+    ## we collect all emails for this because in future we might want
+    ## to add some more actions to the Activate button
     emails= [ u.email for u in User.query.all() ]
     emails.sort()
     emails=[ "all" ] + emails
     emails=make_options(emails)
 
-    email_options = dcc.Dropdown( options=emails, placeholder="select user", id='opt-status-emails', multi=True, style={"width":"350px", "margin-right":"8px"})
-    activate_button=html.Button(id='status-activate-button', n_clicks=0, children='Activate', style={"width":"100px", "margin-right":"4px"})
+    opt_status_emails= dcc.Dropdown( options=emails, placeholder="select user", id='opt-status-emails', multi=True, style=options_field_style)
+    status_activate_btn=html.Button(id='status-activate-button', n_clicks=0, children='Activate', style=button_style)
 
-    deactivate_msg=dcc.Textarea( id='status-deactivate-text', placeholder="  deactivate reason..",style={ "margin-right":"8px", "max-width":"542px", "min-width":"350px", 'height': 32 } )
-    deactivate_bt=html.Button(id='status-deactivate-button', n_clicks=0, children='Deactivate', style={"width":"100px"})
+    status_deactivate_text=dcc.Textarea( id='status-deactivate-text', placeholder="  deactivate reason..",style={ "margin-right":"8px", "max-width":"542px", "min-width":"350px", 'height': 32 } )
+    status_deactivate_btn=html.Button(id='status-deactivate-button', n_clicks=0, children='Deactivate', style=button_style)
 
-    change_active_status = html.Div([ 
-        dbc.Label(html.H4("User status"),html_for="change-status-form"), 
+    user_status_form = html.Div([ 
+        dbc.Label(html.H4("User status")), 
         dbc.Form( [ dbc.FormGroup(
-                        [ email_options,activate_button ],
+                        [ opt_status_emails,status_activate_btn ],
                         className="mr-3"
                         ),
                     ],
                 inline=True,
-                style={"width":"auto","margin-top":"10px"}
+                style=form_style
                 ),
         dbc.Form( [ dbc.FormGroup(
-                        [ deactivate_msg,deactivate_bt ],
+                        [ status_deactivate_text,status_deactivate_btn ],
                         className="mr-3"
                         ),
                     ],
-                style={"width":"auto","margin-top":"10px"},
+                style=form_style,
                 inline=True,
                 ),
-        html.Div(id="status-deactivate-text-feedback",style={'margin-top':"10px"}),
-        html.Div(id="status-activate-feedback",style={'margin-top':"10px"}),
-        html.Div(id='status-deactivate-feedback',style={'margin-top':"10px"}),
-        html.Div(id='status-current-feedback',style={'margin-top':"10px"})
-        ], id="change-status-form" )
+        html.Div(id="status-deactivate-text-feedback",style=div_feedback_style),
+        html.Div(id="status-activate-feedback",style=div_feedback_style),
+        html.Div(id='status-deactivate-feedback',style=div_feedback_style),
+        html.Div(id='status-current-feedback',style=div_feedback_style)
+        ])
 
     ### private routes
 
     # routes=get_urls(app)
-    routes_=make_options(PRIVATE_ROUTES)
+    private_routes=make_options(PRIVATE_ROUTES)
 
     empty_=make_options([])
 
-    routes_options = dcc.Dropdown( options=routes_, value=None, placeholder="route", id='opt-routes', multi=False, style={"width":"350px", "margin-right":"8px"})
-    list_route_button=html.Button(id='list_route-button-state', disabled=True,  n_clicks=0, children='List', style={"width":"100px", "margin-right":"4px"})
+    opt_routes_priv_routes = dcc.Dropdown( options=private_routes, value=None, placeholder="route", id='opt-routes-priv-routes', multi=False, style=options_field_style)
+    routes_list_btn=html.Button(id='routes-list-button', disabled=True,  n_clicks=0, children='List', style=button_style)
 
-    no_access_email_options = dcc.Dropdown( options=empty_, placeholder="select a route first", id='opt-noroutes-emails', multi=True, style={"width":"350px", "margin-right":"8px"})
-    grant_route_button=html.Button(id='grant_route-button-state', disabled=True,  n_clicks=0, children='Grant', style={"width":"100px", "margin-right":"4px"})
+    opt_routes_no_access = dcc.Dropdown( options=empty_, placeholder="select a route first", id='opt-routes-no-access', multi=True, style=options_field_style)
+    routes_grant_btn=html.Button(id='routes-grant-button', disabled=True,  n_clicks=0, children='Grant', style=button_style)
 
-    private_email_options = dcc.Dropdown( options=empty_, placeholder="select a route first", id='opt-routes-emails', multi=True, style={"width":"350px", "margin-right":"8px"})
-    revoke_route_button=html.Button(id='revoke_route-button-state', disabled=True,  n_clicks=0, children='Revoke', style={"width":"100px", "margin-right":"4px"})
+    opt_routes_access = dcc.Dropdown( options=empty_, placeholder="select a route first", id='opt-routes-access', multi=True, style=options_field_style)
+    routes_revoke_btn=html.Button(id='routes-revoke-button', disabled=True,  n_clicks=0, children='Revoke', style=button_style)
 
-    grant_domain_text=dbc.Input(type="text", id="domain-text", placeholder="select a route first",style={"width":"350px", "margin-right":"8px"})
-    grant_domain_button=html.Button(id='grant_domain-button-state', disabled=True,  n_clicks=0, children='Add', style={"width":"100px", "margin-right":"4px"})
+    routes_domain_text=dbc.Input(type="text", id='routes-domain-text', placeholder="select a route first",style=options_field_style)
+    routes_add_btn=html.Button(id='routes-add-button', disabled=True,  n_clicks=0, children='Add', style=button_style)
 
-    private_domain_options = dcc.Dropdown( options=empty_, placeholder="select a route first", id='opt-routes-domains', multi=True, style={"width":"350px", "margin-right":"8px"})
-    revoke_domain_button=html.Button(id='revoke_domain-button-state', disabled=True,  n_clicks=0, children='Remove', style={"width":"100px", "margin-right":"4px"})
+    opt_routes_domains = dcc.Dropdown( options=empty_, placeholder="select a route first", id='opt-routes-domains', multi=True, style=options_field_style)
+    routes_rm_btn=html.Button(id='routes-rm-button', disabled=True,  n_clicks=0, children='Remove', style=button_style)
 
-
-
-    routes_form = html.Div([ 
-        dbc.Label(html.H4("Private routes"),html_for="list_route_form", style={"margin-top":"40px"}), 
+    private_routes_form = html.Div([ 
+        dbc.Label(html.H4("Private routes"), style=h4_style), 
         dbc.Form( [ dbc.FormGroup(
-                        [ routes_options, list_route_button],
+                        [ opt_routes_priv_routes, routes_list_btn],
                         className="mr-3"
                         ),
                   ],
                   inline=True,
-                  id="list_route_form",
-                  style={"width":"auto","margin-top":"10px"}
+                  style=form_style
                 ),
         dbc.Form( [ dbc.FormGroup(
-                        [ no_access_email_options, grant_route_button ],
+                        [ opt_routes_no_access, routes_grant_btn ],
                         className="mr-3"
                     ),
                 ],
                 inline=True,
-                id="add_route_form",
-                style={"width":"auto","margin-top":"10px"}
+                style=form_style
                 ),
         dbc.Form( [ dbc.FormGroup(
-                        [ private_email_options, revoke_route_button ],
+                        [ opt_routes_access, routes_revoke_btn ],
                         className="mr-3"
                     ),
                 ],
                 inline=True,
-                id="rm_route_form",
-                style={"width":"auto","margin-top":"10px"}
+                style=form_style
                 ),
         dbc.Form( [ dbc.FormGroup(
-                        [ grant_domain_text, grant_domain_button ],
+                        [ routes_domain_text, routes_add_btn ],
                         className="mr-3"
                     ),
                 ],
                 inline=True,
-                id="rm_route_form",
-                style={"width":"auto","margin-top":"10px"}
+                style=form_style
                 ),
         dbc.Form( [ dbc.FormGroup(
-                        [ private_domain_options, revoke_domain_button ],
+                        [ opt_routes_domains, routes_rm_btn ],
                         className="mr-3"
                     ),
                 ],
                 inline=True,
-                id="rm_route_form",
-                style={"width":"auto","margin-top":"10px"}
+                style=form_style
                 ),
-        html.Div(id="routes-feedback",style={'margin-top':"10px"}) ])
+        html.Div(id="routes-feedback",style=div_feedback_style) ])
 
 
     #### Administrators
@@ -188,66 +190,63 @@ def make_layout(pathname):
     admin_emails.sort()
     admin_emails=make_options(admin_emails)
 
-    non_admin_options = dcc.Dropdown( options=non_admin_emails, placeholder="standard users", id='opt-non_admin_emails', multi=True, style={"width":"350px", "margin-right":"8px"})
-    admin_options = dcc.Dropdown( options=admin_emails, placeholder="administrators", id='opt-admin_emails', multi=True, style={"width":"350px", "margin-right":"8px"})
+    opt_admin_std_emails = dcc.Dropdown( options=non_admin_emails, placeholder="standard users", id='opt-admin-std-emails', multi=True, style=options_field_style)
+    opt_admin_emails = dcc.Dropdown( options=admin_emails, placeholder="administrators", id='opt-admin-emails', multi=True, style=options_field_style)
 
-    make_admin_button=html.Button(id='makeadmin-button-state',disabled=True,  n_clicks=0, children='Grant', style={"width":"100px", "margin-right":"4px"})
-    rm_admin_button=html.Button(id='rmadmin-button-state',disabled=True, n_clicks=0, children='Revoke', style={"width":"100px", "margin-right":"4px"})
+    admin_grant_button=html.Button(id='admin-grant-button',disabled=True,  n_clicks=0, children='Grant', style=button_style)
+    rm_admin_button=html.Button(id='admin-revoke-button',disabled=True, n_clicks=0, children='Revoke', style=button_style)
 
-    make_admin_form = html.Div([ 
-        dbc.Label(html.H4("Administrators"),html_for="make_admin_form", style={"margin-top":"40px"}), 
+    administrators_form = html.Div([ 
+        dbc.Label(html.H4("Administrators"),style=h4_style), 
         dbc.Form( [ dbc.FormGroup(
                                 [
-                                    non_admin_options,
-                                    make_admin_button
+                                    opt_admin_std_emails,
+                                    admin_grant_button
                                 ],
                                 className="mr-3"
                                 ),
                   ],
                   inline=True,
-                  id="make_admin_form",
-                  style={"width":"auto","margin-top":"10px"}
+                  style=form_style
                 ),
         dbc.Form( [ dbc.FormGroup(
                 [
-                    admin_options,
+                    opt_admin_emails,
                     rm_admin_button
                 ],
                 className="mr-3"
             ),
         ],
         inline=True,
-        id="rm_admin_form",
-        style={"width":"auto","margin-top":"10px"}
+        style=form_style
         ),
-        html.Div(id="admin-feedback",style={'margin-top':"10px"}) ])
+        html.Div(id="admin-feedback",style=div_feedback_style) ])
 
     #### Notify
 
-    notify_section = html.Div([ 
-        dbc.Label(html.H4("Notify"),html_for="notify_form", style={"margin-top":"40px"}), 
+    notify_form = html.Div([ 
+        dbc.Label(html.H4("Notify"), style=h4_style), 
         dbc.Form( [ dbc.FormGroup(
                 [
-                    html.Button(id='notify-button-state', n_clicks=0, children='Notify', style={"width":"auto", "margin-right":"4px"}),
-                    html.Button(id='notifyall-button-state', n_clicks=0, children='Notify All', style={"width":"auto", "margin-left":"4px"}), 
+                    html.Button(id='notify-button', n_clicks=0, children='Notify', style={"width":"auto", "margin-right":"4px"}),
+                    html.Button(id='notify-all-button', n_clicks=0, children='Notify All', style={"width":"auto", "margin-left":"4px"}), 
 
                 ],
                 className="mr-3"
             ),
- 
         ],
         inline=True,
         id="notify_form"
     ),
-    html.Div(id="notify-feedback",style={'margin-top':"10px"}),
-    html.Div(id="notifyall-feedback",style={'margin-top':"10px"})])
+    html.Div(id="notify-feedback",style=div_feedback_style),
+    html.Div(id='notify-all-feedback',style=div_feedback_style)])
 
     protected_content=dbc.Row( [
         dbc.Col( [ html.Div(id="submission-feedback"), 
-                    change_active_status,
-                    routes_form, 
-                    make_admin_form,
-                    notify_section,
+                    user_status_form,
+                    private_routes_form, 
+                    administrators_form,
+                    notify_form,
                     ],
                 md=10, lg=9, xl=8, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
         navbar_A
@@ -263,7 +262,7 @@ def make_layout(pathname):
     Input('opt-status-emails', 'value'),
     prevent_initial_call=True
     )
-def current_status(emails):
+def status_current(emails):
     if not emails:
         return None
     status=[]
@@ -282,9 +281,9 @@ def current_status(emails):
     State('opt-status-emails', 'value'),
     prevent_initial_call=True
     )
-def activate_user(n_clicks, emails):
+def status_activate(n_clicks, emails):
     if not emails :
-        return dbc.Alert( "Please select a user." ,color="warning", style={"max-width":"458px"},  dismissable=True)
+        return dbc.Alert( "Please select a user." ,color="warning", style=alert_short_style,  dismissable=True)
     if "all" in emails:
         emails= [ u.email for u in User.query.all() ]
     status=[]
@@ -307,11 +306,11 @@ def activate_user(n_clicks, emails):
     State('opt-status-emails', 'value'),
     prevent_initial_call=True
     )
-def submit_deactivate(n_clicks, reason, emails):
+def status_deactivate(n_clicks, reason, emails):
     if not emails :
-        return None, dbc.Alert( "Please select a user." ,color="warning", style={"max-width":"458px"},dismissable=True)
+        return None, dbc.Alert( "Please select a user." ,color="warning", style=alert_short_style,dismissable=True)
     if not reason :
-        return None, dbc.Alert( "Please give in a reason." ,color="warning", style={"max-width":"458px"},dismissable=True)
+        return None, dbc.Alert( "Please give in a reason." ,color="warning", style=alert_short_style,dismissable=True)
     if "all" in emails:
         emails= [ u.email for u in User.query.all() if not u.administrator ]
     status=[]
@@ -328,61 +327,61 @@ def submit_deactivate(n_clicks, reason, emails):
 
 @dashapp.callback(
     Output('notify-feedback', 'children'),
-    Input('notify-button-state', 'n_clicks'),
+    Input('notify-button', 'n_clicks'),
     prevent_initial_call=True
     )
 def notify_users(n_clicks):
     emails= [ u.email for u in User.query.all() ]
     emails=", ".join(emails)
-    return dbc.Alert( emails ,color="primary", style={"max-width":"458px"},  dismissable=True)
+    return dbc.Alert( emails ,color="primary", style=alert_short_style,  dismissable=True)
 
 @dashapp.callback(
-    Output('notifyall-feedback', 'children'),
-    Input('notifyall-button-state', 'n_clicks'),
+    Output('notify-all-feedback', 'children'),
+    Input('notify-all-button', 'n_clicks'),
     prevent_initial_call=True
     )
-def notifyall_users(n_clicks):
+def notify_all_users(n_clicks):
     emails= [ u.email for u in User.query.all() if u.notifyme ]
     emails=", ".join(emails)
-    return dbc.Alert( emails ,color="warning", style={"max-width":"458px"},  dismissable=True)
+    return dbc.Alert( emails ,color="warning", style=alert_short_style,  dismissable=True)
 
 @dashapp.callback(
-    Output('makeadmin-button-state', 'disabled'),
-    Input('opt-non_admin_emails', 'value'),
+    Output('admin-grant-button', 'disabled'),
+    Input('opt-admin-std-emails', 'value'),
     prevent_initial_call=True
     )
-def togle_grant_button(value):
+def admin_toggle_grant_btn(value):
     if value:
         return False
     else:
         return True
 
 @dashapp.callback(
-    Output('rmadmin-button-state', 'disabled'),
-    Input('opt-admin_emails', 'value'),
+    Output('admin-revoke-button', 'disabled'),
+    Input('opt-admin-emails', 'value'),
     prevent_initial_call=True
     )
-def togle_revoke_button(value):
+def admin_toggle_revoke_btn(value):
     if value:
         return False
     else:
         return True
 
 @dashapp.callback(
-    Output('opt-admin_emails', 'options'),
-    Output('opt-non_admin_emails', 'options'),
-    Output('makeadmin-button-state', 'n_clicks'),
-    Output('rmadmin-button-state', 'n_clicks'),
-    Output('opt-admin_emails', 'value'),
-    Output('opt-non_admin_emails', 'value'),
+    Output('opt-admin-emails', 'options'),
+    Output('opt-admin-std-emails', 'options'),
+    Output('admin-grant-button', 'n_clicks'),
+    Output('admin-revoke-button', 'n_clicks'),
+    Output('opt-admin-emails', 'value'),
+    Output('opt-admin-std-emails', 'value'),
     Output('admin-feedback', 'children'),
-    Input('makeadmin-button-state', 'n_clicks'),
-    Input('rmadmin-button-state', 'n_clicks'),
-    State('opt-admin_emails', 'value'),
-    State('opt-non_admin_emails', 'value'),
+    Input('admin-grant-button', 'n_clicks'),
+    Input('admin-revoke-button', 'n_clicks'),
+    State('opt-admin-emails', 'value'),
+    State('opt-admin-std-emails', 'value'),
     prevent_initial_call=True
     )
-def change_admins(mk_clicks,rm_clicks,admin_emails, non_admin_emails):
+def admin_change_btns(mk_clicks,rm_clicks,admin_emails, non_admin_emails):
     if mk_clicks == 1:
         for email in non_admin_emails:
             user=User.query.filter_by(email=email).first()
@@ -390,8 +389,7 @@ def change_admins(mk_clicks,rm_clicks,admin_emails, non_admin_emails):
             db.session.add(user)
             db.session.commit()
         msg="Granted: "+", ".join(non_admin_emails)
-        print(msg)
-        msg=dbc.Alert( msg ,color="success",  dismissable=True,style={"max-width":"458px"})
+        msg=dbc.Alert( msg ,color="success",  dismissable=True,style=alert_short_style)
         mk_clicks=0
     if rm_clicks == 1:
         for email in admin_emails:
@@ -401,7 +399,7 @@ def change_admins(mk_clicks,rm_clicks,admin_emails, non_admin_emails):
             db.session.commit()
         mk_clicks=0
         msg="Revoked: "+", ".join(admin_emails)
-        msg=dbc.Alert( msg ,color="danger",  dismissable=True, style={"max-width":"458px"})
+        msg=dbc.Alert( msg ,color="danger",  dismissable=True, style=alert_short_style)
 
     non_admin_emails= [ u.email for u in User.query.all() if not u.administrator ]
     non_admin_emails.sort()
@@ -414,20 +412,20 @@ def change_admins(mk_clicks,rm_clicks,admin_emails, non_admin_emails):
     return admin_emails, non_admin_emails, 0, 0, None, None, msg
 
 @dashapp.callback(
-    Output('grant_domain-button-state', 'disabled'),
-    Input('domain-text', 'value'),
+    Output('routes-add-button', 'disabled'),
+    Input('routes-domain-text', 'value'),
 )
-def toggle_add_domain(value):
+def routes_toggle_add_domain_btn(value):
     if value :
         return False
     else:
         return True
 
 @dashapp.callback(
-    Output('revoke_domain-button-state', 'disabled'),
+    Output('routes-rm-button', 'disabled'),
     Input('opt-routes-domains', 'value'),
 )
-def toggle_rm_domain(value):
+def routes_toggle_rm_domain_btn(value):
     if value :
         return False
     else:
@@ -436,20 +434,20 @@ def toggle_rm_domain(value):
 
 ##### this needs to output n_clicks of grant and revoke instead of doing it in the next call
 @dashapp.callback(
-    Output('list_route-button-state', 'disabled'),
-    Output('opt-noroutes-emails', 'options'),
-    Output('opt-noroutes-emails', 'placeholder'),
-    Output('opt-routes-emails', 'options'),
-    Output('opt-routes-emails', 'placeholder'),
-    Output('opt-noroutes-emails', 'value'),
-    Output('opt-routes-emails', 'value'),
+    Output('routes-list-button', 'disabled'),
+    Output('opt-routes-no-access', 'options'),
+    Output('opt-routes-no-access', 'placeholder'),
+    Output('opt-routes-access', 'options'),
+    Output('opt-routes-access', 'placeholder'),
+    Output('opt-routes-no-access', 'value'),
+    Output('opt-routes-access', 'value'),
     Output('opt-routes-domains', 'options'),
     Output('opt-routes-domains', 'value'),
     Output('opt-routes-domains', 'placeholder'),
-    Output('domain-text', 'placeholder'),
-    Output('domain-text', 'value'),
-    Input('opt-routes', 'value')    )
-def toggle_private_routes(route):
+    Output('routes-domain-text', 'placeholder'),
+    Output('routes-domain-text', 'value'),
+    Input('opt-routes-priv-routes', 'value')    )
+def routes_read_priv_routes(route):
     if not route:
         empty_=make_options([])
         return True, empty_, "select a route first", empty_, "select a route first", None, None, empty_, None, "select a route first", "select a route first", None
@@ -506,26 +504,26 @@ def toggle_private_routes(route):
 
 
 @dashapp.callback(
-    Output('opt-routes', 'value'),
+    Output('opt-routes-priv-routes', 'value'),
     Output('routes-feedback', 'children'),
-    Output('list_route-button-state',"n_clicks"),
-    Output('grant_route-button-state',"n_clicks"),
-    Output('revoke_route-button-state',"n_clicks"),
-    Output('grant_domain-button-state',"n_clicks"),
-    Output('revoke_domain-button-state',"n_clicks"),
-    Input('list_route-button-state',"n_clicks"),
-    Input('grant_route-button-state',"n_clicks"),
-    Input('revoke_route-button-state',"n_clicks"),
-    Input('grant_domain-button-state',"n_clicks"),
-    Input('revoke_domain-button-state',"n_clicks"),
-    State('opt-routes', 'value'),
-    State('opt-noroutes-emails', 'value'),
-    State('opt-routes-emails', 'value'),
-    State('domain-text', 'value'),
+    Output('routes-list-button',"n_clicks"),
+    Output('routes-grant-button',"n_clicks"),
+    Output('routes-revoke-button',"n_clicks"),
+    Output('routes-add-button',"n_clicks"),
+    Output('routes-rm-button',"n_clicks"),
+    Input('routes-list-button',"n_clicks"),
+    Input('routes-grant-button',"n_clicks"),
+    Input('routes-revoke-button',"n_clicks"),
+    Input('routes-add-button',"n_clicks"),
+    Input('routes-rm-button',"n_clicks"),
+    State('opt-routes-priv-routes', 'value'),
+    State('opt-routes-no-access', 'value'),
+    State('opt-routes-access', 'value'),
+    State('routes-domain-text', 'value'),
     State('opt-routes-domains', 'value'),
     prevent_initial_call=True
     )
-def change_routes(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domain_clicks ,route, grant_emails, revoke_emails, domain, domains_out ):
+def routes_change_btns(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domain_clicks ,route, grant_emails, revoke_emails, domain, domains_out ):
     if l_clicks == 1:
         route_obj=PrivateRoutes.query.filter_by(route=route).first()
         users=route_obj.users
@@ -543,7 +541,7 @@ def change_routes(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domain_cli
             domains=""
         msg=f'''{route}: {", ".join(emails)}'''
         msg=msg+domains
-        msg=dbc.Alert( msg ,color="primary", style={"max-width":"458px"},  dismissable=True)
+        msg=dbc.Alert( msg ,color="primary", style=alert_short_style,  dismissable=True)
 
         return None, msg, 0, 0 ,0, 0, 0
     
@@ -570,7 +568,7 @@ def change_routes(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domain_cli
 
         msg=f'''{route}: {", ".join(grant_emails)}\nGranted!'''
 
-        msg=dbc.Alert( msg ,color="success", style={"max-width":"458px"},  dismissable=True)
+        msg=dbc.Alert( msg ,color="success", style=alert_short_style,  dismissable=True)
 
         return None, msg, 0, 0, 0, 0, 0
 
@@ -589,7 +587,7 @@ def change_routes(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domain_cli
 
         msg=f'''{route}: {domain}\nGranted!'''
 
-        msg=dbc.Alert( msg ,color="success", style={"max-width":"458px"},  dismissable=True)
+        msg=dbc.Alert( msg ,color="success", style=alert_short_style,  dismissable=True)
 
         return None, msg, 0, 0, 0, 0, 0
 
@@ -603,7 +601,7 @@ def change_routes(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domain_cli
 
         msg=f'''{route}: {", ".join(domains_out)}\nRemoved!'''
 
-        msg=dbc.Alert( msg ,color="danger", style={"max-width":"458px"},  dismissable=True)
+        msg=dbc.Alert( msg ,color="danger", style=alert_short_style,  dismissable=True)
 
         return None, msg, 0, 0, 0, 0, 0
 
@@ -625,25 +623,23 @@ def change_routes(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domain_cli
         db.session.commit()
 
         msg=f'''{route}: {", ".join(revoke_emails)}\nRevoked!'''
-        msg=dbc.Alert( msg ,color="danger", style={"max-width":"458px"},  dismissable=True)
+        msg=dbc.Alert( msg ,color="danger", style=alert_short_style,  dismissable=True)
 
         return None, msg, 0, 0, 0, 0, 0
             
-
 @dashapp.callback(
-    Output('grant_route-button-state',"disabled"),
-    Input('opt-noroutes-emails','value')  )
-def toggle_grant_route(value):
-    # print("!!!!!", value)
+    Output('routes-grant-button',"disabled"),
+    Input('opt-routes-no-access','value')  )
+def routes_toggle_grant_btn(value):
     if value:
         return False
     else:
         return True
 
 @dashapp.callback(
-    Output('revoke_route-button-state',"disabled"),
-    Input('opt-routes-emails','value') )
-def toggle_revoke_route(value):
+    Output('routes-revoke-button',"disabled"),
+    Input('opt-routes-access','value') )
+def routes_toggle_revoke_btn(value):
     if value:
         return False
     else:
