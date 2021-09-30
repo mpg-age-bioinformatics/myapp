@@ -29,6 +29,16 @@ def get_urls(app):
 
 def get_user_status(email):
     user=User.query.filter_by(email=email).first()
+
+    if user.view_apps:
+        view_apps=f'- view_apps: {", ".join(user.view_apps)}'
+    else:
+        view_apps='- view_apps: None'
+    if user.user_apps:
+        user_apps=f'- user_apps: {", ".join(user.user_apps)}'
+    else:
+        user_apps='- user_apps: None'
+
     user=f'''**{user.email}**\n\n\
     - name: {user.firstname} {user.lastname}\n\
     - registered on: {user.registered_on}\n\
@@ -38,7 +48,9 @@ def get_user_status(email):
     - active: {user.active}\n\
     - inactive reason: {user.inactive_reason}\n\
     - notifyme: {user.notifyme}\n\
-    - administrator: {user.administrator}\n\n\
+    - administrator: {user.administrator}\n\
+    {view_apps}\n\
+    {user_apps}\n\n\
 *{datetime.now()}*'''
     return user
 
