@@ -86,7 +86,18 @@ footer=html.Div([
 
 
 #[dbc.Form([email_input, password_input])]
-dashapp.layout=dbc.Row( [
+
+
+dashapp.layout=html.Div([dcc.Location(id='url', refresh=False),html.Div(id="page-content")])
+
+@dashapp.callback(
+    Output('page-content', 'children'),
+    Input('url', 'pathname'))
+def generate_content(pathname):
+    if current_user:
+        if current_user.is_authenticated:
+            return dcc.Location(pathname="/home/", id='index')
+    return dbc.Row( [
     dbc.Col( [ html.Div(id="app_access"),
                dcc.Location(id='url', refresh=False),
                html.Div(id="logged-feedback"),
@@ -123,7 +134,7 @@ style={"min-height": "95vh", 'verticalAlign': 'center'})
 def check_logged(pathname):
     if current_user:
         if current_user.is_authenticated:
-            return dcc.Location(pathname="/index/", id='index')
+            return dcc.Location(pathname="/home/", id='index')
 
 @dashapp.callback(
     Output('pass-power', 'children'),

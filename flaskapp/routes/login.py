@@ -53,25 +53,34 @@ footer=html.Div([
     ])
 
 
-dashapp.layout=dbc.Row( [
-    dbc.Col( [ dcc.Location(id='url', refresh=False),
-               dbc.Card(  dbc.Form([ html.H2("Login", style={'textAlign': 'center'} ),
-                                    html.Div(id="token-feedback"),
-                                    username_input,
-                                    html.Div(id="username-feedback"),
-                                    password_input,
-                                    html.Div(id="pass-feedback"),
-                                    dbc.Row( keppsigned ),
-                                    html.Button(id='submit-button-state', n_clicks=0, children='Login', style={"width":"auto","margin-top":4, "margin-bottom":4}),
-                                    html.Div(id="submission-feedback"),
-                                ])
-                        , body=True), footer ],
-             md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
-    navbar_A
-],
-align="center",
-justify="center",
-style={"min-height": "95vh", 'verticalAlign': 'center'}) #, 
+dashapp.layout=html.Div([dcc.Location(id='url', refresh=False),html.Div(id="page-content")])
+
+@dashapp.callback(
+    Output('page-content', 'children'),
+    Input('url', 'pathname'))
+def generate_content(pathname):
+    if current_user:
+        if current_user.is_authenticated:
+            return dcc.Location(pathname="/home/", id='index')
+    return dbc.Row( [
+                dbc.Col( [ 
+                        dbc.Card(  dbc.Form([ html.H2("Login", style={'textAlign': 'center'} ),
+                                                html.Div(id="token-feedback"),
+                                                username_input,
+                                                html.Div(id="username-feedback"),
+                                                password_input,
+                                                html.Div(id="pass-feedback"),
+                                                dbc.Row( keppsigned ),
+                                                html.Button(id='submit-button-state', n_clicks=0, children='Login', style={"width":"auto","margin-top":4, "margin-bottom":4}),
+                                                html.Div(id="submission-feedback"),
+                                            ])
+                                    , body=True), footer ],
+                        md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
+                navbar_A
+            ],
+            align="center",
+            justify="center",
+            style={"min-height": "95vh", 'verticalAlign': 'center'}) #, 
 
 @dashapp.callback(
     Output('token-feedback', 'children'),
@@ -98,7 +107,7 @@ def verify_email_token(pathname):
 
     if current_user:
         if current_user.is_authenticated:
-            return dcc.Location(pathname="/index/", id='index')
+            return dcc.Location(pathname="/home/", id='index')
 
     token=pathname.split("/login/")[-1]
     if not token:
@@ -175,7 +184,7 @@ def login_buttom(n_clicks, username, passA, keepsigned):
     db.session.add(user)
     db.session.commit()
     if not next_page or url_parse(next_page).netloc != '':
-        next_page = '/index/'
+        next_page = '/home/'
     return None, None, dcc.Location(pathname=next_page, id='index')
 
 
