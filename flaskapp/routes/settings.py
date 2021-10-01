@@ -97,7 +97,7 @@ def make_layout(pathname):
                 body=True,
                 className="border-0"
             ),
-            md=8, lg=6, xl=4, align="center",style={ "margin-left":2, "margin-right":2 }
+            sm=11, md=9, lg=7, xl=6, align="center",style={ "margin-left":2, "margin-right":2 }
         ),
         align="center",
         justify="center",
