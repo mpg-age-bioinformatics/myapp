@@ -48,6 +48,7 @@ def make_layout(pathname):
     lastname_input=make_text_form_row("Last name",current_user.lastname,"Last name","last_name")
     username_input=make_text_form_row("Username",current_user.username,"username","username")
     email_input=make_text_form_row("Email",current_user.email,"Enter email","input-email", "email")
+    email_input_2=make_text_form_row("Repeat email",current_user.email,"Enter email again","input-email-2", "email")
     password_input=make_text_form_row("Password",None,"Enter password","input-password", "password")
     password_input_2=make_text_form_row("Repeat password",None,"Enter password again","input-password-2", "password")
 
@@ -80,7 +81,28 @@ def make_layout(pathname):
         style={"margin-top":"10px"},
         )
 
+    submit_btn=dbc.Form( [ 
+        dbc.FormGroup(
+            [ 
+                dbc.Label("", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
+                dbc.Col(
+                    [ 
+                        html.Button(id='submit-button-state', n_clicks=0, children='Submit changes', style={"width":"300px","margin-left":"2px","margin-top":4, "margin-bottom":4}),
+                    ]
+                ),
+            ],
+
+            row=True,
+        ),
+        ],
+        style={"margin-top":"10px"},
+        )
+
+
+
     firstname_input.style={"margin-top":"5%"}
+
+
 
     user_settings=dbc.Row(
         dbc.Col(
@@ -89,10 +111,20 @@ def make_layout(pathname):
                     firstname_input,
                     lastname_input,
                     username_input,
+                    html.Div(id="username-feedback"),
                     email_input,
+                    html.Div(id="email-feedback"),
+                    email_input_2,
+                    html.Div(id="email2-feedback"),
                     password_input,
+                    html.Div(id="pass-power"),
+                    html.Div(id="pass-feedback"),
                     password_input_2,
-                    notify
+                    html.Div(id="pass2-feedback"),
+                    notify,
+                    html.Div(id="checkbox-feedback"),
+                    submit_btn,
+                    html.Div(id="submission-feedback"),
                 ],
                 body=True,
                 className="border-0"
