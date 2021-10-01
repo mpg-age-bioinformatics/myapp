@@ -59,8 +59,8 @@ protect_dashviews(dashapp)
 
 dashapp.layout=html.Div( [ dcc.Location(id='url', refresh=False), html.Div(id="protected-content") ] )
 
-options_field_style={"width":"350px", "margin-right":"8px"}
-button_style={"width":"100px", "margin-right":"4px","margin-top":"4px","margin-bottom":"4px"}
+options_field_style={"width":"325px"}
+button_style={"width":"100px", "margin-top":"4px","margin-bottom":"4px"}
 h4_style={"margin-top":"40px"}
 div_feedback_style={'margin-top':"10px"}
 form_style={"width":"auto","margin-top":"10px"}
@@ -72,6 +72,21 @@ alert_short_style={"max-width":"458px"}
 def make_layout(pathname):
     if not current_user.administrator :
         return dcc.Location(pathname="/index/", id='index')
+
+    def make_form_row(input_field, button_field):
+        form_row=dbc.Form( [ 
+            dbc.FormGroup(
+                [ 
+                    dbc.Col(input_field), dbc.Col(button_field)
+                ],
+            row=True,
+            style={"max-width":"510px"}
+            ),
+            ],
+            style=form_style
+            )
+        return form_row
+
 
     #### User status
 
@@ -89,26 +104,9 @@ def make_layout(pathname):
     status_deactivate_btn=html.Button(id='status-deactivate-button', n_clicks=0, children='Deactivate', style=button_style)
 
     user_status_form = html.Div([ 
-        dbc.Label(html.H4("User status"), style=h4_style), 
-        dbc.Form( [ 
-            dbc.FormGroup(
-                [ 
-                    opt_status_emails,status_activate_btn 
-                ],
-                className="mr-3"
-            ),
-            ],
-            inline=True,
-            style=form_style
-            ),
-        dbc.Form( [ dbc.FormGroup(
-                        [ status_deactivate_text,status_deactivate_btn ],
-                        className="mr-3"
-                        ),
-                    ],
-                style=form_style,
-                inline=True,
-                ),
+        dbc.Label(html.H4("User status"), style=h4_style),
+        make_form_row(opt_status_emails, status_activate_btn),
+        make_form_row(status_deactivate_text, status_deactivate_btn),
         html.Div(id="status-deactivate-text-feedback",style=div_feedback_style),
         html.Div(id="status-activate-feedback",style=div_feedback_style),
         html.Div(id='status-deactivate-feedback',style=div_feedback_style),
@@ -138,47 +136,12 @@ def make_layout(pathname):
     routes_rm_btn=html.Button(id='routes-rm-button', disabled=True,  n_clicks=0, children='Remove', style=button_style)
 
     private_routes_form = html.Div([ 
-        dbc.Label(html.H4("Private routes"), style=h4_style), 
-        dbc.Form( [ dbc.FormGroup(
-                        [ opt_routes_priv_routes, routes_list_btn],
-                        className="mr-3"
-                        ),
-                  ],
-                  inline=True,
-                  style=form_style
-                ),
-        dbc.Form( [ dbc.FormGroup(
-                        [ opt_routes_no_access, routes_grant_btn ],
-                        className="mr-3"
-                    ),
-                ],
-                inline=True,
-                style=form_style
-                ),
-        dbc.Form( [ dbc.FormGroup(
-                        [ opt_routes_access, routes_revoke_btn ],
-                        className="mr-3"
-                    ),
-                ],
-                inline=True,
-                style=form_style
-                ),
-        dbc.Form( [ dbc.FormGroup(
-                        [ routes_domain_text, routes_add_btn ],
-                        className="mr-3"
-                    ),
-                ],
-                inline=True,
-                style=form_style
-                ),
-        dbc.Form( [ dbc.FormGroup(
-                        [ opt_routes_domains, routes_rm_btn ],
-                        className="mr-3"
-                    ),
-                ],
-                inline=True,
-                style=form_style
-                ),
+        dbc.Label(html.H4("Private routes"), style=h4_style),
+        make_form_row(opt_routes_priv_routes, routes_list_btn),
+        make_form_row(opt_routes_no_access, routes_grant_btn),
+        make_form_row(opt_routes_access, routes_revoke_btn),
+        make_form_row(routes_domain_text, routes_add_btn),
+        make_form_row(opt_routes_domains, routes_rm_btn),
         html.Div(id="routes-feedback",style=div_feedback_style) ])
 
 
@@ -198,90 +161,56 @@ def make_layout(pathname):
     admin_grant_button=html.Button(id='admin-grant-button',disabled=True,  n_clicks=0, children='Grant', style=button_style)
     rm_admin_button=html.Button(id='admin-revoke-button',disabled=True, n_clicks=0, children='Revoke', style=button_style)
 
-    administrators_form = html.Div([ 
-        dbc.Label(html.H4("Administrators"),style=h4_style), 
-        dbc.Form( [ dbc.FormGroup(
-                                [
-                                    opt_admin_std_emails,
-                                    admin_grant_button
-                                ],
-                                className="mr-3"
-                                ),
-                  ],
-                  inline=True,
-                  style=form_style
-                ),
-        dbc.Form( [ dbc.FormGroup(
-                [
-                    opt_admin_emails,
-                    rm_admin_button
-                ],
-                className="mr-3"
-            ),
-        ],
-        inline=True,
-        style=form_style
-        ),
-        html.Div(id="admin-feedback",style=div_feedback_style) ])
+    administrators_form = html.Div(
+        [ 
+            dbc.Label(html.H4("Administrators"),style=h4_style),
+            make_form_row(opt_admin_std_emails, admin_grant_button),
+            make_form_row(opt_admin_emails, rm_admin_button),
+            html.Div(id="admin-feedback",style=div_feedback_style) 
+        ]
+    )
 
     #### Notify
 
-    notify_form = html.Div([ 
-        dbc.Label(html.H4("Notify"), style=h4_style), 
-        dbc.Form( [ dbc.FormGroup(
-                [
-                    html.Button(id='notify-button', n_clicks=0, children='Notify', style={"width":"auto", "margin-right":"4px"}),
-                    html.Button(id='notify-all-button', n_clicks=0, children='Notify All', style={"width":"auto", "margin-left":"4px"}), 
+    notify_form = html.Div(
+        [ 
+            dbc.Label(html.H4("Notify"), style=h4_style),
+            dbc.Form( [ 
+                        dbc.FormGroup(
+                            [ 
+                                html.Button(id='notify-button', n_clicks=0, children='Notify', style={"width":"100px","margin":"2px"}), 
+                                html.Button(id='notify-all-button', n_clicks=0, children='Notify All', style={"width":"100px","margin":"2px"})
+                            ],
+                        row=True,
+                        style={"max-width":"510px","margin-left":"1px" },
+                        ),
+                        ],
+                        style=form_style
+                        ),
+            html.Div(id="notify-feedback",style=div_feedback_style),
+            html.Div(id='notify-all-feedback',style=div_feedback_style)
+        ]
+    )
 
-                ],
-                className="mr-3"
-            ),
-        ],
-        inline=True,
-        id="notify_form"
-    ),
-    html.Div(id="notify-feedback",style=div_feedback_style),
-    html.Div(id='notify-all-feedback',style=div_feedback_style)])
-
-    image_filename = f'{app.config["APP_ASSETS"]}logo.png' # replace with your own image
-    encoded_image = base64.b64encode(open(image_filename, 'rb').read())
-
-    # navbar_admin=dbc.Navbar(
-    #                         [
-    #                             html.A(
-    #                                 # Use row and col to control vertical alignment of logo / brand
-    #                                 dbc.Row(
-    #                                     [
-    #                                         dbc.Col(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode()), height="30px")),
-    #                                         dbc.Col(dbc.NavbarBrand("Administrator Dashboard", className="ml-2")),
-    #                                     ],
-    #                                     align="center",
-    #                                     no_gutters=True,
-    #                                 ),
-    #                                 href=app.config["APP_URL"],
-    #                             ),
-    #                             # dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
-    #                             # dbc.Collapse(
-    #                             #     search_bar, id="navbar-collapse", navbar=True, is_open=False
-    #                             # ),
-    #                         ],
-    #                         color="light",
-    #                         # dark=True,
-    #                         sticky="top",
-    #                         # light=True
-    #                     )
     navbar=make_navbar_logged("Administrator Dashboard",current_user)
 
     protected_content=html.Div([ 
         navbar,
-        dbc.Row( [
-                dbc.Col( [ html.Div(id="submission-feedback"), 
+        dbc.Row(
+            [
+                dbc.Col( 
+                    dbc.Card(
+                        [  
+                            html.Div(id="submission-feedback"), 
                             user_status_form,
                             private_routes_form, 
                             administrators_form,
                             notify_form,
-                            ],
-                        md=10, lg=9, xl=8, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
+                        ],
+                        body=True,
+                        className="border-0"
+                    ),
+                    md=10, lg=9, xl=8, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
                 navbar_A
             ],
             align="center",
