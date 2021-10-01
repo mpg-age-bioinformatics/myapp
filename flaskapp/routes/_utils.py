@@ -102,7 +102,7 @@ def make_navbar_logged(page_title, current_user, links=navbar_links, expand='sm'
             dropdown_children.append( dbc.DropdownMenuItem(l, href=links[l], external_link=True) )
 
     else:
-        dropdown=None
+        dropdown_children=[]
 
     image_filename = f'{app.config["APP_ASSETS"]}logo.png' # replace with your own image
     encoded_image = base64.b64encode(open(image_filename, 'rb').read())
@@ -119,7 +119,7 @@ def make_navbar_logged(page_title, current_user, links=navbar_links, expand='sm'
                 align="center",
                 no_gutters=True,
             ),
-            href=app.config["APP_URL"]
+            href=f'{app.config["APP_URL"]}/home/'
         ),
         dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
         dbc.Collapse(

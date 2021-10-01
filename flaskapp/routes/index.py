@@ -47,13 +47,13 @@ def make_layout(pathname):
         if current_user.is_authenticated :
             if current_user.active :
                 target="/home/"
-                open_content=html.Div(id="page-footer")
+                open_content=html.Div(id="page-footer",style={"height":"10px"})
                 refresh=True
 
     if not target:
         if pathname not in ['/index/open/', '/open/'] :
             target="/index/open/"
-            open_content=html.Div(id="page-footer")
+            open_content=html.Div(id="page-footer", style={"height":"10px"})
             refresh=False
 
         else :
@@ -70,7 +70,7 @@ def make_layout(pathname):
                                 ),
                                 style={"justify-content":"center"}
                             )
-                        ])
+                        ],style={"height":"10px"})
             refresh=False
 
 
