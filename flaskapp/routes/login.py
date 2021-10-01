@@ -119,7 +119,7 @@ def verify_email_token(pathname):
         return dbc.Alert( "Could not find account!" ,color="danger")
     if user.confirmed_on:
         if not user.active:
-            msg=f'This account has already been confirmed. {app.config["APP_TITLE"]} is currently for beta testers only. Our site administrator will soon review your contact information and enable your account. Thanks!'
+            msg=f'This account has already been confirmed but is currently not active.'
         else:
             msg="This account has already been confirmed. Please login."
         return dbc.Alert( msg ,color="warning")
