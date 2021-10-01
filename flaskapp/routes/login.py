@@ -75,7 +75,7 @@ def generate_content(pathname):
                                                 html.Div(id="submission-feedback"),
                                             ])
                                     , body=True), footer ],
-                        md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
+                        sm=9,md=6, lg=5, xl=5, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
                 navbar_A
             ],
             align="center",
@@ -86,6 +86,8 @@ def generate_content(pathname):
     Output('token-feedback', 'children'),
     Input('url', 'pathname'))
 def verify_email_token(pathname):
+    if pathname == "/login/email/":
+        return dbc.Alert( "Please confirm your email address." ,color="primary")
     if pathname == "/login/forgot/":
         return dbc.Alert( "You're password has been reset." ,color="success")
     if pathname == "/login/logout/":
@@ -117,7 +119,7 @@ def verify_email_token(pathname):
         return dbc.Alert( "Could not find account!" ,color="danger")
     if user.confirmed_on:
         if not user.active:
-            msg="This account has already been confirmed. cycshare is currently for beta testers only. Our site administrator will soon review your contact information and enable your account. Thanks!"
+            msg=f'This account has already been confirmed. {app.config["APP_TITLE"]} is currently for beta testers only. Our site administrator will soon review your contact information and enable your account. Thanks!'
         else:
             msg="This account has already been confirmed. Please login."
         return dbc.Alert( msg ,color="warning")

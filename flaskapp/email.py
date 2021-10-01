@@ -80,4 +80,16 @@ def send_validate_email(user, step="user"):
                                             user=user, token=token_, app_name=APP_TITLE, app_url=APP_URL),
                 html_body=render_template('email/new_user.html',
                                             user=user, token=token_, app_name=APP_TITLE, app_url=APP_URL),\
-                reply_to=app.config['MAIL_USERNAME'] )                    
+                reply_to=app.config['MAIL_USERNAME'] )   
+
+def send_validate_change_email(user):
+    token = user.get_email_validation_token()
+    send_email(f'Welcome to {APP_TITLE}!',
+            sender=app.config['MAIL_USERNAME'],
+            recipients=[user.email],
+            text_body=render_template('email/validate_change_email.txt',
+                                        user=user, token=token, app_name=APP_TITLE, app_url=APP_URL),
+            html_body=render_template('email/validate_change_email.html',
+                                        user=user, token=token, app_name=APP_TITLE, app_url=APP_URL),\
+            reply_to=app.config['MAIL_USERNAME'] )
+            

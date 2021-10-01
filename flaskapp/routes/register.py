@@ -85,9 +85,6 @@ footer=html.Div([
     ])
 
 
-#[dbc.Form([email_input, password_input])]
-
-
 dashapp.layout=html.Div([dcc.Location(id='url', refresh=False),html.Div(id="page-content")])
 
 @dashapp.callback(
@@ -99,7 +96,6 @@ def generate_content(pathname):
             return dcc.Location(pathname="/home/", id='index')
     return dbc.Row( [
     dbc.Col( [ html.Div(id="app_access"),
-               dcc.Location(id='url', refresh=False),
                html.Div(id="logged-feedback"),
                dbc.Card(  dbc.Form([ html.H2("Register", style={'textAlign': 'center'} ),
                                     dbc.Row([ 
@@ -121,7 +117,7 @@ def generate_content(pathname):
                                     html.Div(id="submission-feedback"),
                                 ])
                         , body=True), footer ],
-             md=8, lg=6, xl=4, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
+             sm=9,md=7, lg=5, xl=5, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
     navbar_A
 ],
 align="center",

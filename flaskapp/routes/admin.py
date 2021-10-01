@@ -68,11 +68,11 @@ protect_dashviews(dashapp)
 
 dashapp.layout=html.Div( [ dcc.Location(id='url', refresh=False), html.Div(id="protected-content") ] )
 
-options_field_style={"width":"325px"}
+options_field_style={"width":"335px"}
 button_style={"width":"100px", "margin-top":"4px","margin-bottom":"4px"}
 h4_style={"margin-top":"40px"}
-div_feedback_style={'margin-top':"10px"}
-form_style={"width":"auto","margin-top":"10px"}
+div_feedback_style={}#'margin-top':"10px"}
+form_style={}#"width":"auto","margin-top":"10px"}
 alert_short_style={"max-width":"458px"}
 
 @dashapp.callback(

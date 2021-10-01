@@ -63,7 +63,7 @@ flask run --host 0.0.0.0 --port 8000
 ```
 Adding administrator user:
 ```
-docker-compose run --entrypoint="python3 /flaskapp/flaskapp.py admin --add myemail@gemail.com" init 
+docker-compose run --entrypoint="python3 /flaskapp/flaskapp.py admin --add myemail@gmail.com" init 
 ```
 
 You can connect to any of the running containers by eg. 

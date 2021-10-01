@@ -1,0 +1,11 @@
+Hi {{ user.firstname }},
+
+Please follow this link to confirm your email:
+
+{{app_url}}/login/{{token}}
+
+Cheers!
+
+Sincerely,
+
+{{app_name}}

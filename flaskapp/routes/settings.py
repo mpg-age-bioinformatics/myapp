@@ -5,10 +5,12 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from flaskapp.models import User
-from flaskapp.email import send_validate_email
+from flaskapp.email import send_validate_change_email
 from datetime import datetime
+import time
 from ._utils import META_TAGS, check_email, password_check, navbar_A, protect_dashviews, make_navbar_logged
-from flask_login import current_user
+from flask_login import current_user, logout_user
+from flask import session
 
 
 dashapp = dash.Dash("settings",url_base_pathname='/settings/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
@@ -33,14 +35,14 @@ def make_layout(pathname):
                     [ 
                         dbc.Label(label, html_for=id_, style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
                         dbc.Col(
-                            dbc.Input(type=input_type, id=id_, value=value, placeholder=placeholder, style={"width":"300px","margin-left":"2px"}),
+                            dbc.Input(type=input_type, id=id_, value=value, placeholder=placeholder, style={"width":"330px","margin-left":"2px"}),
                         ),
                     ],
                     row=True,
                 ),
                 ],
                 # inline=True,
-                style={"margin-top":"10px"},
+                # style={"margin-top":"2px"},
                 )
         return form_row
 
@@ -64,13 +66,13 @@ def make_layout(pathname):
         ],
         value=notify_value,
         id="notify",
-        style={"width":"300px","margin-left":"2px"}
+        style={"width":"330px","margin-left":"2px"}
     )
 
     notify=dbc.Form( [ 
         dbc.FormGroup(
             [ 
-                dbc.Label("", html_for="check_box", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
+                dbc.Label("", html_for="notify", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
                 dbc.Col(
                     notify
                 ),
@@ -78,7 +80,7 @@ def make_layout(pathname):
             row=True,
         ),
         ],
-        style={"margin-top":"10px"},
+        # style={"margin-top":"10px"},
         )
 
     submit_btn=dbc.Form( [ 
@@ -87,7 +89,7 @@ def make_layout(pathname):
                 dbc.Label("", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
                 dbc.Col(
                     [ 
-                        html.Button(id='submit-button-state', n_clicks=0, children='Submit changes', style={"width":"300px","margin-left":"2px","margin-top":4, "margin-bottom":4}),
+                        html.Button(id='submit-button-state', n_clicks=0, children='Submit changes', style={"width":"330px","margin-left":"2px","margin-top":4, "margin-bottom":4}),
                     ]
                 ),
             ],
@@ -95,13 +97,10 @@ def make_layout(pathname):
             row=True,
         ),
         ],
-        style={"margin-top":"10px"},
+        # style={"margin-top":"10px"},
         )
 
-
-
     firstname_input.style={"margin-top":"5%"}
-
 
 
     user_settings=dbc.Row(
@@ -109,7 +108,9 @@ def make_layout(pathname):
             dbc.Card(
                 [
                     firstname_input,
+                    html.Div(id="firstname-feedback"),
                     lastname_input,
+                    html.Div(id="lastname-feedback"),
                     username_input,
                     html.Div(id="username-feedback"),
                     email_input,
@@ -117,9 +118,9 @@ def make_layout(pathname):
                     email_input_2,
                     html.Div(id="email2-feedback"),
                     password_input,
+                    password_input_2,
                     html.Div(id="pass-power"),
                     html.Div(id="pass-feedback"),
-                    password_input_2,
                     html.Div(id="pass2-feedback"),
                     notify,
                     html.Div(id="checkbox-feedback"),
@@ -144,6 +145,25 @@ def make_layout(pathname):
     )
     return protected_content
 
+def make_response(text,color,id="some-id",is_open=True, duration=None):
+    r=dbc.Form( [ 
+        dbc.FormGroup(
+            [ 
+                dbc.Label("", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
+                dbc.Col(
+                    [ 
+                        dbc.Alert( text ,id=id, color=color,is_open=is_open, duration=duration, style={"width":"330px","margin-left":"2px"}),
+                    ]
+                ),
+            ],
+
+            row=True,
+        ),
+        ],
+        # style={"margin-top":"10px"},
+        )
+    return r
+
 @dashapp.callback(
     Output("navbar-collapse", "is_open"),
     [Input("navbar-toggler", "n_clicks")],
@@ -153,3 +173,142 @@ def toggle_navbar_collapse(n, is_open):
     if n:
         return not is_open
     return is_open
+
+
+@dashapp.callback(
+    Output('pass-power', 'children'),
+    Input('input-password', 'value'),
+    prevent_initial_call=True)
+def check_pass_power(passA):
+    passdic=password_check(passA)
+    if passdic["passtype"] == "weak":
+        return make_response( "please use a strong password" ,color="danger")
+    elif passdic["passtype"] == "medium":
+        return make_response( "please use a strong password" ,color="warning")
+    elif passdic["passtype"] == "strong":
+        return make_response( "strong password" ,id="alert-auto", color="success", is_open=True, duration=1500)
+
+@dashapp.callback(
+    Output("alert-auto", "is_open"),
+    [Input("alert-toggle-auto", "n_clicks")],
+    [State("alert-auto", "is_open")],
+)
+def toggle_alert(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+@dashapp.callback(
+    Output('firstname-feedback', 'children'),
+    Output('lastname-feedback', 'children'),
+    Output('username-feedback', 'children'),
+    Output('email-feedback', 'children'),
+    Output('email2-feedback', 'children'),
+    Output('pass-feedback', 'children'),
+    Output('pass2-feedback', 'children'),
+    Output('checkbox-feedback', 'children'),
+    Output('submission-feedback', 'children'),
+    Input('submit-button-state', 'n_clicks'),
+    State('first_name', 'value'),
+    State('last_name', 'value'),
+    State('username', 'value'),
+    State('input-email', 'value'),
+    State('input-email-2', 'value'),
+    State('input-password', 'value'),
+    State('input-password-2', 'value'),
+    State('notify', 'value'),
+    prevent_initial_call=True
+    )
+def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, passA, passB, notify):
+    first_name_=None
+    last_name_=None
+    username_=None
+    emailA_=None
+    emailB_=None
+    passA_=None
+    passB_=None
+    notify_=None
+    submission_=None
+
+    if ( first_name ) and (first_name != current_user.firstname):
+        user=User.query.filter_by(id=current_user.id).first()
+        user.firstname=first_name
+        db.session.add(user)
+        db.session.commit()
+        first_name_=make_response("First name changed." ,color="success") #dbc.Alert( "First name changed." ,color="success") # style={"font-size":"10px"}
+    if ( last_name ) and (last_name != current_user.lastname):
+        user=User.query.filter_by(id=current_user.id).first()
+        user.lastname=last_name
+        db.session.add(user)
+        db.session.commit()
+        last_name_=make_response( "Last name changed." ,color="success")
+    if  ( username ) and (username != current_user.username) :
+        user=User.query.filter_by(username=username).first()
+        if user:
+            if user.username == username:
+                username_=make_response( "Username alread exists. Please pick a different username." ,color="danger")
+            else:
+                user=None
+        if not user:
+            user=User.query.filter_by(id=current_user.id).first()
+            user.username=username
+            db.session.add(user)
+            db.session.commit()
+            username_=make_response( "Username changed." ,color="success")
+    # if not email:
+    #     email_=dbc.Alert( "*required" ,color="warning")
+    if (emailA) and (emailA != current_user.email):
+        if emailA != emailB :
+            emailB_=make_response( "Emails do not match." ,color="warning")
+        elif not check_email(emailA) :
+            emailA_=make_response( "Invalid email address." ,color="warning")
+        else:
+            user = User.query.filter_by(email=emailA).first()
+            if user:
+                if user.email == emailA:
+                    emailA_=make_response( "Email already in use. Please pick a different email address." ,color="danger")
+                else:
+                    user=None
+            if not user:
+                user=User.query.filter_by(id=current_user.id).first()
+                user.email=emailA
+                user.confirmed_on=None
+                db.session.add(user)
+                db.session.commit()
+
+                send_validate_change_email(user)
+
+                session.clear()
+                logout_user()
+                time.sleep(2)
+
+                emailA_=dcc.Location(pathname="/logout/email/", id='login')
+                return first_name_,last_name_,username_, emailA_, emailB_, passA_,passB_,notify_,submission_
+
+    if ( passA ) and ( not current_user.check_password(passA) ):
+        passdic=password_check(passA)
+        if passdic["passtype"] != "strong" :
+            passA_=make_response( "Please use a strong password." ,color="warning")
+        elif not passB:
+            passB_=make_response( "*required" ,color="warning")
+        elif passA != passB:
+            passB_=make_response( "Passwords do not match" ,color="warning")
+        else:
+            user=User.query.filter_by(id=current_user.id).first()
+            user.set_password(passA)
+            user.password_set=datetime.utcnow()
+            db.session.add(user)
+            db.session.commit()
+            passA_=make_response( "Password changed." ,color="success")
+ 
+    if  ( notify  )and ( not current_user.notifyme ):
+        user=User.query.filter_by(id=current_user.id).first()
+        user.notifyme=True
+        notify_=make_response( "Notifications enabled." ,color="success")
+
+    elif ( not notify ) and ( current_user.notifyme ):
+        user=User.query.filter_by(id=current_user.id).first()
+        user.notifyme=False
+        notify_=make_response( "Notifications disabled." ,color="warning")
+
+    return first_name_,last_name_,username_, emailA_, emailB_, passA_,passB_,notify_,submission_
