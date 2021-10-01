@@ -30,11 +30,20 @@ def get_user_status(email):
     user=User.query.filter_by(email=email).first()
 
     if user.view_apps:
-        view_apps=f'- view_apps: {", ".join(user.view_apps)}'
+        view_apps=[]
+        for i in user.view_apps :
+            route_obj=PrivateRoutes.query.filter_by(id=i).first()
+            view_apps.append(route_obj.route)
+        view_apps=f'- view_apps: {", ".join(view_apps)}'
     else:
         view_apps='- view_apps: None'
+    
     if user.user_apps:
-        user_apps=f'- user_apps: {", ".join(user.user_apps)}'
+        user_apps=[]
+        for i in user.user_apps :
+            route_obj=PrivateRoutes.query.filter_by(id=i).first()
+            user_apps.append(route_obj.route)
+        user_apps=f'- user_apps: {", ".join(user_apps)}'
     else:
         user_apps='- user_apps: None'
 
@@ -178,11 +187,11 @@ def make_layout(pathname):
             dbc.Form( [ 
                         dbc.FormGroup(
                             [ 
-                                html.Button(id='notify-button', n_clicks=0, children='Notify', style={"width":"100px","margin":"2px"}), 
-                                html.Button(id='notify-all-button', n_clicks=0, children='Notify All', style={"width":"100px","margin":"2px"})
+                                html.Button(id='notify-button', n_clicks=0, children='Notify', style={"width":"100px","margin":"3px"}), 
+                                html.Button(id='notify-all-button', n_clicks=0, children='Notify All', style={"width":"100px","margin":"3px"})
                             ],
                         row=True,
-                        style={"max-width":"510px","margin-left":"1px" },
+                        style={"max-width":"510px","margin-left":"0px" },
                         ),
                         ],
                         style=form_style
