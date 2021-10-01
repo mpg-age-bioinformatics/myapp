@@ -25,8 +25,88 @@ dashapp.layout=html.Div( [
     Output('protected-content', 'children'),
     Input('url', 'pathname'))
 def make_layout(pathname):
+    topnavbar=make_navbar_logged("Settings",current_user)
+
+    def make_text_form_row(label,value,placeholder,id_,input_type="text"):
+        form_row=dbc.Form( [ 
+                dbc.FormGroup(
+                    [ 
+                        dbc.Label(label, html_for=id_, style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
+                        dbc.Col(
+                            dbc.Input(type=input_type, id=id_, value=value, placeholder=placeholder, style={"width":"300px","margin-left":"2px"}),
+                        ),
+                    ],
+                    row=True,
+                ),
+                ],
+                # inline=True,
+                style={"margin-top":"10px"},
+                )
+        return form_row
+
+    firstname_input=make_text_form_row("First name",current_user.firstname,"First name","first_name")
+    lastname_input=make_text_form_row("Last name",current_user.lastname,"Last name","last_name")
+    username_input=make_text_form_row("Username",current_user.username,"username","username")
+    email_input=make_text_form_row("Email",current_user.email,"Enter email","input-email", "email")
+    password_input=make_text_form_row("Password",None,"Enter password","input-password", "password")
+    password_input_2=make_text_form_row("Repeat password",None,"Enter password again","input-password-2", "password")
+
+
+    if current_user.notifyme:
+        notify_value=["notify"]
+    else:
+        notify_value=[]
+
+    notify=dcc.Checklist(
+        options=[
+            {'label': " Notify me on product news.", 'value': 'notify'},
+        ],
+        value=notify_value,
+        id="notify",
+        style={"width":"300px","margin-left":"2px"}
+    )
+
+    notify=dbc.Form( [ 
+        dbc.FormGroup(
+            [ 
+                dbc.Label("", html_for="check_box", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
+                dbc.Col(
+                    notify
+                ),
+            ],
+            row=True,
+        ),
+        ],
+        style={"margin-top":"10px"},
+        )
+
+    firstname_input.style={"margin-top":"5%"}
+
+    user_settings=dbc.Row(
+        dbc.Col(
+            dbc.Card(
+                [
+                    firstname_input,
+                    lastname_input,
+                    username_input,
+                    email_input,
+                    password_input,
+                    password_input_2,
+                    notify
+                ],
+                body=True,
+                className="border-0"
+            ),
+            md=8, lg=6, xl=4, align="center",style={ "margin-left":2, "margin-right":2 }
+        ),
+        align="center",
+        justify="center",
+        style={"min-height": "450px", 'verticalAlign': 'center','margin-bottom':"50px"}
+        )
+
     protected_content=html.Div([
-        make_navbar_logged("Settings",current_user),
+        topnavbar,
+        user_settings,
         navbar_A
     ]
     )

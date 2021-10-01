@@ -90,14 +90,17 @@ def make_layout(pathname):
 
     user_status_form = html.Div([ 
         dbc.Label(html.H4("User status"), style=h4_style), 
-        dbc.Form( [ dbc.FormGroup(
-                        [ opt_status_emails,status_activate_btn ],
-                        className="mr-3"
-                        ),
-                    ],
-                inline=True,
-                style=form_style
-                ),
+        dbc.Form( [ 
+            dbc.FormGroup(
+                [ 
+                    opt_status_emails,status_activate_btn 
+                ],
+                className="mr-3"
+            ),
+            ],
+            inline=True,
+            style=form_style
+            ),
         dbc.Form( [ dbc.FormGroup(
                         [ status_deactivate_text,status_deactivate_btn ],
                         className="mr-3"
