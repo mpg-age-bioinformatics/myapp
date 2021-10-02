@@ -111,44 +111,45 @@ def make_layout(pathname):
     encoded=base64.b64encode(imgByteArr)
     img=html.Img(src='data:image/svg+xml;base64,{}'.format(encoded.decode()), height="200px")
 
-    modal_body=dbc.ModalBody(
-                        [ 
-                            dbc.Row(dbc.Col(img,style={"textAlign":"center"})),
-                            dbc.Row(
-                                [
-                                    dbc.Col(
-                                        dbc.Input(type="text", id="otp-input", placeholder="type code"),
-                                        width={"size":5,"offset":2},
-                                        style={"margin-right":"2px"}
-                                    ),
-                                    dbc.Col(
-                                        dbc.Button( "Enable", id="otp-enable", className="ml-auto", n_clicks=0 ) ,
-                                        width=1,
-                                        style={"textAlign":"left"}
-                                        # style={"margin":"2px"}
-                                    )
-                                ],
-                                # justify="left",
-                                no_gutters=True,
-                                align="center",
-                                style={"margin-bottom":"15px"}
-                            ),
-                            html.Div(id="backup-codes-output"),
-                            dbc.Row("You can user Google Authenticator on your phone to scan the QR code and enable \
-                            Two-Factor Authentication.",style={"textAlign":"justify","margin":"2px"})
-                        ]
-                    )
-
-
-
+    activate_input=html.Div(
+                    [
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    dbc.Input(type="text", id="otp-input", placeholder="type code"),
+                                    width={"size":5,"offset":2},
+                                    style={"margin-right":"2px"}
+                                ),
+                                dbc.Col(
+                                    dbc.Button( "Enable", id="otp-enable", className="ml-auto", n_clicks=0 ) ,
+                                    width=1,
+                                    style={"textAlign":"left"}
+                                    # style={"margin":"2px"}
+                                )
+                            ],
+                            # justify="left",
+                            no_gutters=True,
+                            align="center",
+                            style={"margin-bottom":"15px"}
+                        ),
+                        html.Div(id="enable-feedback")
+                    ]
+                )
 
     modal = html.Div(
         [
-            # dbc.Button("Open", id="open-centered"),
             dbc.Modal(
                 [
                     dbc.ModalHeader("2FA QR Code"),
-                    modal_body,
+                    dbc.ModalBody(
+                        [ 
+                            dbc.Row(dbc.Col(img,style={"textAlign":"center"})),
+                            activate_input,
+                            html.Div(id="backup-codes-output"),
+                            dbc.Row("You can use Google Authenticator on your phone to scan the QR code and enable \
+                            Two-Factor Authentication.",style={"textAlign":"justify","margin":"2px"})
+                        ]
+                    ),
                     dbc.ModalFooter(
                         dbc.Row(
                             [
