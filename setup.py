@@ -1,9 +1,9 @@
 from setuptools import find_packages, setup
 
 setup(
-    name='flaskapp',
+    name='myapp',
     version='0.0.1',
-    packages=["flaskapp"],
+    packages=["myapp"],
     include_package_data=True,
     zip_safe=False,
     install_requires=[

@@ -1,5 +1,5 @@
-from flaskapp import app, db
-from flaskapp.models import User, UserLogging, PRIVATE_ROUTES, PrivateRoutes
+from myapp import app, db
+from myapp.models import User, UserLogging, PRIVATE_ROUTES, PrivateRoutes
 import pandas as pd
 import sys
 import argparse

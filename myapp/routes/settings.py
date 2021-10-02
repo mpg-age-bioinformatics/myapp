@@ -1,11 +1,11 @@
-from flaskapp import app, db
+from myapp import app, db
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from flaskapp.models import User
-from flaskapp.email import send_validate_change_email
+from myapp.models import User
+from myapp.email import send_validate_change_email
 from datetime import datetime
 import time
 from ._utils import META_TAGS, check_email, password_check, navbar_A, protect_dashviews, make_navbar_logged

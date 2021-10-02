@@ -1,6 +1,6 @@
 from threading import Thread
 from flask import render_template
-from flaskapp import app, mail
+from myapp import app, mail
 from flask_mail import Message
 from werkzeug.utils import secure_filename
 import io

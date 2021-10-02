@@ -1,4 +1,4 @@
-from flaskapp import app, db
+from myapp import app, db
 from flask import session, request
 from flask_login import current_user, login_user, logout_user
 import dash
@@ -6,8 +6,8 @@ from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from flaskapp.models import User
-from flaskapp.email import send_validate_email
+from myapp.models import User
+from myapp.email import send_validate_email
 from datetime import datetime
 from werkzeug.urls import url_parse
 from ._utils import META_TAGS, check_email, navbar_A

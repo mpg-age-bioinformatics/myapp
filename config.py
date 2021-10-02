@@ -12,12 +12,12 @@ else:
         commit=f.readline().split("\n")[0]
 
 class Config(object):
-    APP_NAME=os.environ.get('APP_NAME') or "flaskapp"
-    APP_TITLE=os.environ.get('APP_TITLE') or "FlaskApp"
+    APP_NAME=os.environ.get('APP_NAME') or "myapp"
+    APP_TITLE=os.environ.get('APP_TITLE') or "myapp"
     APP_URL=os.environ.get('APP_URL')  or 'https://0.0.0.0'
     APP_ASSETS=os.environ.get('APP_ASSETS') or f'/{APP_NAME}/{APP_NAME}/static/'
-    USERS_DATA = os.environ.get('USERS_DATA') or "/cycshare/users/"
-    LOGS = os.environ.get('LOGS') or '/var/log/cycshare/'
+    USERS_DATA = os.environ.get('USERS_DATA') or "/myapp/users/"
+    LOGS = os.environ.get('LOGS') or '/var/log/myapp/'
     session_token=secrets.token_urlsafe(16)
     SECRET_KEY = os.environ.get('SECRET_KEY') or session_token
     SESSION_COOKIE_SECURE = True

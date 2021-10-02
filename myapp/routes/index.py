@@ -1,5 +1,5 @@
 import re
-from flaskapp import app
+from myapp import app
 from flask_login import current_user
 from flask_caching import Cache
 import dash

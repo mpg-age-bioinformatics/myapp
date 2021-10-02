@@ -1,4 +1,4 @@
-from flaskapp import app
+from myapp import app
 from flask import session
 from flask_login import logout_user
 import dash
@@ -6,7 +6,7 @@ from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from flaskapp.models import User
+from myapp.models import User
 from ._utils import META_TAGS
 import time
 

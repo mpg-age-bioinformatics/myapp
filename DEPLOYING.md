@@ -1,12 +1,12 @@
-# flaskapp
+# myapp
 
-flaskapp is a universal backbone for flask-dash based apps with user level authentication. flaskapp can be deployed using the `docker-compose.yml` or on a [kubernetes](https://github.com/jorgeboucas/cycshare/tree/master/kubernetes#kubernetes) cluster.
+myapp is a universal backbone for flask-dash based apps with user level authentication. flaskapp can be deployed using the `docker-compose.yml` or on a [kubernetes](https://github.com/jorgeboucas/myapp/tree/master/kubernetes#kubernetes) cluster.
 
 ## Deploying cycshare
 
 Start by defining your apps folder name 
 ```
-export APP_NAME="flaskapp"
+export APP_NAME="myapp"
 ```
 as seen in the base folder of this repo.
 
@@ -63,7 +63,7 @@ flask run --host 0.0.0.0 --port 8000
 ```
 Adding administrator user:
 ```
-docker-compose run --entrypoint="python3 /flaskapp/flaskapp.py admin --add myemail@gmail.com" init 
+docker-compose run --entrypoint="python3 /myapp/myapp.py admin --add myemail@gmail.com" init 
 ```
 
 You can connect to any of the running containers by eg. 
@@ -111,8 +111,8 @@ docker-compose exec server flask shell
 ```
 make the required imports:
 ```python
-from flaskapp import app, db
-from flaskapp.models import User, UserLogging
+from myapp import app, db
+from myapp.models import User, UserLogging
 ```
 and then for removing a user from the db:
 ```python

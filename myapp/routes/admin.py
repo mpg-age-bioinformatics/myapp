@@ -1,10 +1,10 @@
-from flaskapp import app, db
+from myapp import app, db
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from flaskapp.models import User, PrivateRoutes, PRIVATE_ROUTES
+from myapp.models import User, PrivateRoutes, PRIVATE_ROUTES
 from datetime import datetime
 from ._utils import META_TAGS, navbar_A, protect_dashviews, make_options, make_navbar_logged
 import base64
