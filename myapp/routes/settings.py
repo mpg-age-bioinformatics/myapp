@@ -11,6 +11,9 @@ import time
 from ._utils import META_TAGS, check_email, password_check, navbar_A, protect_dashviews, make_navbar_logged
 from flask_login import current_user, logout_user
 from flask import session
+import pyqrcode
+import io
+import base64
 
 
 dashapp = dash.Dash("settings",url_base_pathname='/settings/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
@@ -89,7 +92,7 @@ def make_layout(pathname):
                 dbc.Label("", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
                 dbc.Col(
                     [ 
-                        html.Button(id='submit-button-state', n_clicks=0, children='Submit changes', style={"width":"330px","margin-left":"2px","margin-top":4, "margin-bottom":4}),
+                        dbc.Button(id='submit-button-state', n_clicks=0, children='Submit changes', style={"width":"330px","margin-left":"2px","margin-top":4, "margin-bottom":4}),
                     ]
                 ),
             ],
@@ -100,13 +103,90 @@ def make_layout(pathname):
         # style={"margin-top":"10px"},
         )
 
-    firstname_input.style={"margin-top":"5%"}
 
+    imgByteArr = io.BytesIO()
+    big_code = pyqrcode.create(current_user.get_totp_uri())
+    big_code.svg(imgByteArr, scale=6 )
+    imgByteArr = imgByteArr.getvalue()
+    encoded=base64.b64encode(imgByteArr)
+    img=html.Img(src='data:image/svg+xml;base64,{}'.format(encoded.decode()), height="200px")
+
+    modal_body=dbc.ModalBody(
+                        [ 
+                            dbc.Row(dbc.Col(img,style={"textAlign":"center"})),
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        dbc.Input(type="text", id="otp-input", placeholder="type code"),
+                                        width={"size":5,"offset":2},
+                                        style={"margin-right":"2px"}
+                                    ),
+                                    dbc.Col(
+                                        dbc.Button( "Enable", id="otp-enable", className="ml-auto", n_clicks=0 ) ,
+                                        width=1,
+                                        style={"textAlign":"left"}
+                                        # style={"margin":"2px"}
+                                    )
+                                ],
+                                # justify="left",
+                                no_gutters=True,
+                                align="center",
+                                style={"margin-bottom":"15px"}
+                            ),
+                            html.Div(id="backup-codes-output"),
+                            dbc.Row("You can user Google Authenticator on your phone to scan the QR code and enable \
+                            Two-Factor Authentication.",style={"textAlign":"justify","margin":"2px"})
+                        ]
+                    )
+
+
+
+
+    modal = html.Div(
+        [
+            # dbc.Button("Open", id="open-centered"),
+            dbc.Modal(
+                [
+                    dbc.ModalHeader("2FA QR Code"),
+                    modal_body,
+                    dbc.ModalFooter(
+                        dbc.Row(
+                            [
+                                dbc.Button(
+                                    "Backup codes",
+                                    id="backup-codes-btn",
+                                    className="ml-auto",
+                                    n_clicks=0,
+                                    disabled=True,
+                                    style={"margin":"2px"}
+                                ),
+                                dbc.Button(
+                                    "Close",
+                                    id="close-centered",
+                                    className="ml-auto",
+                                    n_clicks=0,
+                                    style={"margin":"2px"}
+                                )
+                            ],
+                            no_gutters=False,
+                            justify="end",
+                        ),
+                    ),
+                ],
+                id="modal-centered",
+                centered=True,
+                is_open=False,
+            ),
+        ]
+    )
+
+    show_qrcode=dbc.Button("Show QR code", id="open-centered")
 
     user_settings=dbc.Row(
         dbc.Col(
             dbc.Card(
                 [
+                    html.H4("General settings",style={"margin-top":"5%","margin-bottom":"30px"}),
                     firstname_input,
                     html.Div(id="firstname-feedback"),
                     lastname_input,
@@ -126,9 +206,17 @@ def make_layout(pathname):
                     html.Div(id="checkbox-feedback"),
                     submit_btn,
                     html.Div(id="submission-feedback"),
+                    html.H4("Two-Factor Authentication",style={"margin-top":"5%","margin-bottom":"30px"}),
+                    html.P("Two-Factor Authentication (2FA) works by adding an additional layer. of \
+                        security to your online accounts. It requires an additional login credential \
+                            – beyond just the username and password – to gain account access, and \
+                                getting that second credential requires access to something that ", style={"max-width":"500px"}),
+                    show_qrcode,
+                    modal,
                 ],
                 body=True,
-                className="border-0"
+                className="border-0",
+                style={"max-width":"550px"}
             ),
             sm=11, md=9, lg=7, xl=6, align="center",style={ "margin-left":2, "margin-right":2 }
         ),
@@ -174,6 +262,33 @@ def toggle_navbar_collapse(n, is_open):
         return not is_open
     return is_open
 
+@dashapp.callback(
+    Output("backup-codes-output", "children"),
+    [ Input("backup-codes-btn", "n_clicks") ],
+    prevent_initial_call=True)
+def generate_backup_codes(n1):
+    if n1:
+        return html.Div("backup-codes")
+
+@dashapp.callback(
+    Output("backup-codes-btn", "disabled"),
+    [ Input("otp-enable", "n_clicks") ],
+    prevent_initial_call=True)
+def enable_2fa(n1):
+    print("!!!!!!", n1)
+    if n1:
+        return False
+
+
+@dashapp.callback(
+    Output("modal-centered", "is_open"),
+    [Input("open-centered", "n_clicks"), Input("close-centered", "n_clicks")],
+    [State("modal-centered", "is_open")],
+)
+def toggle_modal(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open
 
 @dashapp.callback(
     Output('pass-power', 'children'),

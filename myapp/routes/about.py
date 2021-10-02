@@ -17,7 +17,7 @@ dashapp = dash.Dash("about",url_base_pathname='/about/', meta_tags=META_TAGS, se
 
 about=dcc.Markdown('''
 
-flaskapp is a backbone for flask-dash mixed apps with user level authentication and an administrator dashboard.
+myapp is a backbone for flask-dash mixed apps with user level authentication and an administrator dashboard.
 
 ''')
 
@@ -44,7 +44,7 @@ dashapp.layout=dbc.Row(
                             ], 
                             align="top", 
                             style={"textAlign":"justify",'margin-left':"15px", 'margin-right':"15px","margin-top":"100px",'margin-bottom':"50px"},
-                            md=8, lg=6, xl=4
+                            sm=10, md=10, lg=8, xl=5
                         ), 
                         navbar_A 
                     ] ,

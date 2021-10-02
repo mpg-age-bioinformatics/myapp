@@ -7,6 +7,9 @@ from time import time
 import jwt
 from sqlalchemy.types import PickleType
 from flask import request
+import os
+import base64
+import onetimepass
 
 PRIVATE_ROUTES=[ ]
 PUBLIC_VIEWS=[ ]
@@ -51,6 +54,14 @@ class User(UserMixin, db.Model):
     view_apps = db.Column( PickleType )
     domain = db.Column(db.String(120), index=True, unique=False)
     administrator=db.Column(db.Boolean, nullable=False, default=False)
+    otp_secret = db.Column(db.String(16))
+
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+        if self.otp_secret is None:
+            # generate a random secret
+            self.otp_secret = base64.b32encode(os.urandom(10)).decode('utf-8')
+
 
 
     def __repr__(self):
@@ -80,6 +91,12 @@ class User(UserMixin, db.Model):
         return jwt.encode(
             {'allow_user': self.id, 'uname':self.username, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+
+    def get_totp_uri(self):
+        return f'otpauth://totp/{app.config["APP_NAME"]}:{self.username}?secret={self.otp_secret}&issuer={app.config["APP_NAME"]}'
+
+    def verify_totp(self, token):
+        return onetimepass.valid_totp(token, self.otp_secret)
 
     @staticmethod
     def verify_reset_password_token(token):
