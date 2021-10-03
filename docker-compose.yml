@@ -6,7 +6,7 @@ services:
   container_name: init
   build:
     context: ./
-    dockerfile: services/server/dockerfiles/Dockerfile
+    dockerfile: services/server/Dockerfile
     args:
       - BUILD_NAME=${APP_NAME}
   user: root
@@ -42,7 +42,7 @@ services:
     - 8887:8888 #jupyterhub
   build:
     context: ./
-    dockerfile: services/server/dockerfiles/Dockerfile
+    dockerfile: services/server/Dockerfile
     args:
       - BUILD_NAME=${APP_NAME}
   restart: always

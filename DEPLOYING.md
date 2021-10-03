@@ -21,9 +21,9 @@ On a Mac double click on the cert.pem file to open it and add it to the Keychain
 
 If running cycshare on development mode make sure that you change the variable `FLASK_ENV` to `development` in `docker-compose.yml`.
 
-Export secret variables:
+For production export secret variables into `.env.prod`:
 ```bash
-cat << EOF > .env
+cat << EOF > .env.prod
 APP_NAME="${APP_NAME}"
 MAIL_PASSWORD="<mail password>"
 MYSQL_PASSWORD=$(openssl rand -base64 20)
@@ -33,7 +33,9 @@ SECRET_KEY=$(openssl rand -base64 20)
 EOF
 ```
 
-or, for local development (quote all mail related entries in the `docker-compose.yml`):
+and specify the env file when starting container eg. `docker-compose --env-file .env.prod up`.
+
+For local development (quote all mail related entries in the `docker-compose.yml`):
 ```bash
 cat << EOF > .env
 APP_NAME="${APP_NAME}"
@@ -154,6 +156,15 @@ Manually restore a database from backup:
 cat dump.sql | docker-compose exec mariadb mysql --user=root --password=mypass ${APP_NAME}
 ```
 
+## Multiplatform builds
 
+Builds are currently working for `linux/amd64` and `linux/arm64` but not for `linux/arm/v7`.
 
+```
+docker buildx create --name mybuilder
+docker buildx use mybuilder
+docker buildx inspect --bootstrap
+docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --no-cache --force-rm -t myapp/myapp:latest -f services/server/Dockerfile . --load
+```
 
+To push result image into registry use --push or to load image into docker use --load.

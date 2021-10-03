@@ -2,9 +2,12 @@
 # Distributed under the terms of the Modified BSD License.
 
 # Debian buster-slim (10.1)
-FROM debian@sha256:11253793361a12861562d1d7b15b8b7e25ac30dd631e3d206ed1ca969bf97b7d
+# FROM debian@sha256:11253793361a12861562d1d7b15b8b7e25ac30dd631e3d206ed1ca969bf97b7d
+FROM debian:buster-slim
 
 LABEL maintainer "bioinformatics@age.mpg.de"
+
+# ARG TARGETPLATFORM
 
 USER root
 
@@ -32,12 +35,16 @@ apt-get clean && rm -rf /var/lib/apt/lists/*
 # plotly saving of images to file
 RUN apt-get update && apt-get -yq dist-upgrade && \
 apt-get install -yq wget libgtk-3-0 libxtst-dev libxss-dev libgconf2-dev libnss3 libasound2-dev xvfb && \
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh  -b -p /miniconda && \
-/miniconda/bin/conda install -c plotly plotly-orca psutil requests && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# # plotly saving of images to file
+# RUN apt-get update && apt-get -yq dist-upgrade && \
+# apt-get install -yq wget libgtk-3-0 libxtst-dev libxss-dev libgconf2-dev libnss3 libasound2-dev xvfb && \
+# wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && bash Miniconda3-latest-Linux-x86_64.sh  -b -p /miniconda && \
+# /miniconda/bin/conda install -c plotly plotly-orca psutil requests && \
+# apt-get clean && rm -rf /var/lib/apt/lists/*
+
 ARG BUILD_NAME
-ENV BUILD_NAME $BUILD_NAME
 
 # Add cycshare user for running the service
 RUN groupadd ${BUILD_NAME} --gid=1000 && useradd -m ${BUILD_NAME} --uid=1000 --gid=1000 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
@@ -52,7 +59,9 @@ RUN touch /mysql_backup.log && touch /rsync.log
 RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data /${BUILD_NAME}_data/users /${BUILD_NAME}/migrations /var/log/${BUILD_NAME} /mysql_backup.log /rsync.log
 
 # comment during development
-COPY requirements.txt /${BUILD_NAME}/
+COPY requirements.txt /${BUILD_NAME}/requirements.txt
+
+RUN pip3 install Cython
 RUN pip3 install -r /${BUILD_NAME}/requirements.txt
 
 COPY LICENSE.md README.md config.py ${BUILD_NAME}.py requirements.txt setup.py .flaskenv /${BUILD_NAME}/
