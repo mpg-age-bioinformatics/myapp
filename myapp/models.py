@@ -62,8 +62,6 @@ class User(UserMixin, db.Model):
             # generate a random secret
             self.otp_secret = base64.b32encode(os.urandom(10)).decode('utf-8')
 
-
-
     def __repr__(self):
         return '<Email {}>'.format(self.email)
 
