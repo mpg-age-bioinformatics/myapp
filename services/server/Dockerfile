@@ -45,6 +45,7 @@ apt-get clean && rm -rf /var/lib/apt/lists/*
 # apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ARG BUILD_NAME
+ENV BUILD_NAME ${BUILD_NAME}
 
 # Add cycshare user for running the service
 RUN groupadd ${BUILD_NAME} --gid=1000 && useradd -m ${BUILD_NAME} --uid=1000 --gid=1000 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
