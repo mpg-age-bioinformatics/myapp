@@ -95,7 +95,6 @@ def change_private_routes(route , change, emails=None, domain=None):
         return None
                 
 if __name__ == "__main__":
-    from flaskapp import app
 
     if sys.argv[1] not in ["admin","routes","status"]:
         parser = argparse.ArgumentParser(description='Manage your flaskapp.')
