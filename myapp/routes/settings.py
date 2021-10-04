@@ -14,6 +14,7 @@ from flask import session
 import pyqrcode
 import io
 import base64
+import os
 
 
 dashapp = dash.Dash("settings",url_base_pathname='/settings/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
@@ -103,85 +104,66 @@ def make_layout(pathname):
         # style={"margin-top":"10px"},
         )
 
+    # imgByteArr = io.BytesIO()
+    # big_code = pyqrcode.create(current_user.get_totp_uri())
+    # big_code.svg(imgByteArr, scale=6 )
+    # imgByteArr = imgByteArr.getvalue()
+    # encoded=base64.b64encode(imgByteArr)
+    # img=html.Img(src='data:image/svg+xml;base64,{}'.format(encoded.decode()), height="200px")
+    # img=dbc.Row(dbc.Col(img,style={"textAlign":"center"}))
 
-    imgByteArr = io.BytesIO()
-    big_code = pyqrcode.create(current_user.get_totp_uri())
-    big_code.svg(imgByteArr, scale=6 )
-    imgByteArr = imgByteArr.getvalue()
-    encoded=base64.b64encode(imgByteArr)
-    img=html.Img(src='data:image/svg+xml;base64,{}'.format(encoded.decode()), height="200px")
-
-    activate_input=html.Div(
-                    [
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    dbc.Input(type="text", id="otp-input", placeholder="type code"),
-                                    width={"size":5,"offset":2},
-                                    style={"margin-right":"2px"}
-                                ),
-                                dbc.Col(
-                                    dbc.Button( "Enable", id="otp-enable", className="ml-auto", n_clicks=0 ) ,
-                                    width=1,
-                                    style={"textAlign":"left"}
-                                    # style={"margin":"2px"}
-                                )
-                            ],
-                            # justify="left",
-                            no_gutters=True,
-                            align="center",
-                            style={"margin-bottom":"15px"}
-                        ),
-                        html.Div(id="enable-feedback")
-                    ]
-                )
+    if not current_user.otp_enabled:
+        enable_disable_btn="Enable"
+    else:
+        enable_disable_btn="Disable"
 
     modal = html.Div(
-        [
-            dbc.Modal(
                 [
-                    dbc.ModalHeader("2FA QR Code"),
-                    dbc.ModalBody(
-                        [ 
-                            dbc.Row(dbc.Col(img,style={"textAlign":"center"})),
-                            activate_input,
-                            html.Div(id="backup-codes-output"),
-                            dbc.Row("You can use Google Authenticator on your phone to scan the QR code and enable \
-                            Two-Factor Authentication.",style={"textAlign":"justify","margin":"2px"})
-                        ]
-                    ),
-                    dbc.ModalFooter(
-                        dbc.Row(
-                            [
-                                dbc.Button(
-                                    "Backup codes",
-                                    id="backup-codes-btn",
-                                    className="ml-auto",
-                                    n_clicks=0,
-                                    disabled=True,
-                                    style={"margin":"2px"}
+                    dbc.Modal(
+                        [
+                            dbc.ModalHeader("2FA QR Code"),
+                            html.Div(id="modal-body"),
+                            # html.Div(id="modal-body"),
+                            dbc.ModalFooter(
+                                dbc.Row(
+                                    [
+                                        dbc.Button(
+                                            "Backup codes",
+                                            id="backup-codes-btn",
+                                            className="ml-auto",
+                                            n_clicks=0,
+                                            disabled=True,
+                                            style={"margin":"2px"}
+                                        ),
+                                        dbc.Button(
+                                            children=enable_disable_btn,
+                                            id="enable-disable",
+                                            className="ml-auto",
+                                            n_clicks=0,
+                                            disabled=False,
+                                            style={"margin":"2px"}
+                                        ),
+                                        dbc.Button(
+                                            "Close",
+                                            id="close-centered",
+                                            className="ml-auto",
+                                            n_clicks=0,
+                                            style={"margin":"2px"}
+                                        )
+                                    ],
+                                    no_gutters=False,
+                                    justify="end",
                                 ),
-                                dbc.Button(
-                                    "Close",
-                                    id="close-centered",
-                                    className="ml-auto",
-                                    n_clicks=0,
-                                    style={"margin":"2px"}
-                                )
-                            ],
-                            no_gutters=False,
-                            justify="end",
-                        ),
+                            ),
+                        ],
+                        id="modal-centered",
+                        centered=True,
+                        is_open=False,
                     ),
-                ],
-                id="modal-centered",
-                centered=True,
-                is_open=False,
-            ),
-        ]
-    )
+                ]
+            )    
 
-    show_qrcode=dbc.Button("Show QR code", id="open-centered")
+    show_qrcode=dbc.Button("Show QR code", id="open-centered", n_clicks=0)
 
     user_settings=dbc.Row(
         dbc.Col(
@@ -245,13 +227,79 @@ def make_response(text,color,id="some-id",is_open=True, duration=None):
                     ]
                 ),
             ],
-
             row=True,
         ),
         ],
-        # style={"margin-top":"10px"},
         )
     return r
+
+
+@dashapp.callback(
+    Output("modal-body", "children"),
+    Input("modal-centered", "is_open")
+)
+def make_modal_body(is_open):
+    # ### debug code
+    # user=User.query.filter_by(id=current_user.id).first()
+    # user.otp_enabled=False
+    # db.session.add(user)
+    # db.session.commit()
+    # #########
+    if is_open:
+        if not current_user.otp_enabled :
+            imgByteArr = io.BytesIO()
+            big_code = pyqrcode.create(current_user.get_totp_uri())
+            big_code.svg(imgByteArr, scale=6 )
+            imgByteArr = imgByteArr.getvalue()
+            encoded=base64.b64encode(imgByteArr)
+            img=dbc.Row(dbc.Col(html.Img(src='data:image/svg+xml;base64,{}'.format(encoded.decode()), height="200px"),style={"textAlign":"center"}))
+            otp_field=html.Div(
+                                [
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                dbc.Input(type="text", id="otp-input", placeholder="type code"),
+                                                style={"margin-right":"2px"},
+                                                width=4,
+                                            ),
+                                        ],
+                                        no_gutters=True,
+                                        align="center",
+                                        justify="center",
+                                        style={"margin-bottom":"15px"}
+                                    ),
+                                    html.Div(id="enable-feedback")
+                                ]
+                            )
+            body_text=dbc.Row("You can use Google Authenticator on your phone to scan the QR code and enable \
+            Two-Factor Authentication.",style={"textAlign":"justify","margin":"2px"})
+        else:
+            img=None
+            otp_field=None
+            body_text=dbc.Row("2FA is enabled.",style={"textAlign":"justify","margin":"2px"})
+
+        modal=dbc.ModalBody(
+                [ 
+                    img,
+                    otp_field,
+                    html.Div(id="backup-codes-output"),
+                    body_text
+                ]
+            )
+
+        return modal
+    else:
+        return None
+
+@dashapp.callback(
+    Output("enable-disable", "disabled"),
+    Input("otp-input", "value"),
+    prevent_initial_call=True)
+def enable_enable(n1):
+    if n1:
+        return False
+    else:
+        return True
 
 @dashapp.callback(
     Output("navbar-collapse", "is_open"),
@@ -272,24 +320,83 @@ def generate_backup_codes(n1):
         return html.Div("backup-codes")
 
 @dashapp.callback(
+    Output("enable-feedback", "children"),
     Output("backup-codes-btn", "disabled"),
-    [ Input("otp-enable", "n_clicks") ],
-    prevent_initial_call=True)
-def enable_2fa(n1):
-    print("!!!!!!", n1)
-    if n1:
-        return False
+    Output("enable-disable", "children"),
+    Input("enable-disable", "n_clicks"),
+    State("otp-input", "value"),
+    prevent_initial_call=True
+)
+def enable_2fa(enable, otp):
+    if enable == 1:
+        if not current_user.otp_enabled :
+            user=User.query.filter_by(id=current_user.id).first()
+            user.otp_enabled=True
+            db.session.add(user)
+            db.session.commit()
+            msg=dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.Alert( "2FA Enabled" ,color="success",  dismissable=False),
+                        style={ "textAlign":"center"},
+                        width=4,
+                    ),
+                ],
+                no_gutters=True,
+                align="center",
+                justify="center",
+                style={"margin-bottom":"15px"}
+            )
 
+            return msg, False, "Disable"
+        else :
+        
+            user=User.query.filter_by(id=current_user.id).first()
+            user.otp_secret=base64.b32encode(os.urandom(10)).decode('utf-8')
+            user.otp_enabled=False
+            db.session.add(user)
+            db.session.commit()
 
+            current_user.otp_enabled=False
+
+            msg=dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.Alert( "2FA Disabled" ,color="danger",  dismissable=False),
+                        style={ "textAlign":"center"},
+                        width=4,
+                    ),
+                ],
+                no_gutters=True,
+                align="center",
+                justify="center",
+                style={"margin-bottom":"15px"}
+            )
+
+            print("disbled")
+
+            return msg, True, "Enable"
+        
 @dashapp.callback(
     Output("modal-centered", "is_open"),
-    [Input("open-centered", "n_clicks"), Input("close-centered", "n_clicks")],
+    Output("open-centered", "n_clicks"),
+    Output("close-centered", "n_clicks"),
+    Output("enable-disable", "n_clicks"),
+    [Input("open-centered", "n_clicks"), Input("close-centered", "n_clicks"),Input("enable-disable", "n_clicks")],
     [State("modal-centered", "is_open")],
 )
-def toggle_modal(n1, n2, is_open):
-    if n1 or n2:
-        return not is_open
-    return is_open
+def toggle_modal(n1, n2,disable, is_open):
+    print(n1,n2,disable,is_open)
+    if disable == 1:
+        if current_user.otp_enabled :
+            return False, 0,0,0
+        else:
+            return True, 0,0,0
+    if n1 == 1:
+        return True, 0,0,0
+    if n2 == 1 :
+        return not is_open, 0,0,0
+    return is_open, 0,0,0
 
 @dashapp.callback(
     Output('pass-power', 'children'),

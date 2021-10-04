@@ -55,6 +55,8 @@ class User(UserMixin, db.Model):
     domain = db.Column(db.String(120), index=True, unique=False)
     administrator=db.Column(db.Boolean, nullable=False, default=False)
     otp_secret = db.Column(db.String(16))
+    otp_enabled = db.Column(db.Boolean, nullable=False, default=False)
+    # otp_enabled= db.Column(db.Boolean, nullable=False, default=False)
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
