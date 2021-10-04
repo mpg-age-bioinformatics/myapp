@@ -46,7 +46,13 @@ SECRET_KEY=$(openssl rand -base64 20)
 EOF
 ```
 
-To deploy cycshare edit the `docker-compose.yml` accordingly and then:
+Create local folders:
+
+```
+mkdir -p ~/myapp_backup/stats ~/myapp_backup/users_data ~/myapp_backup/mariadb
+```
+
+To deploy myapp edit the `docker-compose.yml` accordingly and then:
 ```bash
 docker-compose up -d --build
 ```

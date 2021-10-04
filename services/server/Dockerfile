@@ -50,9 +50,6 @@ ARG BUILD_NAME
 RUN groupadd ${BUILD_NAME} --gid=1000 && useradd -m ${BUILD_NAME} --uid=1000 --gid=1000 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
     chpasswd
 
-# remove old cycshare files
-RUN rm -rf /${BUILD_NAME}
-
 # data folders and access rights
 RUN mkdir -p /var/log/${BUILD_NAME} /${BUILD_NAME}/.git /${BUILD_NAME}/data /${BUILD_NAME}/${BUILD_NAME} /${BUILD_NAME}/migrations /${BUILD_NAME}/utils /${BUILD_NAME}/services /${BUILD_NAME}_data/users /backup/users_data /backup/mariadb
 RUN touch /mysql_backup.log && touch /rsync.log
