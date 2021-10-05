@@ -54,7 +54,7 @@ class User(UserMixin, db.Model):
     administrator=db.Column(db.Boolean, nullable=False, default=False)
     otp_secret = db.Column(db.String(16))
     otp_enabled = db.Column(db.Boolean, nullable=False, default=False)
-    otp_backup= db.Column(PickleType)
+    otp_backup= db.Column(PickleType,default=False)
 
 
     def __init__(self, **kwargs):
@@ -75,18 +75,23 @@ class User(UserMixin, db.Model):
     def set_backup_tokens(self, tokens ):
         tokens_=[]
         for t in tokens :
-            tokens_.append( generate_password_hash(t) )
-        self.otp_backup=tokens
+            tokens_.append( generate_password_hash(str(t) ))
+        self.otp_backup=tokens_
 
     def check_backup_tokens(self, token):
         tokens_=[]
         valid=False
-        for t in self.tokens :
-            if not check_password_hash(t, token) :
+        for t in self.otp_backup :
+            # print(t,f'otp{str(token)}',check_password_hash(str(t), str(token) ) )
+            if not check_password_hash(str(t), str(token) ) :
                 tokens_.append(t)
             else:
                 valid=True
-        self.tokens=tokens_
+        print("Verifying")
+        if tokens_:
+            self.tokens=tokens_
+        else:
+            self.tokens=None
         return valid
                 
 

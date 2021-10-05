@@ -53,7 +53,13 @@ footer=html.Div([
     ])
 
 
-dashapp.layout=html.Div([dcc.Location(id='url', refresh=False),html.Div(id="page-content")])
+dashapp.layout=html.Div(
+    [
+        dcc.Location(id='url', refresh=False),
+        html.Div(id="page-content", style={'display': 'block'}),
+        html.Div(id="otp-content", style={'display': 'none'}) 
+    ]
+)
 
 @dashapp.callback(
     Output('page-content', 'children'),
@@ -81,6 +87,43 @@ def generate_content(pathname):
             align="center",
             justify="center",
             style={"min-height": "95vh", 'verticalAlign': 'center'}) #, 
+
+@dashapp.callback(
+    Output('otp-content', 'children'),
+    Input('url', 'pathname'))
+def generate_otp_content(pathname):
+    otp = dbc.FormGroup(
+        [
+            dbc.Input(type="text", id="otp", placeholder="2FA token", style={"max-width":"150px","margin":"2px", "height":"40px"}),
+        ]
+    )
+
+    otp_content=dbc.Row( [
+        dbc.Col( 
+            [ 
+                dbc.Card(  
+                    dbc.Form(
+                        [ 
+                            dbc.Row([
+                                    otp,
+                                    dbc.Button(id='submit-otp-button', n_clicks=0, children='Submit', style={"width":"auto","margin":"2px", "height":"40px"}),
+                                    dbc.Button(id='cancel-otp-button', n_clicks=0, children='Cancel', style={"width":"auto","margin":"2px","height":"40px"}),
+                                    html.Div(id="otp-feedback", style={"margin":"10px","width":"100%"})
+                            ],
+                            justify="center",
+                            no_gutters=True, style={"height":"10px" }
+                            ),
+                        ]
+                    )
+                    , body=True, className="border-0",style={ "max-width":"370px"}) ], 
+                xs=12 ,sm=8,md=6, lg=5, xl=4, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
+        navbar_A
+    ],
+    align="center",
+    justify="center",
+    style={"min-height": "95vh", 'verticalAlign': 'center'})
+    return otp_content
+
 
 @dashapp.callback(
     Output('token-feedback', 'children'),
@@ -140,6 +183,8 @@ def verify_email_token(pathname):
     Output('username-feedback', 'children'),
     Output('pass-feedback', 'children'),
     Output('submission-feedback', 'children'),
+    Output('page-content', 'style'),
+    Output('otp-content', 'style'),
     Input('submit-button-state', 'n_clicks'),
     State('username', 'value'),
     State('input-password', 'value'),
@@ -150,34 +195,42 @@ def login_buttom(n_clicks, username, passA, keepsigned):
     username_=None
     passA_=None
     submission_=None
+    page_={'display': 'block'}
+    otp_={'display': 'none'}        
+
+    if n_clicks==0:
+        return username_, passA_, submission_, page_, otp_
 
     if not username:
         username_=dbc.Alert( "*required" ,color="warning")
     if not passA:
         passA_=dbc.Alert( "*required" ,color="warning")
     if username_ or passA_:
-        return username_, passA_, submission_
+        return username_, passA_, submission_, page_, otp_
 
     if check_email(username):
         user=User.query.filter_by(email=username).first()
     else:
         user=User.query.filter_by(username=username).first()
     if not user:
-        return dbc.Alert( "Could not find username!" ,color="warning"), passA_, submission_
+        return dbc.Alert( "Could not find username!" ,color="warning"), page_, otp_
 
     if not user.check_password(passA):
-        return  username_, dbc.Alert( "Wrong password!" ,color="warning"), submission_
+        return  username_, dbc.Alert( "Wrong password!" ,color="warning"), submission_, page_, otp_
 
     if not user.confirmed_on : 
-        return username_, passA_, dbc.Alert( "Please confirm your email address." ,color="warning")
+        return username_, passA_, dbc.Alert( "Please confirm your email address." ,color="warning"), page_, otp_
     
     if not user.active:
-        return username_, passA_, dbc.Alert( "This account is not active." ,color="warning")
+        return username_, passA_, dbc.Alert( "This account is not active." ,color="warning"), page_, otp_
 
     if keepsigned :
         keepsigned_=True
     else:
         keepsigned_=False
+
+    if user.otp_enabled:
+        return username_, passA_, submission_ , otp_ , page_      
 
     login_user(user, remember=keepsigned_)
     session.permanent = keepsigned_
@@ -187,7 +240,72 @@ def login_buttom(n_clicks, username, passA, keepsigned):
     db.session.commit()
     if not next_page or url_parse(next_page).netloc != '':
         next_page = '/home/'
-    return None, None, dcc.Location(pathname=next_page, id='index')
+    return None, None, dcc.Location(pathname=next_page, id='index'), page_, otp_
 
 
+
+@dashapp.callback(
+    Output('otp-feedback', 'children'),
+    Input('submit-otp-button', 'n_clicks'),
+    Input('cancel-otp-button', 'n_clicks'),
+    State('username', 'value'),
+    State('input-password', 'value'),
+    State('keepsigned', 'value'),
+    State('otp', 'value'),
+    prevent_initial_call=True
+    )
+def otp_buttoms(otp_clicks, cancel_clicks, username, passA, keepsigned, otp):
+    if cancel_clicks:
+        dcc.Location(pathname="/index/", id='index', refresh=True)
+    if otp_clicks:
+        went_wrong=dbc.Alert( "Something went wrong!" ,color="danger", style={"width":"100%"})
+        not_verified=dbc.Alert( "Could not verify token." ,color="danger", style={"width":"100%"})
+
+        if (not username ) or ( not passA ) or ( not otp ) :
+            return went_wrong
+
+        if check_email(username):
+            user=User.query.filter_by(email=username).first()
+        else:
+            user=User.query.filter_by(username=username).first()
+        if not user:
+            return went_wrong
+
+        if not user.check_password(passA):
+            return  went_wrong
+
+        if not user.confirmed_on : 
+            return went_wrong
+        
+        if not user.active:
+            return went_wrong
+
+        if keepsigned :
+            keepsigned_=True
+        else:
+            keepsigned_=False
+
+        if user.otp_enabled:
+            if not user.verify_totp(otp) :
+                if user.otp_backup :
+                    if not user.check_backup_tokens(otp) :
+                        return not_verified
+                else:
+                    return not_verified
+
+
+        login_user(user, remember=keepsigned_)
+        session.permanent = keepsigned_
+
+        next_page = request.args.get('next')
+        db.session.add(user)
+        db.session.commit()
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = '/home/'
+        return dcc.Location(pathname=next_page, id='index')
+
+    elif cancel_clicks :
+        return dcc.Location(pathname="/index/", id='index', refresh=True)
+    
+    return None
 

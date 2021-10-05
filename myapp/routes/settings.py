@@ -218,6 +218,12 @@ def make_layout(pathname):
         ],
         )
 
+    if current_user.otp_enabled :
+        otp_status="Enabled"
+    else:
+        otp_status="Disabled"
+
+
     user_settings=dbc.Row(
         dbc.Col(
             dbc.Card(
@@ -249,6 +255,7 @@ def make_layout(pathname):
                         security to your online accounts. It requires an additional login credential \
                             – beyond just the username and password – to gain account access, and \
                                 getting that second credential requires access to something that's yours, eg. your phone.", style={"max-width":"500px"}),
+                    html.P(f"Status: {otp_status}", style={"max-width":"500px"}),      
                     show_qrcode,
                     modal,
                 ],
@@ -318,13 +325,22 @@ def toggle_navbar_collapse(n, is_open):
     prevent_initial_call=True)
 def generate_backup_codes(n1):
     if n1 == 1:
+        backup_tokens=[]
+        for i in 1, 2, 3, 4 , 5, 6 :
+            t=random.randint(100000000, 999999999)
+            backup_tokens.append(str(t) )
+        user=User.query.filter_by(id=current_user.id).first()
+        user.set_backup_tokens(backup_tokens) 
+        db.session.add(user)
+        db.session.commit()
+
         rand=html.Div(
                 [
                     dbc.Row(
                         [
-                            dbc.Col(random.randint(100000000, 999999999), style={"textAlign":"center"} ),
-                            dbc.Col(random.randint(100000000, 999999999), style={"textAlign":"center"} ),
-                            dbc.Col(random.randint(100000000, 999999999) , style={"textAlign":"center"}),
+                            dbc.Col(backup_tokens[0], style={"textAlign":"center"} ),
+                            dbc.Col(backup_tokens[1], style={"textAlign":"center"} ),
+                            dbc.Col(backup_tokens[2] , style={"textAlign":"center"}),
                         ],
                         no_gutters=True,
                         align="center",
@@ -332,9 +348,9 @@ def generate_backup_codes(n1):
                     ),
                     dbc.Row(
                         [
-                            dbc.Col(random.randint(100000000, 999999999), style={"textAlign":"center"} ),
-                            dbc.Col(random.randint(100000000, 999999999) , style={"textAlign":"center"}),
-                            dbc.Col(random.randint(100000000, 999999999) , style={"textAlign":"center"}),
+                            dbc.Col(backup_tokens[3], style={"textAlign":"center"} ),
+                            dbc.Col(backup_tokens[4] , style={"textAlign":"center"}),
+                            dbc.Col(backup_tokens[5] , style={"textAlign":"center"}),
                         ],
                         no_gutters=True,
                         align="center",
@@ -399,7 +415,7 @@ def toggle_modal(n1, n2,disable, is_open,otp):
                 msg= dbc.Row(
                         [
                             dbc.Col(
-                                dbc.Alert( "Could not verify code" ,color="danger", dismissable=True),
+                                dbc.Alert( "Could not verify token" ,color="danger", dismissable=True),
                                 style={"margin-right":"2px", "textAlign":"center"} ,
                                 width=10,
                             ),
@@ -419,6 +435,7 @@ def toggle_modal(n1, n2,disable, is_open,otp):
             user=User.query.filter_by(id=current_user.id).first()
             user.otp_secret = base64.b32encode(os.urandom(10)).decode('utf-8')
             user.otp_enabled=False
+            user.otp_backup=None
             db.session.add(user)
             db.session.commit()
 
@@ -510,7 +527,7 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpa
             submission_ = make_response( "Please provide 2FA token." ,color="warning")
             return first_name_,last_name_,username_, emailA_, emailB_, cpass_, passA_,passB_,notify_,submission_,clear_cpass_, clear_passA_, clear_passB_
         if not current_user.verify_totp( otp ) :
-            submission_ = make_response( "Could not verify 2FA token." ,color="danger")
+            submission_ = make_response( "Could not verify token" ,color="danger")
             return first_name_,last_name_,username_, emailA_, emailB_, cpass_, passA_,passB_,notify_,submission_,clear_cpass_, clear_passA_, clear_passB_
 
     if ( first_name ) and (first_name != current_user.firstname):
