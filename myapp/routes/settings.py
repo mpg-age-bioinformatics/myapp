@@ -57,6 +57,7 @@ def make_layout(pathname):
     username_input=make_text_form_row("Username",current_user.username,"username","username")
     email_input=make_text_form_row("Email",current_user.email,"Enter email","input-email", "email")
     email_input_2=make_text_form_row("Repeat email",current_user.email,"Enter email again","input-email-2", "email")
+    current_password_input=make_text_form_row("Current password",None,"Enter password","current-password", "password")
     password_input=make_text_form_row("Password",None,"Enter password","input-password", "password")
     password_input_2=make_text_form_row("Repeat password",None,"Enter password again","input-password-2", "password")
 
@@ -223,6 +224,8 @@ def make_layout(pathname):
                     html.Div(id="email-feedback"),
                     email_input_2,
                     html.Div(id="email2-feedback"),
+                    current_password_input,
+                    html.Div(id="current-pass-feedback"),
                     password_input,
                     password_input_2,
                     html.Div(id="pass-power"),
@@ -408,13 +411,16 @@ def toggle_modal(n1, n2,disable, is_open,otp):
     Input('input-password', 'value'),
     prevent_initial_call=True)
 def check_pass_power(passA):
-    passdic=password_check(passA)
-    if passdic["passtype"] == "weak":
-        return make_response( "please use a strong password" ,color="danger")
-    elif passdic["passtype"] == "medium":
-        return make_response( "please use a strong password" ,color="warning")
-    elif passdic["passtype"] == "strong":
-        return make_response( "strong password" ,id="alert-auto", color="success", is_open=True, duration=1500)
+    if passA:
+        passdic=password_check(passA)
+        if passdic["passtype"] == "weak":
+            return make_response( "please use a strong password" ,color="danger")
+        elif passdic["passtype"] == "medium":
+            return make_response( "please use a strong password" ,color="warning")
+        elif passdic["passtype"] == "strong":
+            return make_response( "strong password" ,id="alert-auto", color="success", is_open=True, duration=1500)
+    else:
+        return None
 
 @dashapp.callback(
     Output("alert-auto", "is_open"),
@@ -432,49 +438,59 @@ def toggle_alert(n, is_open):
     Output('username-feedback', 'children'),
     Output('email-feedback', 'children'),
     Output('email2-feedback', 'children'),
+    Output('current-pass-feedback', 'children'),
     Output('pass-feedback', 'children'),
     Output('pass2-feedback', 'children'),
     Output('checkbox-feedback', 'children'),
     Output('submission-feedback', 'children'),
+     Output('current-password', 'value'),
+    Output('input-password', 'value'),
+    Output('input-password-2', 'value'),
     Input('submit-button-state', 'n_clicks'),
     State('first_name', 'value'),
     State('last_name', 'value'),
     State('username', 'value'),
     State('input-email', 'value'),
     State('input-email-2', 'value'),
+    State('current-password', 'value'),
     State('input-password', 'value'),
     State('input-password-2', 'value'),
     State('notify', 'value'),
     prevent_initial_call=True
     )
-def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, passA, passB, notify):
+def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpass, passA, passB, notify):
     first_name_=None
     last_name_=None
     username_=None
     emailA_=None
     emailB_=None
+    cpass_=None
     passA_=None
     passB_=None
     notify_=None
     submission_=None
+    clear_cpass_=None
+    clear_passA_=None
+    clear_passB_=None
+
 
     if ( first_name ) and (first_name != current_user.firstname):
         user=User.query.filter_by(id=current_user.id).first()
         user.firstname=first_name
         db.session.add(user)
         db.session.commit()
-        first_name_=make_response("First name changed." ,color="success") #dbc.Alert( "First name changed." ,color="success") # style={"font-size":"10px"}
+        first_name_=make_response("First name changed." ,color="success", duration=1500)
     if ( last_name ) and (last_name != current_user.lastname):
         user=User.query.filter_by(id=current_user.id).first()
         user.lastname=last_name
         db.session.add(user)
         db.session.commit()
-        last_name_=make_response( "Last name changed." ,color="success")
+        last_name_=make_response( "Last name changed." ,color="success", duration=1500)
     if  ( username ) and (username != current_user.username) :
         user=User.query.filter_by(username=username).first()
         if user:
             if user.username == username:
-                username_=make_response( "Username alread exists. Please pick a different username." ,color="danger")
+                username_=make_response( "Username already exists. Please pick a different username." ,color="danger")
             else:
                 user=None
         if not user:
@@ -482,9 +498,8 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, pas
             user.username=username
             db.session.add(user)
             db.session.commit()
-            username_=make_response( "Username changed." ,color="success")
-    # if not email:
-    #     email_=dbc.Alert( "*required" ,color="warning")
+            username_=make_response( "Username changed." ,color="success", duration=1500)
+
     if (emailA) and (emailA != current_user.email):
         if emailA != emailB :
             emailB_=make_response( "Emails do not match." ,color="warning")
@@ -511,11 +526,13 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, pas
                 time.sleep(2)
 
                 emailA_=dcc.Location(pathname="/logout/email/", id='login')
-                return first_name_,last_name_,username_, emailA_, emailB_, passA_,passB_,notify_,submission_
+                return first_name_,last_name_,username_, emailA_, emailB_, cpass_, passA_,passB_,notify_,submission_,clear_cpass_, clear_passA_, clear_passB_
 
     if ( passA ) and ( not current_user.check_password(passA) ):
         passdic=password_check(passA)
-        if passdic["passtype"] != "strong" :
+        if  ( not current_user.check_password(cpass) ) :
+            cpass_= make_response( "Wrong password" ,color="danger")
+        elif passdic["passtype"] != "strong" :
             passA_=make_response( "Please use a strong password." ,color="warning")
         elif not passB:
             passB_=make_response( "*required" ,color="warning")
@@ -527,16 +544,16 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, pas
             user.password_set=datetime.utcnow()
             db.session.add(user)
             db.session.commit()
-            passA_=make_response( "Password changed." ,color="success")
+            passA_=make_response( "Password changed." ,color="success", duration=1500)
  
     if  ( notify  )and ( not current_user.notifyme ):
         user=User.query.filter_by(id=current_user.id).first()
         user.notifyme=True
-        notify_=make_response( "Notifications enabled." ,color="success")
+        notify_=make_response( "Notifications enabled." ,color="success", duration=1500)
 
     elif ( not notify ) and ( current_user.notifyme ):
         user=User.query.filter_by(id=current_user.id).first()
         user.notifyme=False
         notify_=make_response( "Notifications disabled." ,color="warning")
 
-    return first_name_,last_name_,username_, emailA_, emailB_, passA_,passB_,notify_,submission_
+    return first_name_,last_name_,username_, emailA_, emailB_, cpass_, passA_,passB_,notify_,submission_,clear_cpass_, clear_passA_, clear_passB_

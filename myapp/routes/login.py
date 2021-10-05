@@ -72,7 +72,7 @@ def generate_content(pathname):
                                                 html.Div(id="pass-feedback"),
                                                 dbc.Row( keppsigned ),
                                                 html.Button(id='submit-button-state', n_clicks=0, children='Login', style={"width":"auto","margin-top":4, "margin-bottom":4}),
-                                                html.Div(id="submission-feedback"),
+                                                html.Div(id="submission-feedback", style={"margin-top":"10px"}),
                                             ])
                                     , body=True), footer ],
                         sm=9,md=6, lg=5, xl=5, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
@@ -122,7 +122,7 @@ def verify_email_token(pathname):
             msg=f'This account has already been confirmed but is currently not active.'
         else:
             msg="This account has already been confirmed. Please login."
-        return dbc.Alert( msg ,color="warning")
+        return dbc.Alert( msg ,color="warning" )
     user.confirmed_on = datetime.now()
     db.session.add(user)
     db.session.commit()
