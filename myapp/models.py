@@ -1,7 +1,7 @@
 from hashlib import md5
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-from myapp import app, db, login_manager
+from myapp import app, db, login_manager, PRIVATE_ROUTES, PUBLIC_VIEWS
 from flask_login import UserMixin
 from time import time
 import jwt
@@ -11,8 +11,6 @@ import os
 import base64
 import onetimepass
 
-PRIVATE_ROUTES=[ ]
-PUBLIC_VIEWS=[ ]
 
 class PrivateRoutes(db.Model):
     id = db.Column(db.Integer, primary_key=True)

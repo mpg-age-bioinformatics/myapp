@@ -10,6 +10,9 @@ from flask_mail import Mail
 from flask_session import Session
 from waitress import serve
 
+PRIVATE_ROUTES=[ ]
+PUBLIC_VIEWS=[ ]
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app ,engine_options={"pool_pre_ping":True, "pool_size":0,"pool_recycle":-1} )
@@ -20,7 +23,7 @@ mail = Mail(app)
 sess = Session()
 sess.init_app(app)
 
-from myapp import models, errors #, index, routes
+from myapp import models, errors
 from myapp.routes import index, register, login, forgot, logout, contact, about, privacy, impressum, admin, settings, home
 
 if not app.debug:
@@ -49,6 +52,7 @@ if not app.debug:
 
     app.logger.setLevel(logging.INFO)
     app.logger.info(f'{app.config["APP_NAME"]} startup')
+
 
 # if __name__ == "__main__":
 #    #app.run() ##Replaced with below code to run it using waitress 
