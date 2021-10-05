@@ -93,3 +93,11 @@ def send_validate_change_email(user):
                                         user=user, token=token, app_name=APP_TITLE, app_url=APP_URL),\
             reply_to=app.config['MAIL_USERNAME'] )
             
+    send_email(f'[{APP_TITLE}] contact',
+                sender=app.config['MAIL_USERNAME'],
+               recipients=app.config['ADMINS'],
+               text_body=render_template('email/general.txt',
+                                         firstname=current_user.firstname, body=body,app_name=APP_TITLE),
+               html_body=render_template('email/general.html',
+                                         firstname=current_user.firstname, body=body,app_name=APP_TITLE),\
+               reply_to=app.config['MAIL_USERNAME'] )

@@ -1,0 +1,6 @@
+Hi {{ firstname }}</p>
+
+{{ body }}
+
+Sincerely,
+{{app_name}}

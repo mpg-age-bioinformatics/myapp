@@ -5,12 +5,12 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from myapp.models import User
-from myapp.email import send_validate_change_email
+from myapp.email import send_validate_change_email, send_email
 from datetime import datetime
 import time
 from ._utils import META_TAGS, check_email, password_check, navbar_A, protect_dashviews, make_navbar_logged
 from flask_login import current_user, logout_user
-from flask import session
+from flask import session, render_template
 import pyqrcode
 import io
 import base64
@@ -87,18 +87,26 @@ def make_layout(pathname):
             row=True,
         ),
         ],
-        # style={"margin-top":"10px"},
         )
+
+    if current_user.otp_enabled:
+        otp_changes=dbc.Col(
+                        dbc.Input(type="text", id="changes-otp", placeholder="2FA token", style={"width":"330px","margin-left":"2px"})                    
+                        )
+    else:
+        otp_changes=dbc.Label("", id="changes-otp",style={"width":"330px","margin-left":"2px","margin-top":4, "margin-bottom":4})
 
     submit_btn=dbc.Form( [ 
         dbc.FormGroup(
             [ 
-                dbc.Label("", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
-                dbc.Col(
-                    [ 
-                        dbc.Button(id='submit-button-state', n_clicks=0, children='Submit changes', style={"width":"330px","margin-left":"2px","margin-top":4, "margin-bottom":4}),
-                    ]
-                ),
+                # dbc.Col(
+                    # [ 
+                        dbc.Button(id='submit-button-state', n_clicks=0, children='Submit', style={"min-width":"150px","margin-left":"20px"}),
+                    # ]
+                # ),
+                otp_changes
+                , # xs=2,sm=3,md=3,lg=2,xl=2,
+    
             ],
 
             row=True,
@@ -107,7 +115,7 @@ def make_layout(pathname):
         )
 
     if not current_user.otp_enabled:
-        btn_text="Show QR code"
+        btn_text="QR code"
     else:
         btn_text="Disable"
 
@@ -197,12 +205,13 @@ def make_layout(pathname):
     show_qrcode=dbc.Form( [ 
         dbc.FormGroup(
             [ 
-                dbc.Label("", style={"min-width":"250px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
                 dbc.Col(
                     [ 
-                        dbc.Button(id="open-centered", n_clicks=0, children=btn_text, style={"width":"230px","margin-left":"2px","margin-top":4, "margin-bottom":4}),
+                        dbc.Button(id="open-centered", n_clicks=0, children=btn_text, style={"min-width":"150px"}),
                     ]
                 ),
+                dbc.Label("", style={"width":"230px","margin-left":"2px","margin-top":4, "margin-bottom":4}), # xs=2,sm=3,md=3,lg=2,xl=2,
+
             ],
             row=True,
         ),
@@ -352,7 +361,6 @@ def generate_backup_codes(n1):
     [State("modal-centered", "is_open"), State("otp-input", "value")],
 )
 def toggle_modal(n1, n2,disable, is_open,otp):
-    print(n1,n2,disable,is_open,otp)
     msg=None
     if disable == 1:
         if not current_user.otp_enabled :
@@ -361,6 +369,18 @@ def toggle_modal(n1, n2,disable, is_open,otp):
                 user.otp_enabled=True
                 db.session.add(user)
                 db.session.commit()
+
+
+                body="2FA has been enabled."
+                send_email(f'[{app.config["APP_TITLE"]}] 2FA enabled', \
+                    sender=app.config['MAIL_USERNAME'], \
+                    recipients=[ current_user.email ], \
+                    text_body=render_template('email/general.txt',
+                        firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),
+                    html_body=render_template('email/general.html',
+                        firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),\
+                    reply_to=app.config['MAIL_USERNAME'] )
+
                 msg= dbc.Row(
                         [
                             dbc.Col(
@@ -401,6 +421,17 @@ def toggle_modal(n1, n2,disable, is_open,otp):
             user.otp_enabled=False
             db.session.add(user)
             db.session.commit()
+
+            body="2FA has been disabled."
+            send_email(f'[{app.config["APP_TITLE"]}] 2FA disabled', \
+                sender=app.config['MAIL_USERNAME'], \
+                recipients=[ current_user.email ], \
+                text_body=render_template('email/general.txt',
+                    firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),
+                html_body=render_template('email/general.html',
+                    firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),\
+                reply_to=app.config['MAIL_USERNAME'] )
+
             return is_open, 0,0,0, dcc.Location(pathname="/settings/2fa/",refresh=True, id="settings-disable"), False, msg, otp
     if n2 == 1 :
         return not is_open, 0,0,0, dcc.Location(pathname="/settings/",refresh=True, id="settings-enable"), False, msg, otp
@@ -443,7 +474,7 @@ def toggle_alert(n, is_open):
     Output('pass2-feedback', 'children'),
     Output('checkbox-feedback', 'children'),
     Output('submission-feedback', 'children'),
-     Output('current-password', 'value'),
+    Output('current-password', 'value'),
     Output('input-password', 'value'),
     Output('input-password-2', 'value'),
     Input('submit-button-state', 'n_clicks'),
@@ -456,9 +487,10 @@ def toggle_alert(n, is_open):
     State('input-password', 'value'),
     State('input-password-2', 'value'),
     State('notify', 'value'),
+    State('changes-otp','value'),
     prevent_initial_call=True
     )
-def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpass, passA, passB, notify):
+def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpass, passA, passB, notify, otp):
     first_name_=None
     last_name_=None
     username_=None
@@ -473,6 +505,13 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpa
     clear_passA_=None
     clear_passB_=None
 
+    if current_user.otp_enabled:
+        if not otp :
+            submission_ = make_response( "Please provide 2FA token." ,color="warning")
+            return first_name_,last_name_,username_, emailA_, emailB_, cpass_, passA_,passB_,notify_,submission_,clear_cpass_, clear_passA_, clear_passB_
+        if not current_user.verify_totp( otp ) :
+            submission_ = make_response( "Could not verify 2FA token." ,color="danger")
+            return first_name_,last_name_,username_, emailA_, emailB_, cpass_, passA_,passB_,notify_,submission_,clear_cpass_, clear_passA_, clear_passB_
 
     if ( first_name ) and (first_name != current_user.firstname):
         user=User.query.filter_by(id=current_user.id).first()
@@ -498,6 +537,17 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpa
             user.username=username
             db.session.add(user)
             db.session.commit()
+
+            body="You username has been changed."
+            send_email(f'[{app.config["APP_TITLE"]}] username changed', \
+                sender=app.config['MAIL_USERNAME'], \
+                recipients=[ current_user.email ], \
+                text_body=render_template('email/general.txt',
+                    firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),
+                html_body=render_template('email/general.html',
+                    firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),\
+                reply_to=app.config['MAIL_USERNAME'] )
+
             username_=make_response( "Username changed." ,color="success", duration=1500)
 
     if (emailA) and (emailA != current_user.email):
@@ -544,6 +594,18 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpa
             user.password_set=datetime.utcnow()
             db.session.add(user)
             db.session.commit()
+
+            body="You password has been changed."
+            send_email(f'[{app.config["APP_TITLE"]}] password changed', \
+                sender=app.config['MAIL_USERNAME'], \
+                recipients=[ current_user.email ], \
+                text_body=render_template('email/general.txt',
+                    firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),
+                html_body=render_template('email/general.html',
+                    firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),\
+                reply_to=app.config['MAIL_USERNAME'] )
+
+
             passA_=make_response( "Password changed." ,color="success", duration=1500)
  
     if  ( notify  )and ( not current_user.notifyme ):
