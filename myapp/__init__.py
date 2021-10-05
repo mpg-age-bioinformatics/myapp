@@ -10,8 +10,11 @@ from flask_mail import Mail
 from flask_session import Session
 from waitress import serve
 
-PRIVATE_ROUTES=[ ]
-PUBLIC_VIEWS=[ ]
+from myapp.routes._private import _PRIVATE_ROUTES
+from myapp.routes._private import _PUBLIC_VIEWS
+
+PRIVATE_ROUTES=[ ] + _PRIVATE_ROUTES
+PUBLIC_VIEWS=[ ] + _PUBLIC_VIEWS
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -24,8 +27,9 @@ sess = Session()
 sess.init_app(app)
 
 from myapp import models, errors
-from myapp.routes import index, register, login, forgot, logout, contact, about, privacy, impressum, admin, settings, home
-
+from myapp.routes import index, register, home, login, forgot, logout, contact, about, privacy, impressum, admin 
+from myapp.routes._routes import *
+ 
 if not app.debug:
     if app.config['MAIL_SERVER']:
         auth = None
