@@ -77,7 +77,15 @@ def make_options(valuesin):
     return opts
 
 navbar_A = dbc.NavbarSimple(
-    [ dbc.NavItem( html.A(app.config['APP_TITLE'], style={"color":"gray","text-decoration": "none","textAlign":"right","margin-bottom":"25px","margin-top":"0px", "margin-right":"20px"},href="/index/")) ],
+    [ 
+        dbc.NavItem( 
+            html.A(
+                app.config['APP_TITLE'], 
+                style={"color":"gray","text-decoration": "none","textAlign":"right","margin-bottom":"25px","margin-top":"0px", "margin-right":"20px"},
+                href="/index/"
+            )
+        ) 
+    ],
     fixed='bottom',
     color='white',
     expand="xs",
@@ -108,19 +116,19 @@ def make_navbar_logged(page_title, current_user, links=navbar_links, expand='sm'
     encoded_image = base64.b64encode(open(image_filename, 'rb').read())
     img=html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode()), height="30px")
     navbar=dbc.Navbar(
-    [
-         html.A(
-            # Use row and col to control vertical alignment of logo / brand
-            dbc.Row(
-                [
-                    dbc.Col(img),
-                    dbc.Col(dbc.NavbarBrand(page_title, className="ml-2")),
-                ],
-                align="center",
-                no_gutters=True,
+        [
+            html.A(
+                # Use row and col to control vertical alignment of logo / brand
+                dbc.Row(
+                    [
+                        dbc.Col(img),
+                        dbc.Col(dbc.NavbarBrand(page_title, className="ml-2")),
+                    ],
+                    align="center",
+                    no_gutters=True,
+                ),
+                href=f'{app.config["APP_URL"]}/home/'
             ),
-            href=f'{app.config["APP_URL"]}/home/'
-        ),
         dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
         dbc.Collapse(
             dbc.Nav(

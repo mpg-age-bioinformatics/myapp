@@ -40,38 +40,55 @@ message=dbc.FormGroup(
     ]
 )
 
-footer=html.Div([
-    dbc.Row( 
-        html.Footer( [ html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
-                     html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
-                     html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/")] , 
-        style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
-        ),
-        style={"justify-content":"center"}
-        )
-    ])
+footer=html.Div(
+    [
+        dbc.Row( 
+            html.Footer( [ html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
+                        html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
+                        html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/")] , 
+            style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
+            ),
+            style={"justify-content":"center"}
+            )
+    ]
+)
 
-dashapp.layout=dbc.Row( [
-    dbc.Col( [ dbc.Card(  dbc.Form([ dcc.Location(id='url', refresh=False),
-                                    html.Div(id="page-redirect"),
-                                    html.H2("Contact", style={'textAlign': 'center'} ),
-                                    html.Div(id="submission-feedback"),
-                                    dbc.Row([ 
-                                        dbc.Col([ firstname_input,html.Div(id="firstname-feedback")] ),  
-                                        dbc.Col([ lastname_input,html.Div(id="lastname-feedback")] )] ),
-                                    email_input,
-                                    html.Div(id="email-feedback"),
-                                    message,
-                                    html.Div(id="message-feedback"),
-                                    html.Button(id='submit-button-state', n_clicks=0, children='Send', style={"width":"auto","margin-top":4, "margin-bottom":4}),
-                                ])
-                        , body=True), footer ],
-             md=8, lg=6, xl=4, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
-    navbar_A
-],
-align="center",
-justify="center",
-style={"min-height": "95vh", 'verticalAlign': 'center'})
+dashapp.layout=dbc.Row( 
+    [
+        dbc.Col( 
+            [ 
+                dbc.Card(  
+                    dbc.Form(
+                        [ 
+                            dcc.Location(id='url', refresh=False),
+                            html.Div(id="page-redirect"),
+                            html.H2("Contact", style={'textAlign': 'center'} ),
+                            html.Div(id="submission-feedback"),
+                            dbc.Row(
+                                [ 
+                                    dbc.Col([ firstname_input, html.Div(id="firstname-feedback") ]),  
+                                    dbc.Col([ lastname_input, html.Div(id="lastname-feedback") ] )
+                                ] 
+                            ),
+                            email_input,
+                            html.Div(id="email-feedback"),
+                            message,
+                            html.Div(id="message-feedback"),
+                            html.Button(id='submit-button-state', n_clicks=0, children='Send', style={"width":"auto","margin-top":4, "margin-bottom":4}),
+                        ]
+                    )
+                    , body=True
+                ), 
+                footer 
+            ],
+            md=8, lg=6, xl=4, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}
+        ),
+        navbar_A
+    ],
+    align="center",
+    justify="center",
+    style={"min-height": "95vh", 'verticalAlign': 'center'}
+)
 
 @dashapp.callback(
     Output('first_name', 'value'),

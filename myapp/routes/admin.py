@@ -112,15 +112,17 @@ def make_layout(pathname):
     status_deactivate_text=dbc.Input(type="text", id='status-deactivate-text', placeholder="deactivate reason",style=options_field_style)
     status_deactivate_btn=html.Button(id='status-deactivate-button', n_clicks=0, children='Deactivate', style=button_style)
 
-    user_status_form = html.Div([ 
-        dbc.Label(html.H4("User status"), style=h4_style),
-        make_form_row(opt_status_emails, status_activate_btn),
-        make_form_row(status_deactivate_text, status_deactivate_btn),
-        html.Div(id="status-deactivate-text-feedback",style=div_feedback_style),
-        html.Div(id="status-activate-feedback",style=div_feedback_style),
-        html.Div(id='status-deactivate-feedback',style=div_feedback_style),
-        html.Div(id='status-current-feedback',style=div_feedback_style)
-        ])
+    user_status_form = html.Div(
+        [ 
+            dbc.Label(html.H4("User status"), style=h4_style),
+            make_form_row(opt_status_emails, status_activate_btn),
+            make_form_row(status_deactivate_text, status_deactivate_btn),
+            html.Div(id="status-deactivate-text-feedback",style=div_feedback_style),
+            html.Div(id="status-activate-feedback",style=div_feedback_style),
+            html.Div(id='status-deactivate-feedback',style=div_feedback_style),
+            html.Div(id='status-current-feedback',style=div_feedback_style)
+        ]
+    )
 
     ### private routes
 
@@ -144,14 +146,17 @@ def make_layout(pathname):
     opt_routes_domains = dcc.Dropdown( options=empty_, placeholder="select a route first", id='opt-routes-domains', multi=True, style=options_field_style)
     routes_rm_btn=html.Button(id='routes-rm-button', disabled=True,  n_clicks=0, children='Remove', style=button_style)
 
-    private_routes_form = html.Div([ 
-        dbc.Label(html.H4("Private routes"), style=h4_style),
-        make_form_row(opt_routes_priv_routes, routes_list_btn),
-        make_form_row(opt_routes_no_access, routes_grant_btn),
-        make_form_row(opt_routes_access, routes_revoke_btn),
-        make_form_row(routes_domain_text, routes_add_btn),
-        make_form_row(opt_routes_domains, routes_rm_btn),
-        html.Div(id="routes-feedback",style=div_feedback_style) ])
+    private_routes_form = html.Div(
+        [ 
+            dbc.Label(html.H4("Private routes"), style=h4_style),
+            make_form_row(opt_routes_priv_routes, routes_list_btn),
+            make_form_row(opt_routes_no_access, routes_grant_btn),
+            make_form_row(opt_routes_access, routes_revoke_btn),
+            make_form_row(routes_domain_text, routes_add_btn),
+            make_form_row(opt_routes_domains, routes_rm_btn),
+            html.Div(id="routes-feedback",style=div_feedback_style) 
+        ]
+    )
 
 
     #### Administrators
@@ -184,18 +189,19 @@ def make_layout(pathname):
     notify_form = html.Div(
         [ 
             dbc.Label(html.H4("Notify"), style=h4_style),
-            dbc.Form( [ 
-                        dbc.FormGroup(
-                            [ 
-                                html.Button(id='notify-button', n_clicks=0, children='Notify', style={"width":"100px","margin":"3px"}), 
-                                html.Button(id='notify-all-button', n_clicks=0, children='Notify All', style={"width":"100px","margin":"3px"})
-                            ],
-                        row=True,
-                        style={"max-width":"510px","margin-left":"0px" },
-                        ),
+            dbc.Form( 
+                [ 
+                    dbc.FormGroup(
+                        [ 
+                            html.Button(id='notify-button', n_clicks=0, children='Notify', style={"width":"100px","margin":"3px"}), 
+                            html.Button(id='notify-all-button', n_clicks=0, children='Notify All', style={"width":"100px","margin":"3px"})
                         ],
-                        style=form_style
-                        ),
+                    row=True,
+                    style={"max-width":"510px","margin-left":"0px" },
+                    ),
+                ],
+                style=form_style
+                ),
             html.Div(id="notify-feedback",style=div_feedback_style),
             html.Div(id='notify-all-feedback',style=div_feedback_style)
         ]
@@ -203,29 +209,32 @@ def make_layout(pathname):
 
     navbar=make_navbar_logged("Administrator Dashboard",current_user)
 
-    protected_content=html.Div([ 
-        navbar,
-        dbc.Row(
-            [
-                dbc.Col( 
-                    dbc.Card(
-                        [  
-                            html.Div(id="submission-feedback"), 
-                            user_status_form,
-                            private_routes_form, 
-                            administrators_form,
-                            notify_form,
-                        ],
-                        body=True,
-                        className="border-0"
-                    ),
-                    md=10, lg=9, xl=8, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
-                navbar_A
-            ],
-            align="center",
-            justify="center",
-            style={"min-height": "95vh", 'verticalAlign': 'center'})
-    ])
+    protected_content=html.Div(
+        [ 
+            navbar,
+            dbc.Row(
+                [
+                    dbc.Col( 
+                        dbc.Card(
+                            [  
+                                html.Div(id="submission-feedback"), 
+                                user_status_form,
+                                private_routes_form, 
+                                administrators_form,
+                                notify_form,
+                            ],
+                            body=True,
+                            className="border-0"
+                        ),
+                        md=10, lg=9, xl=8, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
+                    navbar_A
+                ],
+                align="center",
+                justify="center",
+                style={"min-height": "95vh", 'verticalAlign': 'center'}
+            )
+        ]
+    )
 
     return protected_content
 
