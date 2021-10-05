@@ -103,21 +103,10 @@ def make_layout(pathname):
             row=True,
         ),
         ],
-        # style={"margin-top":"10px"},
         )
-
-    # imgByteArr = io.BytesIO()
-    # big_code = pyqrcode.create(current_user.get_totp_uri())
-    # big_code.svg(imgByteArr, scale=6 )
-    # imgByteArr = imgByteArr.getvalue()
-    # encoded=base64.b64encode(imgByteArr)
-    # img=html.Img(src='data:image/svg+xml;base64,{}'.format(encoded.decode()), height="200px")
-    # img=dbc.Row(dbc.Col(img,style={"textAlign":"center"}))
 
     if not current_user.otp_enabled:
         btn_text="Show QR code"
-        fake_code=None
-
     else:
         btn_text="Disable"
 
@@ -163,7 +152,6 @@ def make_layout(pathname):
                         [
                             dbc.ModalHeader("2FA QR Code"),
                             modal_body,
-                            # html.Div(id="modal-body"),
                             dbc.ModalFooter(
                                 dbc.Row(
                                     [
@@ -205,14 +193,20 @@ def make_layout(pathname):
                 ]
             )    
 
-    show_qrcode=dbc.Row(
-                    dbc.Col(
-                        dbc.Button(btn_text, id="open-centered", n_clicks=0),
-                        style={"max-width":"350px","textAlign":"right","margin-right":"8px"}
-                    ),
-                    justify="end"
-                    )
-
+    show_qrcode=dbc.Form( [ 
+        dbc.FormGroup(
+            [ 
+                dbc.Label("", style={"min-width":"250px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
+                dbc.Col(
+                    [ 
+                        dbc.Button(id="open-centered", n_clicks=0, children=btn_text, style={"width":"230px","margin-left":"2px","margin-top":4, "margin-bottom":4}),
+                    ]
+                ),
+            ],
+            row=True,
+        ),
+        ],
+        )
 
     user_settings=dbc.Row(
         dbc.Col(
@@ -242,7 +236,7 @@ def make_layout(pathname):
                     html.P("Two-Factor Authentication (2FA) works by adding an additional layer. of \
                         security to your online accounts. It requires an additional login credential \
                             – beyond just the username and password – to gain account access, and \
-                                getting that second credential requires access to something that ", style={"max-width":"500px"}),
+                                getting that second credential requires access to something that's yours, eg. your phone.", style={"max-width":"500px"}),
                     show_qrcode,
                     modal,
                 ],
