@@ -54,7 +54,8 @@ class User(UserMixin, db.Model):
     administrator=db.Column(db.Boolean, nullable=False, default=False)
     otp_secret = db.Column(db.String(16))
     otp_enabled = db.Column(db.Boolean, nullable=False, default=False)
-    backup_tokens = db.Column(db.String(128))
+    otp_backup= db.Column(PickleType)
+
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -71,11 +72,23 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def set_backup_tokens(self, password):
-        self.backup_tokens = generate_password_hash(password)
+    def set_backup_tokens(self, tokens ):
+        tokens_=[]
+        for t in tokens :
+            tokens_.append( generate_password_hash(t) )
+        self.otp_backup=tokens
 
-    def check_backup_tokens(self, password):
-        return check_password_hash(self.backup_tokens, password)
+    def check_backup_tokens(self, token):
+        tokens_=[]
+        valid=False
+        for t in self.tokens :
+            if not check_password_hash(t, token) :
+                tokens_.append(t)
+            else:
+                valid=True
+        self.tokens=tokens_
+        return valid
+                
 
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
