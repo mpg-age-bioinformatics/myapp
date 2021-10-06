@@ -13,11 +13,11 @@ elif [ -n "${INIT_RESTORE_LATEST}" ]; then
       echo "waiting database container..."
       sleep 1
   done
-find /backup/mariadb -maxdepth 1 -name 'latest.cycshare.sql.gz' | tail -1 | xargs /restore.sh
+find /backup/mariadb -maxdepth 1 -name 'latest.myapp.sql.gz' | tail -1 | xargs /restore.sh
 fi
 
 echo "${CRON_TIME} /backup.sh >> /mysql_backup.log 2>&1" > /crontab.conf
-echo "${CRON_TIME} rsync -rtvh --delete /cycshare_data/users/ /backup/users_data/ >> /rsync.log 2>&1" >> /crontab.conf
+echo "${CRON_TIME} rsync -rtvh --delete /myapp_data/users/ /backup/users_data/ >> /rsync.log 2>&1" >> /crontab.conf
 crontab /crontab.conf
 echo "=> Running cron task manager"
 exec crond -f

@@ -4,7 +4,7 @@ Welcome! Thanks for signing up. Please follow this link to activate your account
 
 {{app_url}}/login/{{token}}
 
-cycshare works better on Google Chrome, both on your laptop, on your iPad or on your phone.
+myapp works better on Google Chrome, both on your laptop, on your iPad or on your phone.
 
 Cheers!
 

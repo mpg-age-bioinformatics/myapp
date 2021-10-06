@@ -2,7 +2,7 @@
 
 myapp is a universal backbone for flask-dash based apps with user level authentication. flaskapp can be deployed using the `docker-compose.yml` or on a [kubernetes](https://github.com/jorgeboucas/myapp/tree/master/kubernetes#kubernetes) cluster.
 
-## Deploying cycshare
+## Deploying myapp
 
 Start by defining your apps folder name 
 ```
@@ -19,7 +19,7 @@ openssl dhparam -out ~/${APP_NAME}_data/certificates/dhparam.pem 2048
 
 On a Mac double click on the cert.pem file to open it and add it to the Keychain. In key chain double click on the certificate to change Trust : When using this certificate : Always trust. 
 
-If running cycshare on development mode make sure that you change the variable `FLASK_ENV` to `development` in `docker-compose.yml`.
+If running myapp on development mode make sure that you change the variable `FLASK_ENV` to `development` in `docker-compose.yml`.
 
 For production export secret variables into `.env.prod`:
 ```bash
@@ -64,7 +64,7 @@ or for example:
 ```bash
 docker-compose logs -f server
 ```
-If running cycshare on development mode you will have to start flask from inside the server container:
+If running myapp on development mode you will have to start flask from inside the server container:
 ```
 docker-compose exec server /bin/bash
 flask run --host 0.0.0.0 --port 8000

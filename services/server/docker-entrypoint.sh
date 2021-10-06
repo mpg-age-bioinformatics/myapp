@@ -85,7 +85,7 @@ fi
 # ## needs to be finished, this is for the managment containter
 # if [[ "$FLASK_ENV" == "mngt" ]]
 
-#   echo "0 0 1,15 * * python3 /cycshare/cycshare.py > /clean.cycshare.out 2>&1" > /cron.job && crontab /cron.job
+#   echo "0 0 1,15 * * python3 /myapp/myapp.py > /clean.cycshare.out 2>&1" > /cron.job && crontab /cron.job
 
 # fi
 
