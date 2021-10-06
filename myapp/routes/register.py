@@ -73,19 +73,29 @@ read=dcc.Checklist(
     style={"margin-left":"15px"}
 )
 
-footer=html.Div([
-    dbc.Row( 
-        html.Footer( [ html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
-                     html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
-                     html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")] , 
-        style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
-        ),
-        style={"justify-content":"center"}
+footer=html.Div(
+    [
+        dbc.Row( 
+            html.Footer( 
+                [ 
+                    html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
+                    html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
+                    html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")
+                ] , 
+                style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
+            ),
+            style={"justify-content":"center"}
         )
-    ])
+    ]
+)
 
 
-dashapp.layout=html.Div([dcc.Location(id='url', refresh=False),html.Div(id="page-content")])
+dashapp.layout=html.Div(
+    [
+        dcc.Location(id='url', refresh=False),
+        html.Div(id="page-content")
+    ]
+)
 
 @dashapp.callback(
     Output('page-content', 'children'),
@@ -94,35 +104,66 @@ def generate_content(pathname):
     if current_user:
         if current_user.is_authenticated:
             return dcc.Location(pathname="/home/", id='index')
-    return dbc.Row( [
-    dbc.Col( [ html.Div(id="app_access"),
-               html.Div(id="logged-feedback"),
-               dbc.Card(  dbc.Form([ html.H2("Register", style={'textAlign': 'center'} ),
-                                    dbc.Row([ 
-                                        dbc.Col([ firstname_input,html.Div(id="firstname-feedback")] ),  
-                                        dbc.Col([ lastname_input,html.Div(id="lastname-feedback")] )] ),
-                                    username_input,
-                                    html.Div(id="username-feedback"),
-                                    email_input,
-                                    html.Div(id="email-feedback"),
-                                    password_input,
-                                    html.Div(id="pass-power"),
-                                    html.Div(id="pass-feedback"),
-                                    password_input_2,
-                                    html.Div(id="pass2-feedback"),
-                                    dbc.Row([ read , 
-                                              html.A("Privacy Statment.", href="/privacy/",style={"margin-left":"4px",'whiteSpace': 'pre-wrap'})]),
-                                    html.Div(id="checkbox-feedback"),
-                                    html.Button(id='submit-button-state', n_clicks=0, children='Submit', style={"width":"auto","margin-top":4, "margin-bottom":4}),
-                                    html.Div(id="submission-feedback"),
-                                ])
-                        , body=True), footer ],
-             sm=9,md=7, lg=5, xl=5, align="center",style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
-    navbar_A
-],
-align="center",
-justify="center",
-style={"min-height": "95vh", 'verticalAlign': 'center'})
+    return dbc.Row( 
+        [
+            dbc.Col( 
+                [ 
+                    html.Div(id="app_access"),
+                    html.Div(id="logged-feedback"),
+                    dbc.Card(  
+                        dbc.Form(
+                            [
+                                html.H2("Register", style={'textAlign': 'center'} ),
+                                dbc.Row(
+                                    [ 
+                                        dbc.Col(
+                                            [ 
+                                                firstname_input,
+                                                html.Div(id="firstname-feedback")
+                                            ]
+                                        ),  
+                                        dbc.Col(
+                                            [
+                                                lastname_input,
+                                                html.Div(id="lastname-feedback")
+                                            ] 
+                                        )
+                                    ] 
+                                ),
+                                username_input,
+                                html.Div(id="username-feedback"),
+                                email_input,
+                                html.Div(id="email-feedback"),
+                                password_input,
+                                html.Div(id="pass-power"),
+                                html.Div(id="pass-feedback"),
+                                password_input_2,
+                                html.Div(id="pass2-feedback"),
+                                dbc.Row(
+                                    [ 
+                                        read , 
+                                        html.A("Privacy Statment.", href="/privacy/",style={"margin-left":"4px",'whiteSpace': 'pre-wrap'})
+                                    ]
+                                ),
+                                html.Div(id="checkbox-feedback"),
+                                html.Button(id='submit-button-state', n_clicks=0, children='Submit', style={"width":"auto","margin-top":4, "margin-bottom":4}),
+                                html.Div(id="submission-feedback"),
+                            ]
+                        )
+                        , body=True
+                    ), 
+                    footer 
+                ],
+                sm=9,md=7, lg=5, xl=5, 
+                align="center",
+                style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}
+            ),
+            navbar_A
+        ],
+        align="center",
+        justify="center",
+        style={"min-height": "95vh", 'verticalAlign': 'center'}
+    )
 
 @dashapp.callback(
     Output('logged-feedback', 'children'),

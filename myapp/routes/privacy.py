@@ -16,10 +16,16 @@ dashapp = dash.Dash("privacy",url_base_pathname='/privacy/', meta_tags=META_TAGS
 gdpr_text=dcc.Markdown(_privacy)
 
 dashapp.layout=dbc.Row(
-                    [ dbc.Col( 
-                        [ html.H1("DATA AND PRIVACY", style={"textAlign":"center", "margin-bottom":"30px"}), gdpr_text ],  # 
-                        align="top", 
-                        style={"textAlign":"justify",'margin-left':"15px", 'margin-right':"15px","margin-top":"100px", 'margin-bottom':"50px"},
-                        md=9, lg=7, xl=5), 
-                    navbar_A ] ,
-                    justify="center")
+    [ 
+        dbc.Col(
+            [ 
+                html.H1("DATA AND PRIVACY", style={"textAlign":"center", "margin-bottom":"30px"}),
+                gdpr_text 
+            ],  # 
+            align="top", 
+            style={"textAlign":"justify",'margin-left':"15px", 'margin-right':"15px","margin-top":"100px", 'margin-bottom':"50px"},
+            md=9, lg=7, xl=5), 
+            navbar_A 
+    ] ,
+    justify="center"
+)

@@ -25,24 +25,25 @@ dashapp.layout=html.Div( [
     Output('protected-content', 'children'),
     Input('url', 'pathname'))
 def make_layout(pathname):
-    protected_content=html.Div([
-        make_navbar_logged("Home",current_user),
-        dbc.Container(
-            dbc.Row( 
-                dbc.Col(
-                    [
-                    html.H1("Home is where the Dom is.")
-                    ],
-                    align="center",
+    protected_content=html.Div(
+        [
+            make_navbar_logged("Home",current_user),
+            dbc.Container(
+                dbc.Row( 
+                    dbc.Col(
+                        [
+                            html.H1("Home is where the Dom is.")
+                        ],
+                        align="center",
+                    ),
+                align="center",
+                justify="center",
+                style={'textAlign':'center',"height":"87vh"}
                 ),
-            align="center",
-            justify="center",
-            style={'textAlign':'center',"height":"87vh"}
             ),
-        ),
-        navbar_A
-    ],
-    style={"height":"100vh","verticalAlign":"center"}
+            navbar_A
+        ],
+        style={"height":"100vh","verticalAlign":"center"}
     )
     return protected_content
 

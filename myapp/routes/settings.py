@@ -23,11 +23,13 @@ dashapp = dash.Dash("settings",url_base_pathname='/settings/', meta_tags=META_TA
 protect_dashviews(dashapp)
 
 
-dashapp.layout=html.Div( [ 
-    dcc.Location(id='url', refresh=False),
-    html.Div(id="app-redirect"),
-    html.Div(id="protected-content"),
-     ] )
+dashapp.layout=html.Div( 
+    [ 
+        dcc.Location(id='url', refresh=False),
+        html.Div(id="app-redirect"),
+        html.Div(id="protected-content"),
+    ] 
+)
 
 @dashapp.callback(
     Output('protected-content', 'children'),
@@ -36,7 +38,8 @@ def make_layout(pathname):
     topnavbar=make_navbar_logged("Settings",current_user)
 
     def make_text_form_row(label,value,placeholder,id_,input_type="text"):
-        form_row=dbc.Form( [ 
+        form_row=dbc.Form( 
+            [ 
                 dbc.FormGroup(
                     [ 
                         dbc.Label(label, html_for=id_, style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
@@ -46,10 +49,8 @@ def make_layout(pathname):
                     ],
                     row=True,
                 ),
-                ],
-                # inline=True,
-                # style={"margin-top":"2px"},
-                )
+            ],
+        )
         return form_row
 
     firstname_input=make_text_form_row("First name",current_user.firstname,"First name","first_name")
@@ -76,43 +77,36 @@ def make_layout(pathname):
         style={"width":"330px","margin-left":"2px"}
     )
 
-    notify=dbc.Form( [ 
-        dbc.FormGroup(
-            [ 
-                dbc.Label("", html_for="notify", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
-                dbc.Col(
-                    notify
-                ),
-            ],
-            row=True,
-        ),
+    notify=dbc.Form( 
+        [ 
+            dbc.FormGroup(
+                [ 
+                    dbc.Label("", html_for="notify", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
+                    dbc.Col( notify ),
+                ],
+                row=True,
+            ),
         ],
-        )
+    )
 
     if current_user.otp_enabled:
         otp_changes=dbc.Col(
                         dbc.Input(type="text", id="changes-otp", placeholder="2FA token", style={"width":"330px","margin-left":"2px"})                    
-                        )
+                    )
     else:
         otp_changes=dbc.Label("", id="changes-otp",style={"width":"330px","margin-left":"2px","margin-top":4, "margin-bottom":4})
 
-    submit_btn=dbc.Form( [ 
-        dbc.FormGroup(
-            [ 
-                # dbc.Col(
-                    # [ 
-                        dbc.Button(id='submit-button-state', n_clicks=0, children='Submit', style={"min-width":"150px","margin-left":"20px"}),
-                    # ]
-                # ),
-                otp_changes
-                , # xs=2,sm=3,md=3,lg=2,xl=2,
-    
-            ],
-
-            row=True,
-        ),
+    submit_btn=dbc.Form( 
+        [ 
+            dbc.FormGroup(
+                [ 
+                    dbc.Button(id='submit-button-state', n_clicks=0, children='Submit', style={"min-width":"150px","margin-left":"20px"}),
+                    otp_changes   
+                ],
+                row=True,
+            ),
         ],
-        )
+    )
 
     if not current_user.otp_enabled:
         btn_text="QR code"
@@ -126,23 +120,23 @@ def make_layout(pathname):
     encoded=base64.b64encode(imgByteArr)
     img=dbc.Row(dbc.Col(html.Img(src='data:image/svg+xml;base64,{}'.format(encoded.decode()), height="200px"),style={"textAlign":"center"}))
     otp_field=html.Div(
-                        [
-                            dbc.Row(
-                                [
-                                    dbc.Col(
-                                        dbc.Input(type="text", id="otp-input", placeholder="type code"),
-                                        style={"margin-right":"2px"},
-                                        width=4,
-                                    ),
-                                ],
-                                no_gutters=True,
-                                align="center",
-                                justify="center",
-                                style={"margin-bottom":"15px"}
-                            ),
-                            html.Div(id="enable-feedback")
-                        ]
-                    )
+        [
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.Input(type="text", id="otp-input", placeholder="type code"),
+                        style={"margin-right":"2px"},
+                        width=4,
+                    ),
+                ],
+                no_gutters=True,
+                align="center",
+                justify="center",
+                style={"margin-bottom":"15px"}
+            ),
+            html.Div(id="enable-feedback")
+        ]
+    )
     body_text=dbc.Row("You can use Google Authenticator on your phone to scan the QR code and enable \
     Two-Factor Authentication.",style={"textAlign":"justify","margin":"2px"})
 
@@ -156,67 +150,67 @@ def make_layout(pathname):
         )
 
     modal = html.Div(
+        [
+            dbc.Modal(
                 [
-                    dbc.Modal(
-                        [
-                            dbc.ModalHeader("2FA QR Code"),
-                            modal_body,
-                            dbc.ModalFooter(
-                                dbc.Row(
-                                    [
-                                        dbc.Button(
-                                            "Backup codes",
-                                            id="backup-codes-btn",
-                                            className="ml-auto",
-                                            n_clicks=0,
-                                            disabled=True,
-                                            style={"margin":"2px"}
-                                        ),
-                                        dbc.Button(
-                                            children="Enable",
-                                            id="enable-disable",
-                                            className="ml-auto",
-                                            n_clicks=0,
-                                            disabled=True,
-                                            style={"margin":"2px"}
-                                        ),
-                                        dbc.Button(
-                                            "Close",
-                                            id="close-centered",
-                                            className="ml-auto",
-                                            n_clicks=0,
-                                            style={"margin":"2px"},
-                                            href=f'{app.config["APP_URL"]}/settings',
-                                            external_link=True
-                                        )
-                                    ],
-                                    no_gutters=False,
-                                    justify="end",
+                    dbc.ModalHeader("2FA QR Code"),
+                    modal_body,
+                    dbc.ModalFooter(
+                        dbc.Row(
+                            [
+                                dbc.Button(
+                                    "Backup codes",
+                                    id="backup-codes-btn",
+                                    className="ml-auto",
+                                    n_clicks=0,
+                                    disabled=True,
+                                    style={"margin":"2px"}
                                 ),
-                            ),
-                        ],
-                        id="modal-centered",
-                        centered=True,
-                        is_open=False,
+                                dbc.Button(
+                                    children="Enable",
+                                    id="enable-disable",
+                                    className="ml-auto",
+                                    n_clicks=0,
+                                    disabled=True,
+                                    style={"margin":"2px"}
+                                ),
+                                dbc.Button(
+                                    "Close",
+                                    id="close-centered",
+                                    className="ml-auto",
+                                    n_clicks=0,
+                                    style={"margin":"2px"},
+                                    href=f'{app.config["APP_URL"]}/settings',
+                                    external_link=True
+                                )
+                            ],
+                            no_gutters=False,
+                            justify="end",
+                        ),
                     ),
-                ]
-            )    
+                ],
+                id="modal-centered",
+                centered=True,
+                is_open=False,
+            ),
+        ]
+    )    
 
-    show_qrcode=dbc.Form( [ 
-        dbc.FormGroup(
-            [ 
-                dbc.Col(
-                    [ 
-                        dbc.Button(id="open-centered", n_clicks=0, children=btn_text, style={"min-width":"150px"}),
-                    ]
-                ),
-                dbc.Label("", style={"width":"230px","margin-left":"2px","margin-top":4, "margin-bottom":4}), # xs=2,sm=3,md=3,lg=2,xl=2,
-
-            ],
-            row=True,
-        ),
+    show_qrcode=dbc.Form( 
+        [ 
+            dbc.FormGroup(
+                [ 
+                    dbc.Col(
+                        [ 
+                            dbc.Button(id="open-centered", n_clicks=0, children=btn_text, style={"min-width":"150px"}),
+                        ]
+                    ),
+                    dbc.Label("", style={"width":"230px","margin-left":"2px","margin-top":4, "margin-bottom":4}), # xs=2,sm=3,md=3,lg=2,xl=2,
+                ],
+                row=True,
+            ),
         ],
-        )
+    )
 
     if current_user.otp_enabled :
         otp_status="Enabled"
@@ -268,32 +262,34 @@ def make_layout(pathname):
         align="center",
         justify="center",
         style={"min-height": "450px", 'verticalAlign': 'center','margin-bottom':"50px"}
-        )
+    )
 
-    protected_content=html.Div([
-        topnavbar,
-        user_settings,
-        navbar_A
-    ]
+    protected_content=html.Div(
+        [
+            topnavbar,
+            user_settings,
+            navbar_A
+        ]
     )
 
     return protected_content
 
 def make_response(text,color,id="some-id",is_open=True, duration=None):
-    r=dbc.Form( [ 
-        dbc.FormGroup(
-            [ 
-                dbc.Label("", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
-                dbc.Col(
-                    [ 
-                        dbc.Alert( text ,id=id, color=color,is_open=is_open, duration=duration, style={"width":"330px","margin-left":"2px"}),
-                    ]
-                ),
-            ],
-            row=True,
-        ),
+    r=dbc.Form( 
+        [ 
+            dbc.FormGroup(
+                [ 
+                    dbc.Label("", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
+                    dbc.Col(
+                        [ 
+                            dbc.Alert( text ,id=id, color=color,is_open=is_open, duration=duration, style={"width":"330px","margin-left":"2px"}),
+                        ]
+                    ),
+                ],
+                row=True,
+            ),
         ],
-        )
+    )
     return r
 
 @dashapp.callback(
@@ -335,30 +331,30 @@ def generate_backup_codes(n1):
         db.session.commit()
 
         rand=html.Div(
-                [
-                    dbc.Row(
-                        [
-                            dbc.Col(backup_tokens[0], style={"textAlign":"center"} ),
-                            dbc.Col(backup_tokens[1], style={"textAlign":"center"} ),
-                            dbc.Col(backup_tokens[2] , style={"textAlign":"center"}),
-                        ],
-                        no_gutters=True,
-                        align="center",
-                        justify="center"
-                    ),
-                    dbc.Row(
-                        [
-                            dbc.Col(backup_tokens[3], style={"textAlign":"center"} ),
-                            dbc.Col(backup_tokens[4] , style={"textAlign":"center"}),
-                            dbc.Col(backup_tokens[5] , style={"textAlign":"center"}),
-                        ],
-                        no_gutters=True,
-                        align="center",
-                        justify="center"                    
-                        )
-                ],
-                style={"margin-bottom":"20px"}
-            )
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(backup_tokens[0], style={"textAlign":"center"} ),
+                        dbc.Col(backup_tokens[1], style={"textAlign":"center"} ),
+                        dbc.Col(backup_tokens[2] , style={"textAlign":"center"}),
+                    ],
+                    no_gutters=True,
+                    align="center",
+                    justify="center"
+                ),
+                dbc.Row(
+                    [
+                        dbc.Col(backup_tokens[3], style={"textAlign":"center"} ),
+                        dbc.Col(backup_tokens[4] , style={"textAlign":"center"}),
+                        dbc.Col(backup_tokens[5] , style={"textAlign":"center"}),
+                    ],
+                    no_gutters=True,
+                    align="center",
+                    justify="center"                    
+                    )
+            ],
+            style={"margin-bottom":"20px"}
+        )
 
         return rand , -1
     if n1 == 0:

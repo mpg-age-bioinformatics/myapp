@@ -43,14 +43,18 @@ keppsigned=dcc.Checklist(
 
 footer=html.Div([
     dbc.Row( 
-        html.Footer( [ html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/"),
-                     html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
-                     html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")] , 
-        style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
+        html.Footer( 
+            [ 
+                html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/"),
+                html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
+                html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")
+            ] , 
+            style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
         ),
         style={"justify-content":"center"}
         )
-    ])
+    ]
+)
 
 
 dashapp.layout=html.Div(
@@ -68,25 +72,38 @@ def generate_content(pathname):
     if current_user:
         if current_user.is_authenticated:
             return dcc.Location(pathname="/home/", id='index')
-    return dbc.Row( [
-                dbc.Col( [ 
-                        dbc.Card(  dbc.Form([ html.H2("Login", style={'textAlign': 'center'} ),
-                                                html.Div(id="token-feedback"),
-                                                username_input,
-                                                html.Div(id="username-feedback"),
-                                                password_input,
-                                                html.Div(id="pass-feedback"),
-                                                dbc.Row( keppsigned ),
-                                                html.Button(id='submit-button-state', n_clicks=0, children='Login', style={"width":"auto","margin-top":4, "margin-bottom":4}),
-                                                html.Div(id="submission-feedback", style={"margin-top":"10px"}),
-                                            ])
-                                    , body=True), footer ],
-                        sm=9,md=6, lg=5, xl=5, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
-                navbar_A
-            ],
-            align="center",
-            justify="center",
-            style={"min-height": "95vh", 'verticalAlign': 'center'}) #, 
+    return dbc.Row( 
+        [
+            dbc.Col( 
+                [ 
+                    dbc.Card(
+                        dbc.Form(
+                            [ 
+                                html.H2("Login", style={'textAlign': 'center'} ),
+                                html.Div(id="token-feedback"),
+                                username_input,
+                                html.Div(id="username-feedback"),
+                                password_input,
+                                html.Div(id="pass-feedback"),
+                                dbc.Row( keppsigned ),
+                                html.Button(id='submit-button-state', n_clicks=0, children='Login', style={"width":"auto","margin-top":4, "margin-bottom":4}),
+                                html.Div(id="submission-feedback", style={"margin-top":"10px"}),
+                            ]
+                        )
+                        , body=True
+                    ), 
+                    footer 
+                ],
+                sm=9,md=6, lg=5, xl=5, 
+                align="center", 
+                style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}
+            ),
+            navbar_A
+        ],
+        align="center",
+        justify="center",
+        style={"min-height": "95vh", 'verticalAlign': 'center'}
+    ) #, 
 
 @dashapp.callback(
     Output('otp-content', 'children'),
@@ -98,30 +115,40 @@ def generate_otp_content(pathname):
         ]
     )
 
-    otp_content=dbc.Row( [
-        dbc.Col( 
-            [ 
-                dbc.Card(  
-                    dbc.Form(
-                        [ 
-                            dbc.Row([
-                                    otp,
-                                    dbc.Button(id='submit-otp-button', n_clicks=0, children='Submit', style={"width":"auto","margin":"2px", "height":"40px"}),
-                                    dbc.Button(id='cancel-otp-button', n_clicks=0, children='Cancel', style={"width":"auto","margin":"2px","height":"40px"}),
-                                    html.Div(id="otp-feedback", style={"margin":"10px","width":"100%"})
-                            ],
-                            justify="center",
-                            no_gutters=True, style={"height":"10px" }
-                            ),
-                        ]
-                    )
-                    , body=True, className="border-0",style={ "max-width":"370px"}) ], 
-                xs=12 ,sm=8,md=6, lg=5, xl=4, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
-        navbar_A
-    ],
-    align="center",
-    justify="center",
-    style={"min-height": "95vh", 'verticalAlign': 'center'})
+    otp_content=dbc.Row( 
+        [
+            dbc.Col( 
+                [ 
+                    dbc.Card(  
+                        dbc.Form(
+                            [ 
+                                dbc.Row(
+                                    [
+                                        otp,
+                                        dbc.Button(id='submit-otp-button', n_clicks=0, children='Submit', style={"width":"auto","margin":"2px", "height":"40px"}),
+                                        dbc.Button(id='cancel-otp-button', n_clicks=0, children='Cancel', style={"width":"auto","margin":"2px","height":"40px"}),
+                                        html.Div(id="otp-feedback", style={"margin":"10px","width":"100%"})
+                                    ],
+                                    justify="center",
+                                    no_gutters=True, style={"height":"10px" }
+                                ),
+                            ]
+                        ),
+                        body=True, 
+                        className="border-0",
+                        style={ "max-width":"370px"}
+                    ) 
+                ], 
+                xs=12 ,sm=8,md=6, lg=5, xl=4, 
+                align="center", 
+                style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}
+            ),
+            navbar_A
+        ],
+        align="center",
+        justify="center",
+        style={"min-height": "95vh", 'verticalAlign': 'center'}
+    )
     return otp_content
 
 

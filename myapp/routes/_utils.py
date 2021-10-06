@@ -147,12 +147,12 @@ def make_navbar_logged(page_title, current_user, links=navbar_links, expand='sm'
             ),
             id="navbar-collapse", navbar=True, is_open=False
         )
-    ],
-    color="light",
-    # dark=True,
-    sticky="top",
-    # light=True
-    expand=expand
+        ],
+        color="light",
+        # dark=True,
+        sticky="top",
+        # light=True
+        expand=expand
     )
 
     return navbar

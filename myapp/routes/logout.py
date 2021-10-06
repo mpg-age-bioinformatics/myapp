@@ -12,11 +12,17 @@ import time
 
 dashapp = dash.Dash("logout",url_base_pathname='/logout/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
-dashapp.layout=html.Div([ dcc.Location(id='url', refresh=False),  
-                          dcc.Loading( id="loading-output-1",
-                                       type="default",
-                                       children=html.Div(id="redirect-field"),
-                                       style={"margin-top":"50%"} )])
+dashapp.layout=html.Div(
+    [ 
+        dcc.Location(id='url', refresh=False),  
+        dcc.Loading( 
+            id="loading-output-1",
+            type="default",
+            children=html.Div(id="redirect-field"),
+            style={"margin-top":"50%"} 
+            )
+    ]
+)
 
 @dashapp.callback( Output('redirect-field', 'children'),
                    Input('url', 'pathname'))

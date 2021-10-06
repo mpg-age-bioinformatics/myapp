@@ -41,43 +41,63 @@ password_input_2 = dbc.FormGroup(
     ]
 )
 
-footer=html.Div([
-    dbc.Row( 
-        html.Footer( [ html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
-                     html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/"),
-                     html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")] , 
-        style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
-        ),
-        style={"justify-content":"center"}
+footer=html.Div(
+    [
+        dbc.Row( 
+            html.Footer( 
+                [ 
+                    html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
+                    html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/"),
+                    html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")
+                ], 
+                style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
+            ),
+            style={"justify-content":"center"}
         )
-    ])
+    ]
+)
 
-request_form=[ html.H2("Forgot password", style={'textAlign': 'center'} ),
-                username_input,
-                html.Div(id="username-feedback"),
-                html.Button(id='reset-button', n_clicks=0, children='Reset', style={"width":"auto","margin-top":4, "margin-bottom":4}),
-                html.Div(id="reset-feedback") ]
+request_form=[ 
+    html.H2("Forgot password", style={'textAlign': 'center'} ),
+    username_input,
+    html.Div(id="username-feedback"),
+    html.Button(id='reset-button', n_clicks=0, children='Reset', style={"width":"auto","margin-top":4, "margin-bottom":4}),
+    html.Div(id="reset-feedback") 
+]
 
-change_form=[ html.H2("Forgot password", style={'textAlign': 'center'} ),
-                password_input,
-                html.Div(id="pass-power"),
-                html.Div(id="pass-feedback"),
-                password_input_2,
-                html.Div(id="pass2-feedback"),
-                html.Button(id='change-button', n_clicks=0, children='Change password', style={"width":"auto","margin-top":4, "margin-bottom":4}),
-                html.Div(id="change-feedback") ]
+change_form=[ 
+    html.H2("Forgot password", style={'textAlign': 'center'} ),
+    password_input,
+    html.Div(id="pass-power"),
+    html.Div(id="pass-feedback"),
+    password_input_2,
+    html.Div(id="pass2-feedback"),
+    html.Button(id='change-button', n_clicks=0, children='Change password', style={"width":"auto","margin-top":4, "margin-bottom":4}),
+    html.Div(id="change-feedback") 
+]
 
 
-dashapp.layout=dbc.Row( [
-    dbc.Col( [ dcc.Location(id='url', refresh=False),
-               dbc.Card(  dbc.Form(id="forgot-form")
-                        , body=True), footer ],
-             md=8, lg=6, xl=4, align="center", style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}),
-    navbar_A
-],
-align="center",
-justify="center",
-style={"min-height": "95vh", 'verticalAlign': 'center'})
+dashapp.layout=dbc.Row( 
+    [
+        dbc.Col( 
+            [ 
+                dcc.Location(id='url', refresh=False),
+                dbc.Card(  
+                    dbc.Form(id="forgot-form"), 
+                    body=True
+                    ), 
+                footer 
+            ],
+            md=8, lg=6, xl=4, 
+            align="center", 
+            style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}
+        ),
+        navbar_A
+    ],
+    align="center",
+    justify="center",
+    style={"min-height": "95vh", 'verticalAlign': 'center'}
+)
 
 @dashapp.callback(
     Output('pass-feedback', 'children'),
@@ -114,7 +134,6 @@ def request_change(n_clicks, pathname, passA, passB):
     db.session.commit()
     return passA_, passB_, dcc.Location(pathname="/login/forgot/", id='login')
     
-
 
 @dashapp.callback(
     Output('pass-power', 'children'),

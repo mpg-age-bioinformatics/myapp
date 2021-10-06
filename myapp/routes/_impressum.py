@@ -1,4 +1,5 @@
 from myapp import app
+APP_TITLE=app.config["APP_TITLE"]
 
 _impressum=f'''
 #### 1. Terms
