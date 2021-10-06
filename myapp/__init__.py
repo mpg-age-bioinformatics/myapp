@@ -10,8 +10,7 @@ from flask_mail import Mail
 from flask_session import Session
 from waitress import serve
 
-from myapp.routes._private import _PRIVATE_ROUTES
-from myapp.routes._private import _PUBLIC_VIEWS
+from myapp.routes._vars import _PRIVATE_ROUTES, _PUBLIC_VIEWS
 
 PRIVATE_ROUTES=[ ] + _PRIVATE_ROUTES
 PUBLIC_VIEWS=[ ] + _PUBLIC_VIEWS

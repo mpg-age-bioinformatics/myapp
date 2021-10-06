@@ -4,6 +4,7 @@ import dash_bootstrap_components as dbc
 import dash_html_components as html
 from myapp import app
 import base64
+from ._vars import user_navbar_links, other_nav_dropdowns
 
 META_TAGS=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,'} ]
 
@@ -94,23 +95,64 @@ navbar_A = dbc.NavbarSimple(
     # fluid=True
 )
 
+def make_nav_dropdown(nav_dic, label):
+    dropdown_children=[]
+    for l in list( nav_dic.keys() ):
+        if nav_dic[l] == "-":
+            dropdown_children.append( dbc.DropdownMenuItem(divider=True) )
+        elif nav_dic[l] == "__title__":
+            dropdown_children.append( dbc.DropdownMenuItem(l, header=True) ),
+        else:
+            dropdown_children.append( dbc.DropdownMenuItem(l, href=nav_dic[l], external_link=True) )
 
-navbar_links={"Home":"/home/","About":"/about/","Impressum":"/impressum/","Privacy":"/privacy/","Settings":"/settings/","Logout":"/logout/"}
-def make_navbar_logged(page_title, current_user, links=navbar_links, expand='sm'):
-    if type(links) == dict:
+    dd=dbc.DropdownMenu(
+        label=label,
+        children=dropdown_children,
+        className="mr-1",
+        nav=True,
+        in_navbar=True,
+        right=True
+    )
+
+    return [ dd ]
+
+
+
+def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropdowns, user_links=user_navbar_links, expand='sm'):
+    if type(user_links) == dict:
         if current_user.administrator :
-            if "Admin" not in list( links.keys() ):
-                del(links["Logout"])
-                links["Admin"]="/admin/"
-                links["Logout"]="/logout/"
-    
-    if links:
-        dropdown_children=[]
-        for l in list( links.keys() ):
-            dropdown_children.append( dbc.DropdownMenuItem(l, href=links[l], external_link=True) )
+            if "Admin" not in list( user_links.keys() ):
+                del( user_links["fixed_separator_2"] )
+                del( user_links["Logout"] )
+                user_links["Admin"]="/admin/"
+                user_links["fixed_separator_2"]="-"
+                user_links["Logout"]="/logout/"
 
-    else:
-        dropdown_children=[]
+    user_drop_down=make_nav_dropdown(user_links,current_user.username)
+
+    other_dd=[]
+    for o in other_dropdowns :
+        label= list(o.keys())[0]
+        dd_links=o[label]
+        previous_dd=make_nav_dropdown(dd_links,label)
+        other_dd=other_dd+previous_dd
+
+    dropdowns=other_dd+user_drop_down
+
+
+    # if user_links:
+    #     dropdown_children=[]
+    #     for l in list( user_links.keys() ):
+    #         if user_links[l] == "-":
+    #             dropdown_children.append( dbc.DropdownMenuItem(divider=True) )
+    #         elif user_links[l] == "__title__":
+    #             dropdown_children.append( dbc.DropdownMenuItem(l, header=True) ),
+    #         else:
+    #             dropdown_children.append( dbc.DropdownMenuItem(l, href=user_links[l], external_link=True) )
+
+
+    # else:
+    #     dropdown_children=[]
 
     image_filename = f'{app.config["APP_ASSETS"]}logo.png' # replace with your own image
     encoded_image = base64.b64encode(open(image_filename, 'rb').read())
@@ -132,16 +174,7 @@ def make_navbar_logged(page_title, current_user, links=navbar_links, expand='sm'
         dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
         dbc.Collapse(
             dbc.Nav(
-                [
-                    dbc.DropdownMenu(
-                        label=current_user.username,
-                        children=dropdown_children,
-                        className="mr-1",
-                        nav=True,
-                        in_navbar=True,
-                        right=True
-                    )
-                ],
+                dropdowns,
                 navbar=True,
                 className="ml-auto",
             ),
