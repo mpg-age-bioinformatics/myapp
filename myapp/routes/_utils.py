@@ -1,7 +1,8 @@
 import re
 from flask_login import login_required
 import dash_bootstrap_components as dbc
-import dash_html_components as html
+from dash import dcc, html
+# import dash as html
 from myapp import app
 import base64
 from ._vars import user_navbar_links, other_nav_dropdowns

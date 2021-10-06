@@ -68,6 +68,8 @@ If running myapp on development mode you will have to start flask from inside th
 ```
 docker-compose exec server /bin/bash
 flask run --host 0.0.0.0 --port 8000
+docker-compose up -d --build && docker-compose exec server flask run --host 0.0.0.0 --port 8000
+
 ```
 Adding administrator user:
 ```

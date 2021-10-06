@@ -1,6 +1,6 @@
 from myapp import app, db
-from myapp.models import User, UserLogging, PRIVATE_ROUTES, PrivateRoutes
-import pandas as pd
+from myapp.models import User, UserLogging, PrivateRoutes
+from myapp import PRIVATE_ROUTES
 import sys
 import argparse
 
