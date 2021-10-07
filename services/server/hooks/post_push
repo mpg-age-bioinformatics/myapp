@@ -64,7 +64,7 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
                 docker buildx build --platform ${platform} --no-cache -t mpgagebioinformatics/myapp:latest -f services/server/Dockerfile . --push
         done
 
-else ;
+else
     docker tag mpgagebioinformatics/myapp:${DOCKER_TAG} mpgagebioinformatics/myapp:latest
     docker push mpgagebioinformatics/myapp:latest
     echo ":: Added tag: latest"
