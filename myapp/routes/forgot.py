@@ -3,7 +3,6 @@ from flask_login import current_user
 import dash
 from dash.dependencies import Input, Output, State
 from dash import dcc, html
-# import dash as html
 import dash_bootstrap_components as dbc
 from myapp.models import User
 from myapp.email import send_password_reset_email

@@ -2,7 +2,6 @@ from myapp import app, db, PRIVATE_ROUTES
 import dash
 from dash.dependencies import Input, Output, State
 from dash import dcc, html
-# import dash as html
 import dash_bootstrap_components as dbc
 from myapp.models import User, PrivateRoutes
 from datetime import datetime

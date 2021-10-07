@@ -2,7 +2,6 @@ from myapp import app, db
 import dash
 from dash.dependencies import Input, Output, State
 from dash import dcc, html
-# import dash import html
 import dash_bootstrap_components as dbc
 from myapp.models import User
 from myapp.email import send_validate_change_email, send_email
@@ -21,7 +20,6 @@ import random
 dashapp = dash.Dash("settings",url_base_pathname='/settings/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 protect_dashviews(dashapp)
-
 
 dashapp.layout=html.Div( 
     [ 

@@ -2,7 +2,6 @@ import re
 from flask_login import login_required
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-# import dash as html
 from myapp import app
 import base64
 from ._vars import user_navbar_links, other_nav_dropdowns
@@ -116,7 +115,6 @@ def make_nav_dropdown(nav_dic, label):
     )
 
     return [ dd ]
-
 
 
 def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropdowns, user_links=user_navbar_links, expand='sm'):

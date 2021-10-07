@@ -4,7 +4,6 @@ from flask_login import logout_user
 import dash
 from dash.dependencies import Input, Output
 from dash import dcc, html
-# from dash import html
 import dash_bootstrap_components as dbc
 from myapp.models import User
 from ._utils import META_TAGS
