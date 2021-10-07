@@ -15,12 +15,16 @@ echo "deb-src http://ftp.debian.org/debian buster main non-free contrib" >> /etc
 echo "deb http://ftp.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list && \
 echo "deb-src http://ftp.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list 
 
-RUN apt-get update && apt-get -yq dist-upgrade && \
-apt-get install -yq --no-install-recommends locales && \
-apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update
+RUN apt-get -yq dist-upgrade
+RUN apt-get install -yq --no-install-recommends locales 
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/* 
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 
-RUN locale-gen en_US en_US.UTF-8 && dpkg-reconfigure locales 
-
+# RUN apt-get update && apt-get -yq dist-upgrade && \
+# apt-get install -yq --no-install-recommends locales && \
+# apt-get clean && rm -rf /var/lib/apt/lists/* && \
 # echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 
 ENV SHELL /bin/bash
