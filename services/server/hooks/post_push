@@ -36,7 +36,8 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
         docker push mpgagebioinformatics/myapp:latest
         echo ":: Added tag: latest"
 
-elif [ $(git describe --abbrev=0 --tags) ] ; 
+elif [ $(git describe --abbrev=0 --tags) ] ;
+    then
         tag=$(git describe --abbrev=0 --tags)
         docker tag mpgagebioinformatics/myapp:${DOCKER_TAG} mpgagebioinformatics/myapp:latest
         docker push mpgagebioinformatics/myapp:latest
