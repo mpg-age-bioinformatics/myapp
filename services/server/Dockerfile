@@ -16,6 +16,7 @@ echo "deb http://ftp.debian.org/debian buster-updates main contrib non-free" >> 
 echo "deb-src http://ftp.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list 
 
 RUN apt-get update
+RUN apt-get -yq upgrade
 RUN apt-get -yq dist-upgrade
 RUN apt-get install -yq --no-install-recommends locales 
 RUN apt-get clean
