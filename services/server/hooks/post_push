@@ -11,6 +11,7 @@ echo ":: Repo: ${repoName}"
 echo ":: Image: ${IMAGE_NAME}"
 echo ":: Tag: ${DOCKER_TAG}"
 
+cd ../../
 
 # Tag and push image for each additional tag
 if [ "${DOCKER_TAG}" == "latest" ] ; 
@@ -33,7 +34,7 @@ if [ "${DOCKER_TAG}" == "latest" ] ;
                 if [ $(git describe --abbrev=0 --tags) ] ;
                     then 
                         ":: Building ${platform} tag: ${tag}-latest"
-                        docker buildx build --platform  ${platform} --no-cache -t mpgagebioinformatics/myapp:${tag}-latest -f services/server/Dockerfile . --push
+                        docker buildx build --platform  ${platform} -t mpgagebioinformatics/myapp:${tag}-latest -f services/server/Dockerfile . --push
                 fi
         done
 
@@ -59,10 +60,10 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
                 if [ $(git describe --abbrev=0 --tags) ] ;
                     then 
                         ":: Building ${platform} tag: ${tag}-latest"
-                        docker buildx build --platform  ${platform} --no-cache -t mpgagebioinformatics/myapp:${tag}-nightly -f services/server/Dockerfile . --push
+                        docker buildx build --platform  ${platform} -t mpgagebioinformatics/myapp:${tag}-nightly -f services/server/Dockerfile . --push
                 fi
                 echo ":: Building ${platform} tag: latest"
-                docker buildx build --platform ${platform} --no-cache -t mpgagebioinformatics/myapp:latest -f services/server/Dockerfile . --push
+                docker buildx build --platform ${platform} -t mpgagebioinformatics/myapp:latest -f services/server/Dockerfile . --push
         done
 
 else
@@ -77,7 +78,7 @@ else
             echo ":: Building ${platform} tag: ${DOCKER_TAG}"
             docker buildx build --platform ${platform} --no-cache -t mpgagebioinformatics/myapp:${DOCKER_TAG} -f services/server/Dockerfile . --push
             echo ":: Building ${platform} tag: latest"
-            docker buildx build --platform ${platform} --no-cache -t mpgagebioinformatics/myapp:latest -f services/server/Dockerfile . --push
+            docker buildx build --platform ${platform} -t mpgagebioinformatics/myapp:latest -f services/server/Dockerfile . --push
     done
 
 fi
