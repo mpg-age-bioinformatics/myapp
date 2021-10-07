@@ -29,8 +29,7 @@ RUN apt-get update && apt-get -yq dist-upgrade && \
 apt-get install -yq python3 python3-pip && python3 -m pip install -U pip && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
-ARG BUILD_NAME
-ENV BUILD_NAME ${BUILD_NAME}
+ENV BUILD_NAME myapp
 
 # Add myapp user for running the service
 RUN groupadd ${BUILD_NAME} --gid=1000 && useradd -m ${BUILD_NAME} --uid=1000 --gid=1000 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
