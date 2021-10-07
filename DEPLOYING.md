@@ -68,8 +68,6 @@ If running myapp on development mode you will have to start flask from inside th
 ```
 docker-compose exec server /bin/bash
 flask run --host 0.0.0.0 --port 8000
-docker-compose up -d --build && docker-compose exec server flask run --host 0.0.0.0 --port 8000
-
 ```
 Adding administrator user:
 ```
@@ -172,7 +170,7 @@ Builds are currently working for `linux/amd64` and `linux/arm64` but not for `li
 docker buildx create --name mybuilder
 docker buildx use mybuilder
 docker buildx inspect --bootstrap
-docker buildx build --platform linux/amd64,linux/arm64/linux/arm/v7 --build-arg BUILD_NAME=myapp --no-cache --force-rm -t myapp/myapp:latest -f services/server/Dockerfile . --load
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg BUILD_NAME=myapp --no-cache --force-rm -t myapp/myapp:latest -f services/server/Dockerfile . --load
 ```
 
 To push result image into registry use --push or to load image into docker use --load.
