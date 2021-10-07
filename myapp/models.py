@@ -82,16 +82,14 @@ class User(UserMixin, db.Model):
         tokens_=[]
         valid=False
         for t in self.otp_backup :
-            # print(t,f'otp{str(token)}',check_password_hash(str(t), str(token) ) )
             if not check_password_hash(str(t), str(token) ) :
                 tokens_.append(t)
             else:
                 valid=True
-        print("Verifying")
         if tokens_:
-            self.tokens=tokens_
+            self.otp_backup=tokens_
         else:
-            self.tokens=None
+            self.otp_backup=None
         return valid
                 
 
@@ -102,17 +100,17 @@ class User(UserMixin, db.Model):
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+            app.config['SECRET_KEY'], algorithm='HS256') #.decode('utf-8')
 
     def get_email_validation_token(self, expires_in=600):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+            app.config['SECRET_KEY'], algorithm='HS256') #.decode('utf-8')
 
     def get_allow_user_token(self, expires_in=600):
         return jwt.encode(
             {'allow_user': self.id, 'uname':self.username, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+            app.config['SECRET_KEY'], algorithm='HS256') #.decode('utf-8')
 
     def get_totp_uri(self):
         return f'otpauth://totp/{app.config["APP_NAME"]}:{self.username}?secret={self.otp_secret}&issuer={app.config["APP_NAME"]}'

@@ -331,7 +331,13 @@ def generate_backup_codes(n1):
         db.session.commit()
 
         rand=html.Div(
-            [
+            [   
+                dbc.Row(
+                    dbc.Col( html.P("Single use tokens") ,style={"textAlign":"center"}),
+                    no_gutters=True,
+                    align="center",
+                    justify="center"
+                ),
                 dbc.Row(
                     [
                         dbc.Col(backup_tokens[0], style={"textAlign":"center"} ),

@@ -320,7 +320,6 @@ def otp_buttoms(otp_clicks, cancel_clicks, username, passA, keepsigned, otp):
                 else:
                     return not_verified
 
-
         login_user(user, remember=keepsigned_)
         session.permanent = keepsigned_
 
