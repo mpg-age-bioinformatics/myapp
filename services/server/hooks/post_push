@@ -15,6 +15,7 @@ echo ":: Tag: ${DOCKER_TAG}"
 # Tag and push image for each additional tag
 if [ "${DOCKER_TAG}" == "latest" ] ; 
     then
+        ls 
         if [ $(git describe --abbrev=0 --tags) ] ; 
             then 
                 tag=$(git describe --abbrev=0 --tags)
