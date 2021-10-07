@@ -25,18 +25,19 @@ if [ "${DOCKER_TAG}" == "latest" ] ;
                 echo ":: Added tag: ${tag}-latest"
         fi
 
-        docker buildx create --name mybuilder
-        docker buildx use mybuilder
-        for platform in linux/arm64 linux/arm/v7 ;
-            do
-                echo ":: Building ${platform} tag: ${DOCKER_TAG}"
-                docker buildx build --platform ${platform} --no-cache -t mpgagebioinformatics/myapp:${DOCKER_TAG} -f services/server/Dockerfile . --push
-                if [ $(git describe --abbrev=0 --tags) ] ;
-                    then 
-                        ":: Building ${platform} tag: ${tag}-latest"
-                        docker buildx build --platform  ${platform} -t mpgagebioinformatics/myapp:${tag}-latest -f services/server/Dockerfile . --push
-                fi
-        done
+        # CURRENTLY BUILDS ON OTHER PLATFORMS ARE FAILING ON THE HUB 
+        # docker buildx create --name mybuilder
+        # docker buildx use mybuilder
+        # for platform in linux/arm64 linux/arm/v7 ;
+        #     do
+        #         echo ":: Building ${platform} tag: ${DOCKER_TAG}"
+        #         docker buildx build --platform ${platform} --no-cache -t mpgagebioinformatics/myapp:${DOCKER_TAG} -f services/server/Dockerfile . --push
+        #         if [ $(git describe --abbrev=0 --tags) ] ;
+        #             then 
+        #                 ":: Building ${platform} tag: ${tag}-latest"
+        #                 docker buildx build --platform  ${platform} -t mpgagebioinformatics/myapp:${tag}-latest -f services/server/Dockerfile . --push
+        #         fi
+        # done
 
 elif [ "${DOCKER_TAG}" == "nightly" ] ;
     then
@@ -51,41 +52,49 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
         docker push mpgagebioinformatics/myapp:latest
         echo ":: Added tag: latest"
         
-        docker buildx create --name mybuilder
-        docker buildx use mybuilder
-        for platform in linux/arm64 linux/arm/v7 ;
-            do
-                echo ":: Building ${platform} tag: nightly"
-                docker buildx build --platform ${platform} --no-cache -t mpgagebioinformatics/myapp:nightly -f services/server/Dockerfile . --push
-                if [ $(git describe --abbrev=0 --tags) ] ;
-                    then 
-                        ":: Building ${platform} tag: ${tag}-latest"
-                        docker buildx build --platform  ${platform} -t mpgagebioinformatics/myapp:${tag}-nightly -f services/server/Dockerfile . --push
-                fi
-                echo ":: Building ${platform} tag: latest"
-                docker buildx build --platform ${platform} -t mpgagebioinformatics/myapp:latest -f services/server/Dockerfile . --push
-        done
+        # CURRENTLY BUILDS ON OTHER PLATFORMS ARE FAILING ON THE HUB 
+        # docker buildx create --name mybuilder
+        # docker buildx use mybuilder
+        # for platform in linux/arm64 linux/arm/v7 ;
+        #     do
+        #         echo ":: Building ${platform} tag: nightly"
+        #         docker buildx build --platform ${platform} --no-cache -t mpgagebioinformatics/myapp:nightly -f services/server/Dockerfile . --push
+        #         if [ $(git describe --abbrev=0 --tags) ] ;
+        #             then 
+        #                 ":: Building ${platform} tag: ${tag}-latest"
+        #                 docker buildx build --platform  ${platform} -t mpgagebioinformatics/myapp:${tag}-nightly -f services/server/Dockerfile . --push
+        #         fi
+        #         echo ":: Building ${platform} tag: latest"
+        #         docker buildx build --platform ${platform} -t mpgagebioinformatics/myapp:latest -f services/server/Dockerfile . --push
+        # done
 
 else
     docker tag mpgagebioinformatics/myapp:${DOCKER_TAG} mpgagebioinformatics/myapp:latest
     docker push mpgagebioinformatics/myapp:latest
     echo ":: Added tag: latest"
 
-    docker buildx create --name mybuilder
-    docker buildx use mybuilder
-    for platform in linux/arm64 linux/arm/v7 ;
-        do
-            echo ":: Building ${platform} tag: ${DOCKER_TAG}"
-            docker buildx build --platform ${platform} --no-cache -t mpgagebioinformatics/myapp:${DOCKER_TAG} -f services/server/Dockerfile . --push
-            echo ":: Building ${platform} tag: latest"
-            docker buildx build --platform ${platform} -t mpgagebioinformatics/myapp:latest -f services/server/Dockerfile . --push
-    done
+    # docker buildx create --name mybuilder
+    # docker buildx use mybuilder
+    # for platform in linux/arm64 linux/arm/v7 ;
+    #     do
+    #         echo ":: Building ${platform} tag: ${DOCKER_TAG}"
+    #         docker buildx build --platform ${platform} --no-cache -t mpgagebioinformatics/myapp:${DOCKER_TAG} -f services/server/Dockerfile . --push
+    #         echo ":: Building ${platform} tag: latest"
+    #         docker buildx build --platform ${platform} -t mpgagebioinformatics/myapp:latest -f services/server/Dockerfile . --push
+    # done
 
-    echo ":: Building myapp-dockerize:latest"
     cd serivces/backup
-    docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t mpgagebioinformatics/myapp-dockerize:latest . --push
-    echo ":: Building myapp-dockerize:${DOCKER_TAG}"
-    docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t mpgagebioinformatics/myapp-dockerize:${DOCKER_TAG} . --push
+    
+    echo ":: Building myapp-dockerize"
+    docker build -t mpgagebioinformatics/myapp-dockerize:${DOCKER_TAG} .
+    docker tag mpgagebioinformatics/myapp-dockerize:${DOCKER_TAG} mpgagebioinformatics/myapp-dockerize:latest
+    docker push mpgagebioinformatics/myapp-dockerize:${DOCKER_TAG}
+    docker push mpgagebioinformatics/myapp-dockerize:latest
+
+    # docker push mpgagebioinformatics/myapp-dockerize:latest
+    # docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t mpgagebioinformatics/myapp-dockerize:latest . --push
+    # echo ":: Building myapp-dockerize:${DOCKER_TAG}"
+    # docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t mpgagebioinformatics/myapp-dockerize:${DOCKER_TAG} . --push
 
 fi
 
