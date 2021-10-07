@@ -17,27 +17,26 @@ if [ "${DOCKER_TAG}" == "latest" ] ; then
     if [ $(git describe --abbrev=0 --tags) ] ; 
         then 
             tag=$(git describe --abbrev=0 --tags)
-            docker tag $IMAGE_NAME ${repoName}:${tag}-latest
-            docker push ${repoName}:${tag}-latest
+            docker tag mpgagebioinformatics/myapp:${DOCKER_TAG} mpgagebioinformatics/myapp:${tag}-latest
+            docker push mpgagebioinformatics/myapp:${tag}-latest
             echo ":: Added tag: ${tag}-latest"
     fi
 elif [ "${DOCKER_TAG}" == "nightly" ] ;
     if [ $(git describe --abbrev=0 --tags) ] ; 
         then 
             tag=$(git describe --abbrev=0 --tags)
-            docker tag $IMAGE_NAME ${repoName}:${tag}-nightly
-            docker push ${repoName}:${tag}-nightly
-            docker tag $IMAGE_NAME ${repoName}:latest
-            docker push ${repoName}:latest
+            docker tag mpgagebioinformatics/myapp:nightly mpgagebioinformatics/myapp:${tag}-nightly
+            docker push mpgagebioinformatics/myapp:${tag}-nightly
             echo ":: Added tag: ${tag}-nightly"
-            echo ":: Added tag: latest"
     fi
-else ;
-    if [ $(git describe --abbrev=0 --tags) ] ; 
-        then 
-            tag=$(git describe --abbrev=0 --tags)
-            docker tag $IMAGE_NAME ${repoName}:latest
-            docker push ${repoName}:latest
-            echo ":: Added tag: latest"
-    fi
+    docker tag mpgagebioinformatics/myapp:nightly mpgagebioinformatics/myapp:latest
+    docker push mpgagebioinformatics/myapp:latest
+    echo ":: Added tag: latest"
+    
+elif [ $(git describe --abbrev=0 --tags) ] ; 
+    then 
+        tag=$(git describe --abbrev=0 --tags)
+        docker tag $IMAGE_NAME mpgagebioinformatics/myapp:latest
+        docker push mpgagebioinformatics/myapp:latest
+        echo ":: Added tag: latest"
 fi
