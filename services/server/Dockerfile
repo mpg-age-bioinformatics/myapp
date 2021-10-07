@@ -2,12 +2,9 @@
 # Distributed under the terms of the Modified BSD License.
 
 # Debian buster-slim (10.1)
-# FROM debian@sha256:11253793361a12861562d1d7b15b8b7e25ac30dd631e3d206ed1ca969bf97b7d
 FROM debian:buster-slim
 
 LABEL maintainer "bioinformatics@age.mpg.de"
-
-# ARG TARGETPLATFORM
 
 USER root
 
@@ -29,12 +26,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 RUN apt-get update && apt-get -yq dist-upgrade && \
-apt-get install -yq python3 python3-pip libcairo2-dev pkg-config python3-dev mariadb-client cron rsync sudo && \
-apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# plotly saving of images to file
-RUN apt-get update && apt-get -yq dist-upgrade && \
-apt-get install -yq wget libgtk-3-0 libxtst-dev libxss-dev libgconf2-dev libnss3 libasound2-dev xvfb && \
+apt-get install -yq python3 python3-pip && python3 -m pip install -U pip && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ARG BUILD_NAME
@@ -51,7 +43,6 @@ RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data /${BUILD_NAME}_data
 
 # comment during development
 COPY requirements.txt /${BUILD_NAME}/requirements.txt
-RUN python3 -m pip install -U pip
 RUN pip3 install -r /${BUILD_NAME}/requirements.txt
 
 COPY LICENSE.md README.md config.py ${BUILD_NAME}.py requirements.txt setup.py .flaskenv /${BUILD_NAME}/

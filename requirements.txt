@@ -19,3 +19,4 @@ waitress
 PyJWT
 pandas
 gunicorn
+PyMySQL
