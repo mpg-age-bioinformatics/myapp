@@ -17,8 +17,11 @@ echo "deb-src http://ftp.debian.org/debian buster-updates main contrib non-free"
 
 RUN apt-get update && apt-get -yq dist-upgrade && \
 apt-get install -yq --no-install-recommends locales && \
-apt-get clean && rm -rf /var/lib/apt/lists/* && \
-echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN locale-gen en_US en_US.UTF-8 && dpkg-reconfigure locales 
+
+# echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 
 ENV SHELL /bin/bash
 ENV LC_ALL en_US.UTF-8

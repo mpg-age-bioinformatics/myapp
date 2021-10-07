@@ -81,6 +81,12 @@ else
             docker buildx build --platform ${platform} -t mpgagebioinformatics/myapp:latest -f services/server/Dockerfile . --push
     done
 
+    echo ":: Building myapp-dockerize:latest"
+    cd serivces/backup
+    docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t mpgagebioinformatics/myapp-dockerize:latest . --push
+    echo ":: Building myapp-dockerize:${DOCKER_TAG}"
+    docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t mpgagebioinformatics/myapp-dockerize:${DOCKER_TAG} . --push
+
 fi
 
 echo ":: Finished"
