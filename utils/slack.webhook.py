@@ -48,10 +48,10 @@ if args.f :
         list_of_checks=[
             ":: build linux/amd64 myapp:nightly",
             ":: push linux/amd64 myapp:nightly" , 
-            ":: build and pushed linux/arm64 myapp:nightly" ,
+            ":: build & push linux/arm64 myapp:nightly" ,
             ":: build linux/amd64 myapp-dockerize:nightly", 
             ":: push linux/amd64 myapp-dockerize:nightly",
-            ":: build and push linux/arm64 myapp-dockerize:nightly"
+            ":: build & push linux/arm64 myapp-dockerize:nightly"
         ]
 
         success=True
