@@ -11,17 +11,40 @@ args = parser.parse_args()
 import json
 import requests
 
-slack_data={'text': "### "+" ".join(args.s) }
+slack_data_long={
+    "text": " ".join(args.s) ,
+    "blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "*"+" ".join(args.s)+"*"
+			}
+		},
+		{
+			"type": "divider"
+		}
+    ]
+}
+
 if args.f :
     f = open( args.f , 'r')
     f = f.readlines()
     f = "".join(f)
-    slack_data["attachments"] = [ {"text": f } ]
+    slack_data_long_file={
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": f
+			}
+		}
+    slack_data_long["blocks"]=slack_data_long["blocks"]+[slack_data_long_file]
 
 response = requests.post(
-    args.w , data=json.dumps(slack_data),
+    args.w , data=json.dumps(slack_data_long),
     headers={'Content-Type': 'application/json'}
 )
+
 if response.status_code != 200:
     raise ValueError(
         'Request to slack returned an error %s, the response is:\n%s'

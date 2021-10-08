@@ -19,6 +19,7 @@ echo ":: Image: ${IMAGE_NAME}"
 echo ":: Tag: ${DOCKER_TAG}"
 echo ":: Date: $(date '+%d/%m/%Y %H:%M:%S')"
 
+exit
 cd ../../
 
 if [ "${DOCKER_TAG}" == "latest" ] ;
@@ -35,10 +36,10 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
         docker buildx create --use
 
         MYAPP_VERSION=$(git rev-parse --short HEAD)
-        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nighlty -f services/server/Dockerfile . --push
+        docker buildx build --platform linux/amd64,linux/arm64 --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nighlty -f services/server/Dockerfile . --push
         echo ":: Pushed myapp: nightly"
         
-        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --push
+        docker buildx build --platform linux/amd64,linux/arm64 --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --push
         echo ":: Pushed myapp-dockerize: nightly"
 
 else
