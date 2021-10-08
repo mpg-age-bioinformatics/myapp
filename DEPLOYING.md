@@ -170,7 +170,7 @@ Builds are currently working for `linux/amd64` and `linux/arm64` but not for `li
 docker buildx create --name mybuilder
 docker buildx use mybuilder
 docker buildx inspect --bootstrap
-docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --no-cache --force-rm -t myapp/myapp:latest -f services/server/Dockerfile . --load
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg MYAPP_VERSION=local --no-cache --force-rm -t myapp/myapp:latest -f services/server/Dockerfile . --load
 ```
 
 To push result image into registry use --push or to load image into docker use --load.

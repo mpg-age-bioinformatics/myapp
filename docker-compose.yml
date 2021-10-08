@@ -8,6 +8,8 @@ services:
   build:
     context: ./
     dockerfile: services/server/Dockerfile
+    args:
+      MYAPP_VERSION: dev
   user: root
   volumes:
     - data:/${APP_NAME}_data/users
@@ -43,6 +45,8 @@ services:
   build:
     context: ./
     dockerfile: services/server/Dockerfile
+    args:
+      MYAPP_VERSION: dev
   restart: always
   volumes:
    - data:/${APP_NAME}_data/users
@@ -64,7 +68,7 @@ services:
    - PRIVATE_APPS=/${APP_NAME}_private/private.apps.tsv
    - INSTANCE=(DEV)
    - ADMINS=jboucas@gmail.com
-   - MAIL_USERNAME=nippesapps@gmail.com
+   - MAIL_USERNAME=jboucas@gmail.com
   links:
    - mariadb
    - redis

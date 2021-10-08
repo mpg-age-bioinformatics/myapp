@@ -12,6 +12,8 @@ else:
         commit=f.readline().split("\n")[0]
 
 class Config(object):
+    MYAPP_VERSION=os.environ.get('MYAPP_VERSION') or "none"
+    APP_VERSION=os.environ.get('APP_VERSION') or "none"
     APP_NAME=os.environ.get('APP_NAME') or "myapp"
     APP_TITLE=os.environ.get('APP_TITLE') or "myapp"
     APP_URL=os.environ.get('APP_URL')  or 'https://0.0.0.0'
@@ -39,7 +41,9 @@ class Config(object):
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    ADMINS = os.environ.get('ADMINS').split(",") or ['jboucas@gmail.com']
-    PRIVATE_APPS = os.environ.get('PRIVATE_APPS') or None
     INSTANCE = os.environ.get('INSTANCE') or "PRODUCTION"
     COMMIT = commit
+    # ADMINS = os.environ.get('ADMINS').split(",") or ['jboucas@gmail.com']
+    # PRIVATE_APPS = os.environ.get('PRIVATE_APPS') or None
+
+

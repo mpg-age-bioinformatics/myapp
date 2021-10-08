@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -e
+
+# Parse image name for repo name
+tagStart=$(expr index "$IMAGE_NAME" :)
+repoName=${IMAGE_NAME:0:tagStart-1}
+
+echo ":: Building .."
+echo ":: Repo: ${repoName}"
+echo ":: Image: ${IMAGE_NAME}"
+echo ":: Tag: ${DOCKER_TAG}"
+
+ls
+
+if [ "${DOCKER_TAG}" == "latest" ] ;
+    then 
+        MYAPP_VERSION=$(git rev-parse --short HEAD)
+        docker build --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
+        docker tag ${repoName}:${DOCKER_TAG} ${repoName}:latest
+        docker push ${repoName}:latest
+        echo ":: Pushed tag: latest"
+
+
+elif [ "${DOCKER_TAG}" == "nighlty" ] ;
+    then 
+        MYAPP_VERSION=$(git rev-parse --short HEAD)
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg MYAPP_VERSION="nighlty-${MYAPP_VERSION}" --no-cache -t ${repoName}:nighlty -f services/server/Dockerfile . --push
+        echo ":: Pushed tag: nighlty"
+
+else ;
+        docker build --build-arg MYAPP_VERSION=${DOCKER_TAG} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
+        docker tag ${repoName}:latest ${repoName}:${DOCKER_TAG}
+        docker tag ${repoName}:latest ${repoName}:stable
+        docker push ${repoName}:latest
+        echo ":: Pushed tag: latest"
+        docker push ${repoName}:stable
+        echo ":: Pushed tag: stable"
+        docker push ${repoName}:${DOCKER_TAG}
+        echo ":: Pushed tag: ${DOCKER_TAG}"
+
+fi
+
+echo ":: Finished"
