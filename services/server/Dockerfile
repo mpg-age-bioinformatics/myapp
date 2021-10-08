@@ -26,7 +26,8 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 RUN apt-get update && apt-get -yq dist-upgrade && \
-apt-get install -yq python3 python3-pip && python3 -m pip install -U pip && \
+apt-get install -yq python3 python3-pip pkg-config mariadb-client cron rsync && \
+python3 -m pip install -U pip && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ENV BUILD_NAME myapp
