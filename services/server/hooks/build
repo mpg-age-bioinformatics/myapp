@@ -19,7 +19,6 @@ echo ":: Image: ${IMAGE_NAME}"
 echo ":: Tag: ${DOCKER_TAG}"
 echo ":: Date: $(date '+%d/%m/%Y %H:%M:%S')"
 
-exit
 cd ../../
 
 if [ "${DOCKER_TAG}" == "latest" ] ;
