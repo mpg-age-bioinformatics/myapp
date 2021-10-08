@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+
+# Parse image name for repo name
+tagStart=$(expr index "$IMAGE_NAME" :)
+repoName=${IMAGE_NAME:0:tagStart-1}
+
+echo ":: Additional tagging"
+echo ":: Repo: ${repoName}"
+echo ":: Image: ${IMAGE_NAME}"
+echo ":: Tag: ${DOCKER_TAG}"
+
+if [ "${DOCKER_TAG}" != "latest" ] ;
+    then 
+        docker tag ${repoName}:${DOCKER_TAG} ${repoName}:latest
+        docker push ${repoName}:latest
+        echo ":: Added tag: latest"
+        docker tag ${repoName}:${DOCKER_TAG} ${repoName}:stable
+        docker push ${repoName}:stable
+        echo ":: Added tag: stable"
+fi
+echo ":: Finished"
