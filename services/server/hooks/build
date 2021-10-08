@@ -27,7 +27,7 @@ if [ "${DOCKER_TAG}" == "latest" ] ;
         docker build --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
         docker tag ${repoName}:${DOCKER_TAG} ${repoName}:latest
         docker push ${repoName}:latest
-        echo ":: Pushed tag: latest"
+        echo ":: push tag: latest"
 
 
 elif [ "${DOCKER_TAG}" == "nightly" ] ;
@@ -35,15 +35,20 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
         docker buildx create --use
 
         MYAPP_VERSION=$(git rev-parse --short HEAD)
-        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nighlty -f services/server/Dockerfile . --load 
-        echo ":: Build myapp: nightly"
-        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nighlty -f services/server/Dockerfile . --push && \
-        echo ":: Pushed myapp: nightly"
+        echo ":: git #${MYAPP_VERSION}"
+        docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nighlty -f services/server/Dockerfile . && \
+        echo ":: build linux/amd64 myapp:nightly" && \
+        docker push ${repoName}:nighlty && \
+        echo ":: push linux/amd64 myapp:nightly"
+        docker buildx build --platform linux/arm64 --no-cache --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nighlty -f services/server/Dockerfile . --push && \
+        echo ":: build and push linux/arm64 myapp:nightly"
         
-        docker buildx build --platform linux/amd64,linux/arm64 --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --load && \
-        echo ":: Build myapp-dockerize: nightly"
-        docker buildx build --platform linux/amd64,linux/arm64 -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --push && \
-        echo ":: Pushed myapp-dockerize: nightly"
+        docker build --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ && \
+        echo ":: build linux/amd64 myapp-dockerize:nightly" && \
+        docker push mpgagebioinformatics/myapp-dockerize:nightly && \
+        echo ":: push linux/amd64 myapp-dockerize:nightly"
+        ocker buildx build --platform linux/arm64 -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --push && \
+        echo ":: build and push linux/arm64 myapp-dockerize:nightly"
 
 else
     cd ../../
@@ -52,11 +57,11 @@ else
     docker tag ${repoName}:latest ${repoName}:${DOCKER_TAG}
     docker tag ${repoName}:latest ${repoName}:stable
     docker push ${repoName}:latest
-    echo ":: Pushed tag: latest"
+    echo ":: push tag: latest"
     docker push ${repoName}:stable
-    echo ":: Pushed tag: stable"
+    echo ":: push tag: stable"
     docker push ${repoName}:${DOCKER_TAG}
-    echo ":: Pushed tag: ${DOCKER_TAG}"
+    echo ":: push tag: ${DOCKER_TAG}"
 
 fi
 
