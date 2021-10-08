@@ -7,8 +7,6 @@ services:
   build:
     context: ./
     dockerfile: services/server/Dockerfile
-    args:
-      - BUILD_NAME=${APP_NAME}
   user: root
   volumes:
     - data:/${APP_NAME}_data/users
@@ -43,8 +41,6 @@ services:
   build:
     context: ./
     dockerfile: services/server/Dockerfile
-    args:
-      - BUILD_NAME=${APP_NAME}
   restart: always
   volumes:
    - data:/${APP_NAME}_data/users
@@ -77,7 +73,10 @@ services:
 
  backup:
   container_name: backup
-  image: flaski/backup:latest
+  # image: mpgagebioinformatics/myapp-dockerize:latest
+  build:
+    context: ./
+    dockerfile: services/backup/Dockerfile
   depends_on:
    - mariadb
    - init
