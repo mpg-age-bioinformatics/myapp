@@ -32,6 +32,8 @@ if [ "${DOCKER_TAG}" == "latest" ] ;
 
 elif [ "${DOCKER_TAG}" == "nightly" ] ;
     then 
+        docker buildx create --use
+
         MYAPP_VERSION=$(git rev-parse --short HEAD)
         docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nighlty -f services/server/Dockerfile . --push
         echo ":: Pushed myapp: nightly"
@@ -41,6 +43,7 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
 
 else
     cd ../../
+
     docker build --build-arg MYAPP_VERSION=${DOCKER_TAG} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
     docker tag ${repoName}:latest ${repoName}:${DOCKER_TAG}
     docker tag ${repoName}:latest ${repoName}:stable
