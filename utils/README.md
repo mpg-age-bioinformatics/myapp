@@ -14,6 +14,6 @@ ___
 `crontab -e`
 
 ```
-* 0 * * * cd ~/myapp && git pull && cd ./services/server && ~/myapp/services/server/hooks/build nightly > ~/myapp/build.log 2>&1 && ~/myapp/utils/slack.webhook.py -s "myapp nightly build" -f ~/myapp/build.log -w <slack webhook address>
+* 0 * * * cd ~/myapp && git pull && cd ./services/server && ~/myapp/services/server/hooks/build nightly > ~/myapp/build.log 2>&1 ; ~/myapp/utils/slack.webhook.py -s "myapp nightly build" -f ~/myapp/build.log -w <slack webhook address>
 ```
 ___

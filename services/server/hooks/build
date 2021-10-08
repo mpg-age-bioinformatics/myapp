@@ -35,10 +35,14 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
         docker buildx create --use
 
         MYAPP_VERSION=$(git rev-parse --short HEAD)
-        docker buildx build --platform linux/amd64,linux/arm64 --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nighlty -f services/server/Dockerfile . --push
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nighlty -f services/server/Dockerfile . --load 
+        echo ":: Build myapp: nightly"
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nighlty -f services/server/Dockerfile . --push && \
         echo ":: Pushed myapp: nightly"
         
-        docker buildx build --platform linux/amd64,linux/arm64 --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --push
+        docker buildx build --platform linux/amd64,linux/arm64 --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --load && \
+        echo ":: Build myapp-dockerize: nightly"
+        docker buildx build --platform linux/amd64,linux/arm64 -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --push && \
         echo ":: Pushed myapp-dockerize: nightly"
 
 else
