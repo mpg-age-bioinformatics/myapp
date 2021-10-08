@@ -47,7 +47,7 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
         echo ":: build linux/amd64 myapp-dockerize:nightly" && \
         docker push mpgagebioinformatics/myapp-dockerize:nightly && \
         echo ":: push linux/amd64 myapp-dockerize:nightly"
-        ocker buildx build --platform linux/arm64 -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --push && \
+        ocker buildx build --platform linux/arm64 --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --push && \
         echo ":: build & push linux/arm64 myapp-dockerize:nightly"
 
 else
