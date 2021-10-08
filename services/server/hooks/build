@@ -36,19 +36,19 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
 
         MYAPP_VERSION=$(git rev-parse --short HEAD)
         echo ":: git #${MYAPP_VERSION}"
-        docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nighlty -f services/server/Dockerfile . && \
+        docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly -f services/server/Dockerfile . && \
         echo ":: build linux/amd64 myapp:nightly" && \
-        docker push ${repoName}:nighlty && \
+        docker push ${repoName}:nightly && \
         echo ":: push linux/amd64 myapp:nightly"
         docker buildx build --platform linux/arm64 --no-cache --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nighlty -f services/server/Dockerfile . --push && \
-        echo ":: build and push linux/arm64 myapp:nightly"
+        echo ":: build & push linux/arm64 myapp:nightly"
         
         docker build --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ && \
         echo ":: build linux/amd64 myapp-dockerize:nightly" && \
         docker push mpgagebioinformatics/myapp-dockerize:nightly && \
         echo ":: push linux/amd64 myapp-dockerize:nightly"
         ocker buildx build --platform linux/arm64 -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --push && \
-        echo ":: build and push linux/arm64 myapp-dockerize:nightly"
+        echo ":: build & push linux/arm64 myapp-dockerize:nightly"
 
 else
     cd ../../
