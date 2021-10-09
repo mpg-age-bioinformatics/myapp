@@ -40,7 +40,7 @@ elif [ "${DOCKER_TAG}" == "nightly" ] ;
         echo ":: build linux/amd64 myapp:nightly" && \
         docker push ${repoName}:nightly && \
         echo ":: push linux/amd64 myapp:nightly"
-        docker buildx build --platform linux/arm64 --no-cache --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nighlty -f services/server/Dockerfile . --push && \
+        docker buildx build --platform linux/arm64 --no-cache --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nightly -f services/server/Dockerfile . --push && \
         echo ":: build & push linux/arm64 myapp:nightly"
         
         docker build --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ && \
