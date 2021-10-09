@@ -23,6 +23,6 @@ ___
 - aarch64
 
 ```
-* 0 * * * export PATH=/usr/local/bin:/usr/bin:${PATH} && cd ~/myapp && git pull && cd ./services/server && ~/myapp/services/server/hooks/build aarch64 > ~/myapp/build.log 2>&1 ; ~/myapp/utils/slack.webhook.py -s "myapp nightly build - aarch64" -f ~/myapp/build.log --short  -w <slack webhook address>
+* 0 * * * export PATH=/usr/local/bin:/usr/bin:${PATH} && cd ~/myapp && git pull && cd ./services/server && ~/myapp/services/server/hooks/build aarch64 > ~/myapp/build.log 2>&1 ; ~/myapp/utils/slack.webhook.py -s "myapp nightly build - aarch64" -f ~/myapp/build.log --short aarch64 -w <slack webhook address>
 ```
 ___

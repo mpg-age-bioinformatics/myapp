@@ -14,8 +14,8 @@
 # dev:
 # $ deploy.sh up now dev
 
-PATH_TO_RUN_ENV=/srv/flaski/
-PATH_TO_LOGS=/srv/logs/
+PATH_TO_RUN_ENV=${HJOME}/myapp/
+PATH_TO_LOGS=${HJOME}/myapp_logs/
 
 if [[ "${3}" == "dev" ]] ; then
     pkill -f autotail
@@ -101,8 +101,8 @@ do
 
     fi
 
-    BASE_IMAGES=$(docker ps | grep server | grep -v init | awk '{ print $2 }')
-    BASE_IMAGES=$(docker ps | grep server | awk '{ print $2 }')
+    BASE_IMAGES=$(docker ps | grep -v IMAGE | awk '{ print $2 }')
+    # BASE_IMAGES=$(docker ps | grep server | awk '{ print $2 }')
 
     #  flaski/backup:latest redis:5 nginx:alpine mariadb:10.4"
 
