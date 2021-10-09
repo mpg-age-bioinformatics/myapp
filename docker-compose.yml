@@ -11,6 +11,7 @@ services:
     args:
       MYAPP_VERSION: dev
   user: root
+  entrypoint: /myapp/services/init/entrypoint.sh
   volumes:
     - data:/${APP_NAME}_data/users
     - ./:/${APP_NAME}
@@ -81,8 +82,10 @@ services:
   container_name: backup
   # image: mpgagebioinformatics/myapp-dockerize:stable
   build:
-    context: ./services/backup/
-    dockerfile: Dockerfile
+    context: ./
+    dockerfile: ./services/server/Dockerfile
+  user: root
+  entrypoint: /myapp/services/backup/entrypoint.sh
   depends_on:
    - mariadb
    - init
@@ -91,15 +94,17 @@ services:
    - ~/myapp_backup/users_data:/backup/users_data
    - data:/${APP_NAME}_data/users:ro
   environment:
-   - MYSQL_HOST=mariadb
+   - APP_NAME=myapp
+   - APP_TITLE=myapp
    - MYSQL_USER=${APP_NAME}
-   - MYSQL_PASS=${MYSQL_PASSWORD}
+   - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+   - MYSQL_HOST=mariadb
+   - MYSQL_PORT=3306
    - MAX_BACKUPS=15
    - INIT_BACKUP=0
    # Every day at 03:00
    - CRON_TIME=44 13 * * *
-   #If set, restores latest backup
-   #INIT_RESTORE_LATEST=yes
+   - FLASK_ENV=backup
   restart: unless-stopped
   links:
    - mariadb

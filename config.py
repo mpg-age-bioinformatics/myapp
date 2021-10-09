@@ -43,7 +43,7 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     INSTANCE = os.environ.get('INSTANCE') or "PRODUCTION"
     COMMIT = commit
-    # ADMINS = os.environ.get('ADMINS').split(",") or ['jboucas@gmail.com']
+    ADMINS = os.environ.get('ADMINS').split(",") or ['jboucas@gmail.com']
     # PRIVATE_APPS = os.environ.get('PRIVATE_APPS') or None
 
 

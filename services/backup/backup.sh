@@ -1,10 +1,10 @@
 #!/bin/bash
 [ -z "${MYSQL_USER}" ] && { echo "=> MYSQL_USER cannot be empty" && exit 1; }
-[ -z "${MYSQL_PASS:=$MYSQL_PASSWORD}" ] && { echo "=> MYSQL_PASS cannot be empty" && exit 1; }
+[ -z "${MYSQL_PASSWORD}" ] && { echo "=> MYSQL_PASS cannot be empty" && exit 1; }
 
 DATE=$(date +%Y%m%d%H%M)
 echo "=> Backup started at $(date "+%Y-%m-%d %H:%M:%S")"
-DATABASES=${MYSQL_DATABASE:-${MYSQL_DB:-$(mysql -h "$MYSQL_HOST" -P "$MYSQL_PORT" -u "$MYSQL_USER" -p"$MYSQL_PASS" -e "SHOW DATABASES;" | tr -d "| " | grep -v Database)}}
+DATABASES=${MYSQL_DATABASE:-${MYSQL_DB:-$(mysql -h "$MYSQL_HOST" -P "$MYSQL_PORT" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "SHOW DATABASES;" | tr -d "| " | grep -v Database)}}
 DB_COUNTER=0
 for db in ${DATABASES}
 do
@@ -13,7 +13,7 @@ do
     echo "==> Dumping database: $db"
     FILENAME=/backup/mariadb/$DATE.$db.sql
     LATEST=/backup/mariadb/latest.$db.sql.gz
-    if mysqldump -h "$MYSQL_HOST" -P "$MYSQL_PORT" -u "$MYSQL_USER" -p"$MYSQL_PASS" --databases "$db" $MYSQLDUMP_OPTS > "$FILENAME"
+    if mysqldump -h "$MYSQL_HOST" -P "$MYSQL_PORT" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" --databases "$db" $MYSQLDUMP_OPTS > "$FILENAME"
     then
       gzip -f "$FILENAME"
       echo "==> Creating symlink to latest backup: $(basename "$FILENAME".gz)"

@@ -42,13 +42,6 @@ elif [ "${1}" == "nightly" ] ;
         echo ":: push linux/amd64 myapp:nightly"
         docker buildx build --platform linux/arm64 --no-cache --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nightly -f services/server/Dockerfile . --push && \
         echo ":: build & push linux/arm64 myapp:nightly"
-        
-        docker build --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ && \
-        echo ":: build linux/amd64 myapp-dockerize:nightly" && \
-        docker push mpgagebioinformatics/myapp-dockerize:nightly && \
-        echo ":: push linux/amd64 myapp-dockerize:nightly"
-        docker buildx build --platform linux/arm64 --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ --push && \
-        echo ":: build & push linux/arm64 myapp-dockerize:nightly"
 
 elif [ "${1}" == "aarch64" ] ;
     then 
@@ -58,11 +51,6 @@ elif [ "${1}" == "aarch64" ] ;
         echo ":: build linux/aarch64 myapp:nightly" && \
         docker push ${repoName}:nightly && \
         echo ":: push linux/aarch64 myapp:nightly"
-        
-        docker build --no-cache -t mpgagebioinformatics/myapp-dockerize:nightly ./services/backup/ && \
-        echo ":: build linux/aarch64 myapp-dockerize:nightly" && \
-        docker push mpgagebioinformatics/myapp-dockerize:nightly && \
-        echo ":: push linux/aarch64 myapp-dockerize:nightly"
 
 else
     cd ../../

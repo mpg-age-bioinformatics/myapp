@@ -47,17 +47,12 @@ if args.f :
             ":: build linux/amd64 myapp:nightly",
             ":: push linux/amd64 myapp:nightly" , 
             ":: build & push linux/arm64 myapp:nightly" ,
-            ":: build linux/amd64 myapp-dockerize:nightly", 
-            ":: push linux/amd64 myapp-dockerize:nightly",
-            ":: build & push linux/arm64 myapp-dockerize:nightly"
         ]
 
     if args.short == "aarch64" :
         list_of_checks=[
             ":: build linux/aarch64 myapp:nightly",
             ":: push linux/aarch64 myapp:nightly" , 
-            ":: build linux/aarch64 myapp-dockerize:nightly" ,
-            ":: push linux/aarch64 myapp-dockerize:nightly", 
         ]
     
     if args.short in [ "nightly", "aarch64"] :

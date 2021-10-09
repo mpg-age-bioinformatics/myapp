@@ -57,4 +57,4 @@ WORKDIR /${BUILD_NAME}
 ARG MYAPP_VERSION
 ENV MYAPP_VERSION ${MYAPP_VERSION}
 
-ENTRYPOINT /${BUILD_NAME}/services/server/docker-entrypoint.sh
+ENTRYPOINT /${BUILD_NAME}/services/server/entrypoint.sh

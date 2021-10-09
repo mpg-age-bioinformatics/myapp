@@ -1,6 +1,6 @@
 #!/bin/bash
 [ -z "${MYSQL_USER}" ] && { echo "=> MYSQL_USER cannot be empty" && exit 1; }
-[ -z "${MYSQL_PASS}" ] && { echo "=> MYSQL_PASS cannot be empty" && exit 1; }
+[ -z "${MYSQL_PASSWORD}" ] && { echo "=> MYSQL_PASS cannot be empty" && exit 1; }
 
 if [ "$#" -ne 1 ]
 then
@@ -9,7 +9,7 @@ fi
 
 echo "=> Restore database from $1"
 set -o pipefail
-if gunzip --stdout "$1" | mysql -h "$MYSQL_HOST" -P "$MYSQL_PORT" -u "$MYSQL_USER" -p"$MYSQL_PASS"
+if gunzip --stdout "$1" | mysql -h "$MYSQL_HOST" -P "$MYSQL_PORT" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD"
 then
     echo "=> Restore succeeded"
 else
