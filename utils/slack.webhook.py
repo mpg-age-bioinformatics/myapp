@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser(description="Send data to a Slack webhook.")
 parser.add_argument('-w', metavar="webhook", type=str, nargs='?', help="Webhook URL", required=True)
 parser.add_argument('-s', metavar="subject", type=str, nargs='*', help="Message subject (required)", required=True)
 parser.add_argument('-f', metavar="file", type=str, nargs='?', help="txt file to be sent as text.")
-parser.add_argument("--short", metavar="type", type=str, nargs='?', choices=["nightly"] , default="nightly")
+parser.add_argument("--short", metavar="type", type=str, nargs='?', choices=["nightly", "aarch64", "no"] , default="nightly")
 args = parser.parse_args()
 
 import json
@@ -43,8 +43,6 @@ if args.f :
     }
 
     if args.short == "nightly" :
-        summary=[ f[4], f[6] ]
-        f = "".join(f)
         list_of_checks=[
             ":: build linux/amd64 myapp:nightly",
             ":: push linux/amd64 myapp:nightly" , 
@@ -53,6 +51,18 @@ if args.f :
             ":: push linux/amd64 myapp-dockerize:nightly",
             ":: build & push linux/arm64 myapp-dockerize:nightly"
         ]
+
+    if args.short == "aarch64" :
+        list_of_checks=[
+            ":: build linux/aarch64 myapp:nightly",
+            ":: push linux/aarch64 myapp:nightly" , 
+            ":: build linux/aarch64 myapp-dockerize:nightly" ,
+            ":: push linux/aarch64 myapp-dockerize:nightly", 
+        ]
+    
+    if args.short in [ "nightly", "aarch64"] :
+        summary=[ f[4], f[6] ]
+        f = "".join(f)
 
         success=True
         for c in list_of_checks :
