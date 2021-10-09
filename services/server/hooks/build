@@ -37,11 +37,11 @@ elif [ "${1}" == "nightly" ] ;
         MYAPP_VERSION=$(git rev-parse --short HEAD)
         echo ":: git #${MYAPP_VERSION}"
         docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-amd64 -f services/server/Dockerfile . && \
-        echo ":: build linux/amd64 myapp:nightly" && \
+        echo ":: build myapp:nightly-amd64" && \
         docker push ${repoName}:nightly && \
-        echo ":: push linux/amd64 myapp:nightly"
+        echo ":: push myapp:nightly-amd64"
         docker buildx build --platform linux/arm64 --no-cache --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nightly-arm64 -f services/server/Dockerfile . --push && \
-        echo ":: build & push linux/arm64 myapp:nightly"
+        echo ":: build & push myapp:nightly-arm64"
 
         # if [[ "$(docker manifest inspect mpgagebioinformatics/myapp:lat > /dev/null ; echo $? )" == "0" ]] ; then echo "exists" ; fi 
 
@@ -49,10 +49,10 @@ elif [ "${1}" == "aarch64" ] ;
     then 
         MYAPP_VERSION=$(git rev-parse --short HEAD)
         echo ":: git #${MYAPP_VERSION}"
-        docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-arch64 -f services/server/Dockerfile . && \
-        echo ":: build linux/aarch64 myapp:nightly" && \
+        docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-aarch64 -f services/server/Dockerfile . && \
+        echo ":: build myapp:nightly-aarch64" && \
         docker push ${repoName}:nightly && \
-        echo ":: push linux/aarch64 myapp:nightly"
+        echo ":: push myapp:nightly-aarch64"
 
 else
     cd ../../
