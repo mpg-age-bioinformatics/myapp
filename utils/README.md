@@ -11,9 +11,9 @@ Send data to a Slack webhook.
 ___
 ### Notes
 
-`crontab -e`
+`sudo crontab -u ${USER} -e`
 
 ```
-* 0 * * * cd ~/myapp && git pull && cd ./services/server && ~/myapp/services/server/hooks/build nightly > ~/myapp/build.log 2>&1 ; ~/myapp/utils/slack.webhook.py -s "myapp nightly build" -f ~/myapp/build.log -w <slack webhook address>
+* 0 * * * export PATH=/usr/local/bin:/usr/bin:${PATH} && cd ~/myapp && git pull && cd ./services/server && ~/myapp/services/server/hooks/build nightly > ~/myapp/build.log 2>&1 ; ~/myapp/utils/slack.webhook.py -s "myapp nightly build" -f ~/myapp/build.log -w <slack webhook address>
 ```
 ___
