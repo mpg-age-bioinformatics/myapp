@@ -43,7 +43,12 @@ RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data /${BUILD_NAME}_data
 
 # comment during development
 COPY requirements.txt /${BUILD_NAME}/requirements.txt
-RUN pip3 install -r /${BUILD_NAME}/requirements.txt
+COPY utils/requirements.min.txt /${BUILD_NAME}/utils/
+
+ARG MYAPP_VERSION
+ENV MYAPP_VERSION ${MYAPP_VERSION}
+
+RUN if [ "${MYAPP_VERSION}" = "dev" ]] ; then echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; else echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install -r /${BUILD_NAME}/requirements.txt ; fi
 
 COPY LICENSE.md README.md config.py ${BUILD_NAME}.py requirements.txt setup.py .flaskenv /${BUILD_NAME}/
 COPY services /${BUILD_NAME}/services
@@ -54,7 +59,5 @@ COPY .git /${BUILD_NAME}/.git
 USER ${BUILD_NAME}:${BUILD_NAME}
 WORKDIR /${BUILD_NAME}
 
-ARG MYAPP_VERSION
-ENV MYAPP_VERSION ${MYAPP_VERSION}
 
 ENTRYPOINT /${BUILD_NAME}/services/server/entrypoint.sh

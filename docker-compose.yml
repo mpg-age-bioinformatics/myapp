@@ -84,6 +84,8 @@ services:
   build:
     context: ./
     dockerfile: ./services/server/Dockerfile
+    args:
+      MYAPP_VERSION: dev
   user: root
   entrypoint: /myapp/services/backup/entrypoint.sh
   depends_on:

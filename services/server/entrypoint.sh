@@ -12,6 +12,7 @@ if [[ "$FLASK_ENV" == "production" ]] ;
     gunicorn -b 0.0.0.0:8000 --timeout 60000 -w 4 ${BUILD_NAME}:app
   elif [[ "$FLASK_ENV" == "development" ]] ; 
   then
+    /myapp/utils/getenv.sh
     tail -f /dev/null
 fi
 
