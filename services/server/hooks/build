@@ -35,17 +35,17 @@ elif [ "${1}" == "nightly" ] ;
 
         text=":: !FAILED! "
         docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-amd64 -f services/server/Dockerfile . && \
-        docker push ${repoName}:nightly && \
+        docker push ${repoName}:nightly-amd64 && \
         text=":: "
         echo "${text}build & push myapp:nightly-amd64"
-        docker rm $(docker ps -a -q); docker rmi $(docker images -q) ; docker system prune -f 
+        docker stop $(docker ps -q) ; docker rm $(docker ps -a -q); docker rmi $(docker images -q) ; docker system prune -f 
 
         text=":: !FAILED! "
         docker buildx create --use && \
         docker buildx build --platform linux/arm64 --no-cache --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nightly-arm64 -f services/server/Dockerfile . --push && \
         text=":: "
         echo "${text}build & push myapp:nightly-arm64"
-        docker stop $( docker ps | grep buildkitd | awk '{print $7}' ) ; docker rm $(docker ps -a -q); docker rmi $(docker images -q) ; docker system prune -f 
+        docker stop $(docker ps -q) ; ; docker rm $(docker ps -a -q); docker rmi $(docker images -q) ; docker system prune -f 
 
         for tag in $(git tag -l | tail -n 10 ) ; 
             do
@@ -69,7 +69,7 @@ elif [ "${1}" == "nightly" ] ;
                         docker buildx build --platform linux/arm64 --no-cache --build-arg MYAPP_VERSION="${tag}" -t ${repoName}:${tag}-arm64 -f services/server/Dockerfile . --push && \
                         text=":: "
                         echo "${text}add tag ${tag}-arm64"
-                        docker stop $( docker ps | grep buildkitd | awk '{print $7}' ) ; docker rm $(docker ps -a -q); docker rmi $(docker images -q) ; docker system prune -f 
+                        docker stop $(docker ps -q) ; docker rm $(docker ps -a -q); docker rmi $(docker images -q) ; docker system prune -f 
                 fi
 
         done 
