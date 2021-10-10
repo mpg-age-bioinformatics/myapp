@@ -51,7 +51,10 @@ ARG UPGRADE_REQS
 ENV MYAPP_VERSION ${MYAPP_VERSION}
 ENV UPGRADE_REQS ${UPGRADE_REQS}
 
-RUN if [ "${UPGRADE_REQS}" = "yes" ]] ; then echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; /myapp/utils/getenv.sh ; else echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install -r /${BUILD_NAME}/requirements.txt ; fi
+RUN if [ "${UPGRADE_REQS}" = "yes" ]] ; then \
+echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; /myapp/utils/getenv.sh ; \
+else echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install --ignore-installed pyxdg==0.26 ; pip3 install -r /${BUILD_NAME}/requirements.txt ; \
+fi
 
 COPY LICENSE.md README.md config.py ${BUILD_NAME}.py requirements.txt setup.py .flaskenv /${BUILD_NAME}/
 COPY services /${BUILD_NAME}/services
