@@ -6,7 +6,7 @@ parser = argparse.ArgumentParser(description="Send data to a Slack webhook.")
 parser.add_argument('-w', metavar="webhook", type=str, nargs='?', help="Webhook URL", required=True)
 parser.add_argument('-s', metavar="subject", type=str, nargs='*', help="Message subject (required)", required=True)
 parser.add_argument('-f', metavar="file", type=str, nargs='?', help="txt file to be sent as text.")
-parser.add_argument("--short", metavar="type", type=str, nargs='?', choices=["nightly", "aarch64", "no"] , default="nightly")
+parser.add_argument("--short", metavar="type", type=str, nargs='?', choices=["report"] , default="report")
 args = parser.parse_args()
 
 import json
@@ -42,29 +42,12 @@ if args.f :
         }
     }
 
-    if args.short == "nightly" :
-        list_of_checks=[
-            ":: build myapp:nightly-amd64",
-            ":: push myapp:nightly-amd64" , 
-            ":: build & push myapp:nightly-arm64" ,
-        ]
-
-    if args.short == "aarch64" :
-        list_of_checks=[
-            ":: build myapp:nightly-aarch64" ,
-            ":: push myapp:nightly-aarch64" , 
-        ]
     
-    if args.short in [ "nightly", "aarch64"] :
-        summary=[ f[4], f[6] ]
-        f = "".join(f)
-
+    if args.short == "report" :
+        summary=[ s for s in f if s[:3] == ":: "]
         success=True
-        for c in list_of_checks :
-            if  c in f :
-                summary.append(c+"\n")
-            else:
-                summary.append(c.replace(":: ", ":: !FAILED! ")+"\n")
+        for s in summary :
+            if  "!FAILED!" in s :
                 success=False
 
         summary="".join(summary)
