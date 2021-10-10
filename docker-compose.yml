@@ -10,6 +10,7 @@ services:
     dockerfile: services/server/Dockerfile
     args:
       MYAPP_VERSION: dev
+      UPGRADE_REQS: "no"
   user: root
   entrypoint: /myapp/services/init/entrypoint.sh
   volumes:
@@ -48,6 +49,7 @@ services:
     dockerfile: services/server/Dockerfile
     args:
       MYAPP_VERSION: dev
+      UPGRADE_REQS: "no"
   restart: always
   volumes:
    - data:/${APP_NAME}_data/users
@@ -86,6 +88,7 @@ services:
     dockerfile: ./services/server/Dockerfile
     args:
       MYAPP_VERSION: dev
+      UPGRADE_REQS: "no"
   user: root
   entrypoint: /myapp/services/backup/entrypoint.sh
   depends_on:

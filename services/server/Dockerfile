@@ -26,7 +26,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 RUN apt-get update && apt-get -yq dist-upgrade && \
-apt-get install -yq python3 python3-pip pkg-config mariadb-client cron rsync && \
+apt-get install -yq libcairo2-dev python3 python3-pip pkg-config mariadb-client cron rsync && \
 python3 -m pip install -U pip && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -43,12 +43,15 @@ RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data /${BUILD_NAME}_data
 
 # comment during development
 COPY requirements.txt /${BUILD_NAME}/requirements.txt
-COPY utils/requirements.min.txt /${BUILD_NAME}/utils/
+COPY utils/requirements.min.txt utils/getenv.sh /${BUILD_NAME}/utils/
 
 ARG MYAPP_VERSION
-ENV MYAPP_VERSION ${MYAPP_VERSION}
+ARG UPGRADE_REQS
 
-RUN if [ "${MYAPP_VERSION}" = "dev" ]] ; then echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; else echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install -r /${BUILD_NAME}/requirements.txt ; fi
+ENV MYAPP_VERSION ${MYAPP_VERSION}
+ENV UPGRADE_REQS ${UPGRADE_REQS}
+
+RUN if [ "${UPGRADE_REQS}" = "yes" ]] ; then echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; /myapp/utils/getenv.sh ; else echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install -r /${BUILD_NAME}/requirements.txt ; fi
 
 COPY LICENSE.md README.md config.py ${BUILD_NAME}.py requirements.txt setup.py .flaskenv /${BUILD_NAME}/
 COPY services /${BUILD_NAME}/services
