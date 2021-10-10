@@ -22,11 +22,11 @@ if [ "${DOCKER_TAG}" == "latest" ] ;
     then 
         echo ":: Tag: ${DOCKER_TAG}"
         MYAPP_VERSION=$(git rev-parse --short HEAD)
-        # docker build --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
-        # docker push ${repoName}:latest
-        docker buildx create --use
-        docker buildx build --platform linux/amd64,linux/arm64 --no-cache --build-arg MYAPP_VERSION="${MYAPP_VERSION}" -t ${repoName}:latest -f services/server/Dockerfile . --push && \
+        docker build --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
+        docker push ${repoName}:latest && 
         echo ":: build & push tag: latest"
+        # docker buildx create --use
+        # docker buildx build --platform linux/amd64,linux/arm64 --no-cache --build-arg MYAPP_VERSION="${MYAPP_VERSION}" -t ${repoName}:latest -f services/server/Dockerfile . --push && \
 
 
 elif [ "${1}" == "nightly" ] ;
