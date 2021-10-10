@@ -69,6 +69,7 @@ elif [ "${1}" == "nightly" ] ;
                         docker buildx build --platform linux/arm64 --no-cache --build-arg MYAPP_VERSION="${tag}" -t ${repoName}:${tag}-arm64 -f services/server/Dockerfile . --push && \
                         text=":: "
                         echo "${text}add tag ${tag}-arm64"
+                        git checkout main
                         docker system prune -f 
                 fi
 
@@ -94,6 +95,7 @@ elif [ "${1}" == "aarch64" ] ;
                         docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:${tag}-aarch64 -f services/server/Dockerfile . && \
                         text=":: "
                         echo "${text}add tag ${tag}-aarch64"
+                        git checkout main
                         docker system prune -f 
                 fi
         done
