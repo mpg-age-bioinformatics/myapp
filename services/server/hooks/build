@@ -63,7 +63,7 @@ elif [ "${1}" == "nightly" ] ;
                 fi 
                 if [[ ! "$(docker manifest inspect ${repoName}:${tag}-arm64 > /dev/null ; echo $? )" == "0" ]] 
                     then 
-                        text= ":: !FAILED! "
+                        text=":: !FAILED! "
                         docker buildx create --use && \
                         git checkout ${tag} && \
                         docker buildx build --platform linux/arm64 --no-cache --build-arg MYAPP_VERSION="${tag}" -t ${repoName}:${tag}-arm64 -f services/server/Dockerfile . --push && \
@@ -78,7 +78,7 @@ elif [ "${1}" == "aarch64" ] ;
     then 
         MYAPP_VERSION=$(git rev-parse --short HEAD)
         echo ":: git #${MYAPP_VERSION}"
-        text= ":: !FAILED! "
+        text=":: !FAILED! "
         docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-aarch64 -f services/server/Dockerfile . && \
         docker push ${repoName}:nightly && \
         text=":: "
@@ -89,7 +89,7 @@ elif [ "${1}" == "aarch64" ] ;
             do
                 if [[ ! "$(docker manifest inspect ${repoName}:${tag}-aarch64 > /dev/null ; echo $? )" == "0" ]] 
                     then
-                        text= ":: !FAILED! "
+                        text=":: !FAILED! "
                         git checkout ${tag} && \
                         docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:${tag}-aarch64 -f services/server/Dockerfile . && \
                         text=":: "
