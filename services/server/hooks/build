@@ -47,8 +47,8 @@ elif [ "${1}" == "nightly" ] ;
         text=":: "
         echo "${text}build & push tag: nightly"
         echo "${text}build & push tag: latest"
-        docker stop $(docker ps | grep buildkitd | awk '{print $7}' )
-        docker rm $(docker ps -a -q)
+        # docker stop $(docker ps | grep buildkitd | awk '{print $7}' )
+        # docker rm $(docker ps -a -q)
         docker system prune -f 
 
         # tag=$(git describe --abbrev=0 --tags)
