@@ -114,7 +114,7 @@ elif [ "${1}" == "aarch64" ] ;
         docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-aarch64 -f services/server/Dockerfile . && \
         text=":: "
         echo "${text}build myapp:nightly-aarch64"
-        docker system prune -f 
+        # docker system prune -f 
 
         # tag=$(git describe --abbrev=0 --tags)
         # if [[ ! "$(docker manifest inspect ${repoName}:${tag}-aarch64 > /dev/null ; echo $? )" == "0" ]] 
