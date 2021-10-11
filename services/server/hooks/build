@@ -49,7 +49,7 @@ elif [ "${1}" == "nightly" ] ;
         echo "${text}build & push tag: latest"
         # docker stop $(docker ps | grep buildkitd | awk '{print $7}' )
         # docker rm $(docker ps -a -q)
-        docker system prune -f 
+        # docker system prune -f 
 
         # tag=$(git describe --abbrev=0 --tags)
         # if [[ ! "$(docker manifest inspect ${repoName}:${tag}-amd64 > /dev/null ; echo $? )" == "0" ]] 
