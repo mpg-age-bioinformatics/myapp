@@ -39,7 +39,7 @@ blinker==1.4
 Brotli==1.0.9
 cachelib==0.4.1
 certifi==2021.10.8
-cffi==1.14.6
+cffi==1.15.0
 charset-normalizer==2.0.6
 click==8.0.2
 cryptography==3.3.2
@@ -60,7 +60,7 @@ numpy==1.21.2
 pip==21.2.4
 plotly==5.3.1
 pycairo==1.20.1
-pycparser==2.20
+pycparser==2.21
 pycrypto==2.6.1
 PyGObject==3.30.4
 python-dateutil==2.8.2

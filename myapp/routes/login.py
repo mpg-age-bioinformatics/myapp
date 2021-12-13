@@ -239,7 +239,7 @@ def login_buttom(n_clicks, username, passA, keepsigned):
     else:
         user=User.query.filter_by(username=username).first()
     if not user:
-        return dbc.Alert( "Could not find username!" ,color="warning"), page_, otp_
+        return dbc.Alert( "Could not find username!" ,color="warning"), submission_, passA_,  page_, otp_
 
     if not user.check_password(passA):
         return  username_, dbc.Alert( "Wrong password!" ,color="warning"), submission_, page_, otp_
