@@ -18,12 +18,12 @@ Flask-Session==0.4.0
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==0.15.1
 dash==2.0.0
-dash-bootstrap-components==0.13.1
+dash-bootstrap-components==1.0.2
 dash-core-components==2.0.0
 dash-html-components==2.0.0
 dash-table==5.0.0
 dash-table==5.0.0
-dash-bootstrap-components==0.13.1
+dash-bootstrap-components==1.0.2
 onetimepass==1.0.1
 PyQRCode==1.2.1
 python-dotenv==0.19.1

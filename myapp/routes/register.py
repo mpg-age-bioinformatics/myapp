@@ -11,37 +11,39 @@ from flask_login import current_user
 
 dashapp = dash.Dash("register",url_base_pathname='/register/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
-firstname_input = dbc.FormGroup(
+firstname_input = html.Div(
     [
         dbc.Label("First name", html_for="first_name"),
         dbc.Input(type="text", id="first_name", placeholder="First name"),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-lastname_input = dbc.FormGroup(
+lastname_input = html.Div(
     [
         dbc.Label("Last name", html_for="last_name"),
         dbc.Input(type="text", id="last_name", placeholder="Last name"),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-username_input = dbc.FormGroup(
+username_input = html.Div(
     [
         dbc.Label("Username", html_for="username"),
         dbc.Input(type="text", id="username", placeholder="username"),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-
-
-email_input = dbc.FormGroup(
+email_input = html.Div(
     [
         dbc.Label("Email", html_for="input-email"),
         dbc.Input(type="email", id="input-email", placeholder="Enter email"),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-password_input = dbc.FormGroup(
+password_input = html.Div(
     [
         dbc.Label("Password", html_for="input-password"),
         dbc.Input(
@@ -49,10 +51,11 @@ password_input = dbc.FormGroup(
             id="input-password",
             placeholder="Enter password",
         ),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-password_input_2 = dbc.FormGroup(
+password_input_2 = html.Div(
     [
         dbc.Label("Repeat Password", html_for="input-password-2"),
         dbc.Input(
@@ -60,7 +63,8 @@ password_input_2 = dbc.FormGroup(
             id="input-password-2",
             placeholder="Enter password again",
         ),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
 read=dcc.Checklist(
@@ -69,23 +73,25 @@ read=dcc.Checklist(
     ],
     value=[],
     id="agreement",
-    style={"margin-left":"15px"}
+    style={"margin-bottom":"8px"}
 )
 
-footer=html.Div(
-    [
-        dbc.Row( 
-            html.Footer( 
-                [ 
+
+footer=html.Footer(
+    dbc.Row(
+        [
+            dbc.Col(
+               [ 
                     html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
                     html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
                     html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")
                 ] , 
-                style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
-            ),
-            style={"justify-content":"center"}
-        )
-    ]
+                style={ 'display':'flex', 'justifyContent':'center'}
+            )
+        ],
+        justify="center",
+        align="center"
+    )
 )
 
 
@@ -139,10 +145,13 @@ def generate_content(pathname):
                                 password_input_2,
                                 html.Div(id="pass2-feedback"),
                                 dbc.Row(
-                                    [ 
-                                        read , 
-                                        html.A("Privacy Statment.", href="/privacy/",style={"margin-left":"4px",'whiteSpace': 'pre-wrap'})
-                                    ]
+                                    dbc.Col(
+                                        [ 
+                                            read , 
+                                            html.A("Privacy Statment.", href="/privacy/",style={"margin-left":"4px",'whiteSpace': 'pre-wrap'})
+                                        ],
+                                        style={ 'display':'flex', 'justifyContent':'left'}
+                                    )
                                 ),
                                 html.Div(id="checkbox-feedback"),
                                 html.Button(id='submit-button-state', n_clicks=0, children='Submit', style={"width":"auto","margin-top":4, "margin-bottom":4}),

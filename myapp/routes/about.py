@@ -18,18 +18,22 @@ dashapp = dash.Dash("about",url_base_pathname='/about/', meta_tags=META_TAGS, se
 about=dcc.Markdown(_about)
 
 links_style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px", "font-weight": "bold","text-decoration": "none"}
-privacy_impressum=html.Div([
-    dbc.Row( 
-        html.Footer( 
-            [ 
-                html.A("Impressum", style=links_style, href="/impressum/"),
-                html.A("Privacy", style=links_style, href="/privacy/"),
-            ] , 
-            style={"margin-top": 25, "margin-bottom": 5,},
-        ),
-        style={"justify-content":"center"}
+
+privacy_impressum=html.Footer(
+    dbc.Row(
+        [
+            dbc.Col(
+                [
+                    html.A("Impressum", style=links_style, href="/impressum/"),
+                    html.A("Privacy", style=links_style, href="/privacy/"),
+                ],
+                style={ 'display':'flex', 'justifyContent':'center'}
+            )
+        ],
+        justify="center",
+        align="center"
     )
-])
+)
 
 dashapp.layout=dbc.Row(
     [ 

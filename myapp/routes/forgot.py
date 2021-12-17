@@ -11,14 +11,15 @@ from ._utils import META_TAGS, check_email, password_check, navbar_A
 
 dashapp = dash.Dash("forgot",url_base_pathname='/forgot/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
-username_input = dbc.FormGroup(
+username_input = html.Div(
     [
         dbc.Label("Username", html_for="username"),
         dbc.Input(type="text", id="username", placeholder="Enter username"),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-password_input = dbc.FormGroup(
+password_input = html.Div(
     [
         dbc.Label("Password", html_for="input-password"),
         dbc.Input(
@@ -26,10 +27,11 @@ password_input = dbc.FormGroup(
             id="input-password",
             placeholder="Enter password",
         ),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-password_input_2 = dbc.FormGroup(
+password_input_2 = html.Div(
     [
         dbc.Label("Repeat Password", html_for="input-password-2"),
         dbc.Input(
@@ -37,23 +39,25 @@ password_input_2 = dbc.FormGroup(
             id="input-password-2",
             placeholder="Enter password again",
         ),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-footer=html.Div(
-    [
-        dbc.Row( 
-            html.Footer( 
-                [ 
+footer=html.Footer(
+    dbc.Row(
+        [
+            dbc.Col(
+                [
                     html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
                     html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/"),
                     html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")
-                ], 
-                style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
-            ),
-            style={"justify-content":"center"}
-        )
-    ]
+                ],
+                style={ 'display':'flex', 'justifyContent':'center'}
+            )
+        ],
+        justify="center",
+        align="center"
+    )
 )
 
 request_form=[ 

@@ -89,7 +89,7 @@ navbar_A = dbc.NavbarSimple(
     ],
     fixed='bottom',
     color='white',
-    expand="xs",
+    expand=True, #"xs",
     # sticky ='bottom',
     style={"textAlign":"right" , "height":"50px"},
     # fluid=True

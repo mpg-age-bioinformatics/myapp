@@ -11,46 +11,56 @@ from flask_login import current_user
 
 dashapp = dash.Dash("contact",url_base_pathname='/contact/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])
 
-firstname_input = dbc.FormGroup(
+firstname_input = html.Div(
     [
         dbc.Label("First name", html_for="first_name"),
         dbc.Input(type="text", id="first_name", placeholder="First name"),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-lastname_input = dbc.FormGroup(
+lastname_input = html.Div(
     [
         dbc.Label("Last name", html_for="last_name"),
         dbc.Input(type="text", id="last_name", placeholder="Last name"),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-email_input = dbc.FormGroup(
+email_input = html.Div(
     [
         dbc.Label("Email", html_for="input-email"),
         dbc.Input(type="email", id="input-email", placeholder="Enter email"),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-message=dbc.FormGroup(
+message=html.Div(
     [
         dbc.Label("Message", html_for="input-text"),
         dcc.Textarea( id='input-text', placeholder="your message ..",style={ "width":"100%", 'height': 250 } ),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-footer=html.Div(
-    [
-        dbc.Row( 
-            html.Footer( [ html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
-                        html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
-                        html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/")] , 
-            style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
-            ),
-            style={"justify-content":"center"}
+
+footer=html.Footer(
+    dbc.Row(
+        [
+            dbc.Col(
+                [
+                    html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
+                    html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
+                    html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/")               
+                ],
+                style={ 'display':'flex', 'justifyContent':'center'}
             )
-    ]
+        ],
+        justify="center",
+        align="center"
+    )
 )
+
 
 dashapp.layout=dbc.Row( 
     [

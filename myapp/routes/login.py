@@ -13,14 +13,15 @@ from ._utils import META_TAGS, check_email, navbar_A
 
 dashapp = dash.Dash("login",url_base_pathname='/login/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
-username_input = dbc.FormGroup(
+username_input = html.Div(
     [
         dbc.Label("Username", html_for="username"),
         dbc.Input(type="text", id="username", placeholder="Enter username"),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
-password_input = dbc.FormGroup(
+password_input = html.Div(
     [
         dbc.Label("Password", html_for="input-password"),
         dbc.Input(
@@ -28,7 +29,8 @@ password_input = dbc.FormGroup(
             id="input-password",
             placeholder="Enter password",
         ),
-    ]
+    ],
+    style={"margin-bottom":"8px"}
 )
 
 keppsigned=dcc.Checklist(
@@ -37,22 +39,26 @@ keppsigned=dcc.Checklist(
     ],
     value=[],
     id="keepsigned",
-    style={"margin-left":"15px"}
+    # style={"margin-left":"0px"}
+    style={"margin-bottom":"8px"}
+
 )
 
-footer=html.Div([
-    dbc.Row( 
-        html.Footer( 
-            [ 
-                html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/"),
-                html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
-                html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")
-            ] , 
-            style={"margin-top": 5, "margin-bottom": 5, "margin-left": "20px"},
-        ),
-        style={"justify-content":"center"}
-        )
-    ]
+footer=html.Footer(
+    dbc.Row(
+        [
+            dbc.Col(
+                [
+                    html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/"),
+                    html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
+                    html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")
+                ],
+                style={ 'display':'flex', 'justifyContent':'center'}
+            )
+        ],
+        justify="center",
+        align="center"
+    )
 )
 
 
@@ -90,11 +96,11 @@ def generate_content(pathname):
                             ]
                         )
                         , body=True
-                    ), 
+                    ),
                     footer 
                 ],
                 sm=9,md=6, lg=5, xl=5, 
-                align="center", 
+                align="center",
                 style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}
             ),
             navbar_A
@@ -104,11 +110,12 @@ def generate_content(pathname):
         style={"min-height": "95vh", 'verticalAlign': 'center'}
     ) #, 
 
+
 @dashapp.callback(
     Output('otp-content', 'children'),
     Input('url', 'pathname'))
 def generate_otp_content(pathname):
-    otp = dbc.FormGroup(
+    otp = dbc.FormFloating(
         [
             dbc.Input(type="text", id="otp", placeholder="2FA token", style={"max-width":"150px","margin":"2px", "height":"40px"}),
         ]
@@ -129,7 +136,7 @@ def generate_otp_content(pathname):
                                         html.Div(id="otp-feedback", style={"margin":"10px","width":"100%"})
                                     ],
                                     justify="center",
-                                    no_gutters=True, style={"height":"10px" }
+                                    className="g-0", style={"height":"10px" }
                                 ),
                             ]
                         ),
