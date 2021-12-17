@@ -18,7 +18,7 @@ class Config(object):
     APP_TITLE=os.environ.get('APP_TITLE') or "myapp"
     APP_URL=os.environ.get('APP_URL')  or 'https://0.0.0.0'
     APP_ASSETS=os.environ.get('APP_ASSETS') or f'/{APP_NAME}/{APP_NAME}/static/'
-    USERS_DATA = os.environ.get('USERS_DATA') or "/myapp/users/"
+    USERS_DATA = os.environ.get('USERS_DATA') or f'/{APP_NAME}_data/users'
     LOGS = os.environ.get('LOGS') or '/var/log/myapp/'
     session_token=secrets.token_urlsafe(16)
     SECRET_KEY = os.environ.get('SECRET_KEY') or session_token
