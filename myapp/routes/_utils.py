@@ -111,7 +111,7 @@ def make_nav_dropdown(nav_dic, label):
         className="mr-1",
         nav=True,
         in_navbar=True,
-        right=True
+        align_end=True
     )
 
     return [ dd ]
