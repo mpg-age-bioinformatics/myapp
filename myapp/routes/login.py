@@ -115,39 +115,56 @@ def generate_content(pathname):
     Output('otp-content', 'children'),
     Input('url', 'pathname'))
 def generate_otp_content(pathname):
-    otp = dbc.FormFloating(
-        [
-            dbc.Input(type="text", id="otp", placeholder="2FA token", style={"max-width":"150px","margin":"2px", "height":"40px"}),
-        ]
-    )
+    # otp = dbc.FormFloating(
+    #     [
+    #         dbc.Input(type="text", id="otp", placeholder="2FA token", style={"max-width":"150px","margin":"2px", "height":"40px"}),
+    #     ]
+    # )
 
     otp_content=dbc.Row( 
         [
             dbc.Col( 
                 [ 
                     dbc.Card(  
-                        dbc.Form(
-                            [ 
-                                dbc.Row(
-                                    [
-                                        otp,
-                                        dbc.Button(id='submit-otp-button', n_clicks=0, children='Submit', style={"width":"auto","margin":"2px", "height":"40px"}),
-                                        dbc.Button(id='cancel-otp-button', n_clicks=0, children='Cancel', style={"width":"auto","margin":"2px","height":"40px"}),
-                                        html.Div(id="otp-feedback", style={"margin":"10px","width":"100%"})
-                                    ],
-                                    justify="center",
-                                    className="g-0", style={"height":"10px" }
+                        [ 
+                            dbc.Row(
+                                dbc.Col(
+                                    dbc.Input(type="text", id="otp", placeholder="2FA token", style={"width":"100%","margin-left":"4px", "padding-right":"20px","height":"40px"}), #
                                 ),
-                            ]
-                        ),
+                                justify="center",
+                            ),
+                            dbc.Row(
+                                [
+                                    dbc.Col(
+                                        dbc.Button(id='submit-otp-button', n_clicks=0, children='Submit', color="secondary", className="me-1", style={"width":"100%","margin":"4px","height":"40px"}),
+                                        width=6
+                                    ),
+                                    dbc.Col(
+                                        dbc.Button(id='cancel-otp-button', n_clicks=0, children='Cancel', color="secondary", className="me-1",  style={"width":"100%","margin":"4px","height":"40px"}),
+                                        width=6,
+                                    )
+                                ],
+                                # style={ 'display':'flex', 'justifyContent':'center'}
+                                className="g-1",
+                                justify="center",
+                            ),
+                            dbc.Row(
+                                html.Div(id="otp-feedback", style={"margin":"10px","width":"100%"}),
+                                justify="center",
+                            )
+                        ],
+                        # justify="center",
+                        # className="g-2", style={"height":"10px" }
+                        # ),
+                        # ],
                         body=True, 
                         className="border-0",
-                        style={ "max-width":"370px"}
+                        style={ "max-width":"300px"}
                     ) 
                 ], 
                 xs=12 ,sm=8,md=6, lg=5, xl=4, 
                 align="center", 
-                style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px"}
+                style={ "margin-left":2, "margin-right":2 ,'margin-bottom':"50px", 'display':'flex', 'justifyContent':'center'}
             ),
             navbar_A
         ],

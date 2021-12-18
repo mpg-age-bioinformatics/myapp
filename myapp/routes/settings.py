@@ -36,18 +36,16 @@ def make_layout(pathname):
     topnavbar=make_navbar_logged("Settings",current_user)
 
     def make_text_form_row(label,value,placeholder,id_,input_type="text"):
-        form_row=dbc.Form( 
+        form_row=dbc.Row(
             [ 
-                dbc.FormGroup(
-                    [ 
-                        dbc.Label(label, html_for=id_, style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
-                        dbc.Col(
-                            dbc.Input(type=input_type, id=id_, value=value, placeholder=placeholder, style={"width":"330px","margin-left":"2px"}),
-                        ),
-                    ],
-                    row=True,
+                dbc.Label(label, html_for=id_, width=4), # xs=2,sm=3,md=3,lg=2,xl=2, style={"min-width":"150px","margin-left":"20px"}
+                dbc.Col(
+                    dbc.Input(type=input_type, id=id_, value=value, placeholder=placeholder, ), #style={"width":"330px","margin-left":"2px"}
+                    width=8
                 ),
             ],
+            # row=True,
+            className="mb-3",
         )
         return form_row
 
@@ -75,35 +73,27 @@ def make_layout(pathname):
         style={"width":"330px","margin-left":"2px"}
     )
 
-    notify=dbc.Form( 
+    notify=dbc.Row(
         [ 
-            dbc.FormGroup(
-                [ 
-                    dbc.Label("", html_for="notify", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
-                    dbc.Col( notify ),
-                ],
-                row=True,
-            ),
+            dbc.Label("", html_for="notify", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
+            dbc.Col( notify ),
         ],
     )
 
     if current_user.otp_enabled:
-        otp_changes=dbc.Col(
-                        dbc.Input(type="text", id="changes-otp", placeholder="2FA token", style={"width":"330px","margin-left":"2px"})                    
-                    )
+        otp_changes=dbc.Input(type="text", id="changes-otp", placeholder="2FA token", style={"width":"100%","margin-top":"6px"})                    
     else:
-        otp_changes=dbc.Label("", id="changes-otp",style={"width":"330px","margin-left":"2px","margin-top":4, "margin-bottom":4})
+        otp_changes=dbc.Label("", id="changes-otp",style={"width":"100%"})
 
-    submit_btn=dbc.Form( 
+    submit_btn=dbc.Row(
         [ 
-            dbc.FormGroup(
-                [ 
-                    dbc.Button(id='submit-button-state', n_clicks=0, children='Submit', style={"min-width":"150px","margin-left":"20px"}),
-                    otp_changes   
-                ],
-                row=True,
+            dbc.Label(dbc.Button(id='submit-button-state', n_clicks=0, children='Submit', style={"width":"100%"}), html_for="changes-otp", width=4), # xs=2,sm=3,md=3,lg=2,xl=2, style={"min-width":"150px","margin-left":"20px"}
+            dbc.Col(
+                otp_changes,
+                width=8
             ),
         ],
+        className="mb-3",
     )
 
     if not current_user.otp_enabled:
@@ -123,11 +113,11 @@ def make_layout(pathname):
                 [
                     dbc.Col(
                         dbc.Input(type="text", id="otp-input", placeholder="type code"),
-                        style={"margin-right":"2px"},
+                        # style={"margin-right":"0px"},
                         width=4,
                     ),
                 ],
-                no_gutters=True,
+                className="g-0",
                 align="center",
                 justify="center",
                 style={"margin-bottom":"15px"}
@@ -154,36 +144,31 @@ def make_layout(pathname):
                     dbc.ModalHeader("2FA QR Code"),
                     modal_body,
                     dbc.ModalFooter(
-                        dbc.Row(
+                        html.Div(
                             [
                                 dbc.Button(
                                     "Backup codes",
                                     id="backup-codes-btn",
-                                    className="ml-auto",
+                                    className="me-1",
                                     n_clicks=0,
                                     disabled=True,
-                                    style={"margin":"2px"}
                                 ),
                                 dbc.Button(
                                     children="Enable",
                                     id="enable-disable",
-                                    className="ml-auto",
+                                    className="me-1",
                                     n_clicks=0,
                                     disabled=True,
-                                    style={"margin":"2px"}
                                 ),
                                 dbc.Button(
                                     "Close",
                                     id="close-centered",
-                                    className="ml-auto",
+                                    className="me-1",
                                     n_clicks=0,
-                                    style={"margin":"2px"},
                                     href=f'{app.config["APP_URL"]}/settings',
                                     external_link=True
                                 )
                             ],
-                            no_gutters=False,
-                            justify="end",
                         ),
                     ),
                 ],
@@ -194,20 +179,15 @@ def make_layout(pathname):
         ]
     )    
 
-    show_qrcode=dbc.Form( 
+    show_qrcode=dbc.Row(
         [ 
-            dbc.FormGroup(
-                [ 
-                    dbc.Col(
-                        [ 
-                            dbc.Button(id="open-centered", n_clicks=0, children=btn_text, style={"min-width":"150px"}),
-                        ]
-                    ),
-                    dbc.Label("", style={"width":"230px","margin-left":"2px","margin-top":4, "margin-bottom":4}), # xs=2,sm=3,md=3,lg=2,xl=2,
-                ],
-                row=True,
+            dbc.Label(dbc.Button(id="open-centered", n_clicks=0, children=btn_text,  style={"width":"100%"}), width=4), # xs=2,sm=3,md=3,lg=2,xl=2, style={"min-width":"150px","margin-left":"20px"}
+            dbc.Col(
+                dbc.Label("",style={"width":"100%"}),
+                width=8
             ),
         ],
+        className="mb-3",
     )
 
     if current_user.otp_enabled :
@@ -221,27 +201,32 @@ def make_layout(pathname):
             dbc.Card(
                 [
                     html.H4("General settings",style={"margin-top":"5%","margin-bottom":"30px"}),
-                    firstname_input,
-                    html.Div(id="firstname-feedback"),
-                    lastname_input,
-                    html.Div(id="lastname-feedback"),
-                    username_input,
-                    html.Div(id="username-feedback"),
-                    email_input,
-                    html.Div(id="email-feedback"),
-                    email_input_2,
-                    html.Div(id="email2-feedback"),
-                    current_password_input,
-                    html.Div(id="current-pass-feedback"),
-                    password_input,
-                    password_input_2,
-                    html.Div(id="pass-power"),
-                    html.Div(id="pass-feedback"),
-                    html.Div(id="pass2-feedback"),
-                    notify,
-                    html.Div(id="checkbox-feedback"),
-                    submit_btn,
-                    html.Div(id="submission-feedback"),
+                    dbc.Form(
+                        [
+                            firstname_input,
+                            html.Div(id="firstname-feedback"),
+                            lastname_input,
+                            html.Div(id="lastname-feedback"),
+                            username_input,
+                            html.Div(id="username-feedback"),
+                            email_input,
+                            html.Div(id="email-feedback"),
+                            email_input_2,
+                            html.Div(id="email2-feedback"),
+                            current_password_input,
+                            html.Div(id="current-pass-feedback"),
+                            password_input,
+                            password_input_2,
+                            html.Div(id="pass-power"),
+                            html.Div(id="pass-feedback"),
+                            html.Div(id="pass2-feedback"),
+                            notify,
+                            html.Div(id="checkbox-feedback"),
+                            submit_btn,
+                            html.Div(id="submission-feedback"),
+                        ]
+                    ),
+
                     html.H4("Two-Factor Authentication",style={"margin-top":"5%","margin-bottom":"30px"}),
                     html.P("Two-Factor Authentication (2FA) works by adding an additional layer. of \
                         security to your online accounts. It requires an additional login credential \
@@ -249,7 +234,6 @@ def make_layout(pathname):
                                 getting that second credential requires access to something that's yours, eg. your phone.", style={"max-width":"500px"}),
                     html.P(f"Status: {otp_status}", style={"max-width":"500px"}),      
                     show_qrcode,
-                    modal,
                 ],
                 body=True,
                 className="border-0",
@@ -266,6 +250,7 @@ def make_layout(pathname):
         [
             topnavbar,
             user_settings,
+            modal,
             navbar_A
         ]
     )
@@ -275,7 +260,7 @@ def make_layout(pathname):
 def make_response(text,color,id="some-id",is_open=True, duration=None):
     r=dbc.Form( 
         [ 
-            dbc.FormGroup(
+            html.Div(
                 [ 
                     dbc.Label("", style={"min-width":"150px","margin-left":"20px"}), # xs=2,sm=3,md=3,lg=2,xl=2,
                     dbc.Col(
@@ -284,7 +269,7 @@ def make_response(text,color,id="some-id",is_open=True, duration=None):
                         ]
                     ),
                 ],
-                row=True,
+                # row=True,
             ),
         ],
     )
@@ -332,7 +317,7 @@ def generate_backup_codes(n1):
             [   
                 dbc.Row(
                     dbc.Col( html.P("Single use tokens") ,style={"textAlign":"center"}),
-                    no_gutters=True,
+                    className="g-0",
                     align="center",
                     justify="center"
                 ),
@@ -342,7 +327,7 @@ def generate_backup_codes(n1):
                         dbc.Col(backup_tokens[1], style={"textAlign":"center"} ),
                         dbc.Col(backup_tokens[2] , style={"textAlign":"center"}),
                     ],
-                    no_gutters=True,
+                    className="g-0",
                     align="center",
                     justify="center"
                 ),
@@ -352,7 +337,7 @@ def generate_backup_codes(n1):
                         dbc.Col(backup_tokens[4] , style={"textAlign":"center"}),
                         dbc.Col(backup_tokens[5] , style={"textAlign":"center"}),
                     ],
-                    no_gutters=True,
+                    className="g-0",
                     align="center",
                     justify="center"                    
                     )
@@ -405,7 +390,7 @@ def toggle_modal(n1, n2,disable, is_open,otp):
                                 width=10,
                             ),
                         ],
-                        no_gutters=True,
+                        className="g-0",
                         align="center",
                         justify="center",
                         style={"margin-bottom":"10px"}
@@ -420,7 +405,7 @@ def toggle_modal(n1, n2,disable, is_open,otp):
                                 width=10,
                             ),
                         ],
-                        no_gutters=True,
+                        className="g-0",
                         align="center",
                         justify="center",
                         style={"margin-bottom":"15px"}

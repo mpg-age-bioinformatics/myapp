@@ -116,7 +116,6 @@ def make_nav_dropdown(nav_dic, label):
 
     return [ dd ]
 
-
 def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropdowns, user_links=user_navbar_links, expand='sm'):
     if type(user_links) == dict:
         if current_user.administrator :
@@ -138,54 +137,56 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
 
     dropdowns=other_dd+user_drop_down
 
-
-    # if user_links:
-    #     dropdown_children=[]
-    #     for l in list( user_links.keys() ):
-    #         if user_links[l] == "-":
-    #             dropdown_children.append( dbc.DropdownMenuItem(divider=True) )
-    #         elif user_links[l] == "__title__":
-    #             dropdown_children.append( dbc.DropdownMenuItem(l, header=True) ),
-    #         else:
-    #             dropdown_children.append( dbc.DropdownMenuItem(l, href=user_links[l], external_link=True) )
-
-
-    # else:
-    #     dropdown_children=[]
+    dd=dbc.Row(
+        [
+            dbc.Col(
+                [
+                    dbc.Nav(
+                        dropdowns,
+                        navbar=True,
+                        className="ms-2"
+                    ),
+                ]
+            )
+        ],
+        className="ms-auto g-0", #flex-nowrap mt-3 mt-md-0"
+        align="center",
+    )
 
     image_filename = f'{app.config["APP_ASSETS"]}logo.png' # replace with your own image
     encoded_image = base64.b64encode(open(image_filename, 'rb').read())
     img=html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode()), height="30px")
-    navbar=dbc.Navbar(
-        [
-            html.A(
-                # Use row and col to control vertical alignment of logo / brand
-                dbc.Row(
-                    [
-                        dbc.Col(img),
-                        dbc.Col(dbc.NavbarBrand(page_title, className="ml-2")),
-                    ],
-                    align="center",
-                    no_gutters=True,
+    navbar = dbc.Navbar(
+        dbc.Container(
+            [
+                html.A(
+                    # Use row and col to control vertical alignment of logo / brand
+                    dbc.Row(
+                        [
+                            dbc.Col(img),
+                            dbc.Col(dbc.NavbarBrand(page_title, className="ms-2")),
+                        ],
+                        align="center",
+                        className="g-0",
+                    ),
+                    href=f'{app.config["APP_URL"]}/home/',
+                    style={"textDecoration": "none"},
                 ),
-                href=f'{app.config["APP_URL"]}/home/'
-            ),
-        dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
-        dbc.Collapse(
-            dbc.Nav(
-                dropdowns,
-                navbar=True,
-                className="ml-auto",
-            ),
-            id="navbar-collapse", navbar=True, is_open=False
-        )
-        ],
+                dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+                dbc.Collapse(
+                    dd,
+                    id="navbar-collapse",
+                    is_open=False,
+                    navbar=True,
+                ),
+            ],fluid=True
+        ),
         color="light",
-        # dark=True,
         sticky="top",
-        # light=True
-        expand=expand
+        expand=expand,
+        
     )
 
     return navbar
+
 

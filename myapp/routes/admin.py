@@ -67,8 +67,8 @@ protect_dashviews(dashapp)
 
 dashapp.layout=html.Div( [ dcc.Location(id='url', refresh=False), html.Div(id="protected-content") ] )
 
-options_field_style={"width":"335px"}
-button_style={"width":"100px", "margin-top":"4px","margin-bottom":"4px"}
+options_field_style={}#{"width":"335px"}
+button_style={"width":"100%"}#, "margin-top":"0px", "margin-bottom":"10px"}#{"width":"100px", "margin-top":"4px","margin-bottom":"4px"}
 h4_style={"margin-top":"40px"}
 div_feedback_style={}#'margin-top':"10px"}
 form_style={}#"width":"auto","margin-top":"10px"}
@@ -82,17 +82,19 @@ def make_layout(pathname):
         return dcc.Location(pathname="/index/", id='index')
 
     def make_form_row(input_field, button_field):
-        form_row=dbc.Form( [ 
-            dbc.FormGroup(
-                [ 
-                    dbc.Col(input_field), dbc.Col(button_field)
-                ],
-            row=True,
-            style={"max-width":"510px"}
-            ),
+        form_row=dbc.Form( 
+            [ 
+                dbc.Row(
+                    [ 
+                        dbc.Col(input_field, width=8), dbc.Label(button_field, style={"margin":0}, width=4)
+                    ],
+                    # row=True,
+                    style={"max-width":"510px"},
+                    className="mb-3 g-1",
+                ),
             ],
             style=form_style
-            )
+        )
         return form_row
 
 
@@ -190,12 +192,12 @@ def make_layout(pathname):
             dbc.Label(html.H4("Notify"), style=h4_style),
             dbc.Form( 
                 [ 
-                    dbc.FormGroup(
+                    html.Div(
                         [ 
                             html.Button(id='notify-button', n_clicks=0, children='Notify', style={"width":"100px","margin":"3px"}), 
                             html.Button(id='notify-all-button', n_clicks=0, children='Notify All', style={"width":"100px","margin":"3px"})
                         ],
-                    row=True,
+                    # row=True,
                     style={"max-width":"510px","margin-left":"0px" },
                     ),
                 ],
