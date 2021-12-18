@@ -87,7 +87,7 @@ def make_layout(pathname):
 
     submit_btn=dbc.Row(
         [ 
-            dbc.Label(dbc.Button(id='submit-button-state', n_clicks=0, children='Submit', style={"width":"100%"}), html_for="changes-otp", width=4), # xs=2,sm=3,md=3,lg=2,xl=2, style={"min-width":"150px","margin-left":"20px"}
+            dbc.Label(dbc.Button(id='submit-button-state', n_clicks=0, children='Submit', color="secondary",style={"width":"100%"}), html_for="changes-otp", width=4), # xs=2,sm=3,md=3,lg=2,xl=2, style={"min-width":"150px","margin-left":"20px"}
             dbc.Col(
                 otp_changes,
                 width=8
@@ -149,6 +149,7 @@ def make_layout(pathname):
                                 dbc.Button(
                                     "Backup codes",
                                     id="backup-codes-btn",
+                                    color="secondary",
                                     className="me-1",
                                     n_clicks=0,
                                     disabled=True,
@@ -156,6 +157,7 @@ def make_layout(pathname):
                                 dbc.Button(
                                     children="Enable",
                                     id="enable-disable",
+                                    color="secondary",
                                     className="me-1",
                                     n_clicks=0,
                                     disabled=True,
@@ -163,6 +165,7 @@ def make_layout(pathname):
                                 dbc.Button(
                                     "Close",
                                     id="close-centered",
+                                    color="secondary",
                                     className="me-1",
                                     n_clicks=0,
                                     href=f'{app.config["APP_URL"]}/settings',
@@ -181,7 +184,7 @@ def make_layout(pathname):
 
     show_qrcode=dbc.Row(
         [ 
-            dbc.Label(dbc.Button(id="open-centered", n_clicks=0, children=btn_text,  style={"width":"100%"}), width=4), # xs=2,sm=3,md=3,lg=2,xl=2, style={"min-width":"150px","margin-left":"20px"}
+            dbc.Label(dbc.Button(id="open-centered", n_clicks=0, children=btn_text, color="secondary", style={"width":"100%"}), width=4), # xs=2,sm=3,md=3,lg=2,xl=2, style={"min-width":"150px","margin-left":"20px"}
             dbc.Col(
                 dbc.Label("",style={"width":"100%"}),
                 width=8
