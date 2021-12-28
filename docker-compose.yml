@@ -72,6 +72,9 @@ services:
    - INSTANCE=(DEV)
    - ADMINS=jboucas@gmail.com
    - MAIL_USERNAME=jboucas@gmail.com
+   - MAIL_PORT=465
+   - MAIL_USE_TLS=1
+
   links:
    - mariadb
    - redis
