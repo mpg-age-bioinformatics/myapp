@@ -56,6 +56,7 @@ services:
    - ./:/${APP_NAME}
    - ~/myapp_private:/${APP_NAME}_private:ro
   environment:
+   - N_WORKERS=1
    - APP_NAME=myapp
    - APP_TITLE=myapp
    - APP_URL=https://0.0.0.0
