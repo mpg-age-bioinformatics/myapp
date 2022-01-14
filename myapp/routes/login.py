@@ -1,5 +1,5 @@
 from myapp import app, db
-from flask import session, request
+from flask import session, request, url_for
 from flask_login import current_user, login_user, logout_user
 import dash
 from dash.dependencies import Input, Output, State
@@ -74,6 +74,7 @@ dashapp.layout=html.Div(
     Output('page-content', 'children'),
     Input('url', 'pathname'))
 def generate_content(pathname):
+    # print("!!", request.path)
     if current_user:
         if current_user.is_authenticated:
             return dcc.Location(pathname="/home/", id='index')
@@ -204,7 +205,10 @@ def verify_email_token(pathname):
         if current_user.is_authenticated:
             return dcc.Location(pathname="/home/", id='index')
 
-    token=pathname.split("/login/")[-1]
+    if pathname.split("/login/")[-1].split("/")[0] != "next" :
+        token=pathname.split("/login/")[-1]
+    else:
+        token=None
     if not token:
         return None
     user = User.verify_email_token(token)
@@ -239,9 +243,10 @@ def verify_email_token(pathname):
     State('username', 'value'),
     State('input-password', 'value'),
     State('keepsigned', 'value'),
+    State('url', 'pathname'),
     prevent_initial_call=True
     )
-def login_buttom(n_clicks, username, passA, keepsigned):
+def login_buttom(n_clicks, username, passA, keepsigned, pathname):
     username_=None
     passA_=None
     submission_=None
@@ -286,12 +291,20 @@ def login_buttom(n_clicks, username, passA, keepsigned):
     session.permanent = keepsigned_
 
     next_page = request.args.get('next')
+    # dest_url =url_for(request.endpoint,**request.view_args)
+    # dest_url=request.path
+
     db.session.add(user)
     db.session.commit()
-    if not next_page or url_parse(next_page).netloc != '':
-        next_page = '/home/'
-    return None, None, dcc.Location(pathname=next_page, id='index'), page_, otp_
 
+    if pathname.split("/login/")[-1].split("/")[0] == "next" :
+        next_page=pathname.split("/")[-1]
+        # print("!!!", next_page)
+    else:
+        next_page = '/home/'
+    # if not next_page or url_parse(next_page).netloc != '':
+    #     
+    return None, None, dcc.Location(pathname=next_page, id='index'), page_, otp_
 
 
 @dashapp.callback(
