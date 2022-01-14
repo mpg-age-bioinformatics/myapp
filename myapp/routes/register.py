@@ -294,7 +294,14 @@ def submit_register(n_clicks,first_name, last_name, username, email,passA, passB
     user.registered_on=datetime.utcnow()
     db.session.add(user)
     db.session.commit()
-    send_validate_email(user, step="admin")
+
+    if app.config['PREAUTH'] : 
+        send_validate_email(user, step="admin")
+    else:
+        user.active=True
+        db.session.add(user)
+        db.session.commit()
+        send_validate_email(user, step="user")
 
     submission_=dbc.Alert( "Success! To finish your registration please check your email." , style={"margin-top":"20px"},color="success")
     return first_name_,last_name_,username_, email_,passA_,passB_,agree_, dcc.Location(pathname="/login/success/", id='index')
