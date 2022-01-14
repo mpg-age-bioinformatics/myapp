@@ -137,7 +137,7 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
 
         dd_links={}
         for l in list(dd_links_.keys() ):
-            app_route=l.split("/")[1]
+            app_route=dd_links[l].split("/")[1]
             if app_route in _PRIVATE_ROUTES :
                 route_obj=PrivateRoutes.query.filter_by(route=app_route).first()
                 if not route_obj :
