@@ -32,8 +32,13 @@ def get_user_status(email):
         view_apps=[]
         for i in user.view_apps :
             route_obj=PrivateRoutes.query.filter_by(id=i).first()
+            if not route_obj :
+                continue
             view_apps.append(route_obj.route)
-        view_apps=f'- view_apps: {", ".join(view_apps)}'
+        if not view_apps:
+            view_apps='- view_apps: None'
+        else:
+            view_apps=f'- view_apps: {", ".join(view_apps)}'
     else:
         view_apps='- view_apps: None'
     
@@ -41,8 +46,13 @@ def get_user_status(email):
         user_apps=[]
         for i in user.user_apps :
             route_obj=PrivateRoutes.query.filter_by(id=i).first()
+            if not route_obj:
+                continue
             user_apps.append(route_obj.route)
-        user_apps=f'- user_apps: {", ".join(user_apps)}'
+        if not user_apps:
+            user_apps=f'- user_apps: None'
+        else:
+            user_apps=f'- user_apps: {", ".join(user_apps)}'
     else:
         user_apps='- user_apps: None'
 
