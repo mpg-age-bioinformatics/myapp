@@ -246,6 +246,7 @@ def submit_register(n_clicks,first_name, last_name, username, email,passA, passB
     passB_=None
     agree_=None
     submission_=None
+
     if not first_name:
         first_name_=dbc.Alert( "*required" ,color="warning") # style={"font-size":"10px"}
     if not last_name:
@@ -293,9 +294,9 @@ def submit_register(n_clicks,first_name, last_name, username, email,passA, passB
     user.registered_on=datetime.utcnow()
     db.session.add(user)
     db.session.commit()
-    send_validate_email(user, step="admin")
+    # send_validate_email(user, step="admin")
 
     submission_=dbc.Alert( "Success! To finish your registration please check your email." , style={"margin-top":"20px"},color="success")
-    return first_name_,last_name_,username_, email_,passA_,passB_,agree_,submission_
+    return first_name_,last_name_,username_, email_,passA_,passB_,agree_, dcc.Location(pathname="/login/success/", id='index')
 
 

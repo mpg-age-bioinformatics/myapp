@@ -186,6 +186,9 @@ def verify_email_token(pathname):
         return dbc.Alert( "You're password has been reset." ,color="success")
     if pathname == "/login/logout/":
         return dbc.Alert( "You've been logged out." ,color="primary")
+    if pathname == "/login/success/":
+        return dbc.Alert( "Success! To finish your registration please check your email." , color="success")
+
     if "/login/admin/" in pathname:
         token=pathname.split("/login/admin/")[-1]
         if token:
