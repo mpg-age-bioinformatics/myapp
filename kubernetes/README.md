@@ -38,7 +38,7 @@ kubectl config get-clusters
 
 List contexts:
 ```
-kubectl config get-context
+kubectl config get-contexts
 ```
 
 Check current context:
@@ -57,6 +57,7 @@ If you need to get registry authorization to pull containers you will need to cr
 ```bash
 kubectl create secret docker-registry <secret name> --docker-server=<registry address> --docker-username=<registry user name> --docker-password=<registry password> --docker-email=<your associated email>
 ```
+More info on: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 
 Create a secret for flaskis' mail account:
 ```bash
@@ -74,8 +75,8 @@ kubectl apply -f users-volume.yaml
 kubectl apply -f users-volume-claim.yaml
 kubectl apply -f db-volume.yaml
 kubectl apply -f db-volume-claim.yaml
-kubectl apply -f db-backup-volume.yaml
-kubectl apply -f db-backup-volume-claim.yaml
+kubectl apply -f backup-volume.yaml
+kubectl apply -f backup-volume-claim.yaml
 ```
 Use deployments to start your pods:
 ```bash

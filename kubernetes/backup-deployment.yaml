@@ -44,6 +44,9 @@ spec:
         imagePullPolicy: Always
         name: backup
         command: ["/myapp/services/backup/entrypoint.sh"]
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 0
         resources: {}
         volumeMounts:
           - name: backup-volume-mount

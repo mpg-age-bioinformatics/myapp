@@ -10,6 +10,9 @@ spec:
     imagePullPolicy: Always
     name: init
     command: ["/myapp/services/init/entrypoint.sh"]
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsUser: 0
     env:
     - name: APP_NAME
       value: myapp
@@ -71,6 +74,6 @@ spec:
       claimName: users-pvc
   - name: backup-volume-mount
     persistentVolumeClaim:
-      claimName: db-bc-pvc
+      claimName: bc-pvc
 
 status: {}
