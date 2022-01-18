@@ -56,14 +56,12 @@ spec:
           key: REDIS_PASSWORD
     - name: ADMINS
       value: jboucas@gmail.com
-    
-
     resources: {}
     volumeMounts:
     - name: users-volume-mount
       mountPath: /myapp_data/users/
-    - name: db-backup-volume-mount
-      mountPath: /backup/mariadb
+    - name: backup-volume-mount
+      mountPath: /backup      
   restartPolicy: OnFailure
   imagePullSecrets:
     - name: dockerlogin
@@ -71,7 +69,7 @@ spec:
   - name: users-volume-mount
     persistentVolumeClaim:
       claimName: users-pvc
-  - name: db-backup-volume-mount
+  - name: backup-volume-mount
     persistentVolumeClaim:
       claimName: db-bc-pvc
 

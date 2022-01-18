@@ -31,7 +31,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: myapp-secrets
-              key: MYSQL_ROOT_PASSWORD
+              key: MYSQL_PASSWORD
         - name: MYSQL_USER
           value: myapp
         - name: MAX_BACKUPS
@@ -46,13 +46,18 @@ spec:
         command: ["/myapp/services/backup/entrypoint.sh"]
         resources: {}
         volumeMounts:
-          - name: db-backup-volume-mount
-            mountPath: /backup/mariadb
+          - name: backup-volume-mount
+            mountPath: /backup
+          - name: users-volume-mount
+            mountPath: /myapp_data/users
       restartPolicy: Always
       imagePullSecrets:
         - name: dockerlogin
       volumes:
-        - name: db-backup-volume-mount
+        - name: backup-volume-mount
           persistentVolumeClaim:
-            claimName: db-bc-pvc
+            claimName: bc-pvc
+        - name: users-volume-mount
+          persistentVolumeClaim:
+            claimName: users-pvc
 status: {}

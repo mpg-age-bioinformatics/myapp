@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: db-bc-pv
+  name: bc-pv
   labels:
     type: local # gcePersistentDisk / local
 spec:
@@ -12,6 +12,6 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/Users/jboucas/myapp_pv/db-bc"
+    path: "/Users/jboucas/myapp_pv/bc"
 
 # types of volumes: https://kubernetes.io/docs/concepts/storage/volumes
