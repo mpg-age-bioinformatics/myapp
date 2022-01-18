@@ -86,7 +86,7 @@ services:
 
  backup:
   container_name: backup
-  # image: mpgagebioinformatics/myapp-dockerize:stable
+  # image: mpgagebioinformatics/myapp:stable
   build:
     context: ./
     dockerfile: ./services/server/Dockerfile
