@@ -69,7 +69,15 @@ kubectl apply -f secrets.yaml
 ```
 You can use `openssl` to generate safe keys `openssl rand -base64 <desired_length>`.
 
-Create persistent volumes and persistent volumes claims for persistent data:
+If working with cephs:
+```
+kubectl apply -f ceph-filesystem.yaml
+kubectl apply -f ceph-storageclass.yaml
+kubectl apply -f ceph-users-volume-claim.yaml
+kubectl apply -f ceph-db-volume-claim.yaml
+kubectl apply -f ceph-backup-volume-claim.yaml
+```
+Other generage the volumes and persistent volume claims for your local machine with:
 ```bash
 kubectl apply -f users-volume.yaml
 kubectl apply -f users-volume-claim.yaml
