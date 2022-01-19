@@ -59,6 +59,6 @@ _EOF_
 rm -rf migrations/* 
 flask db init && flask db migrate -m "Initial migration." && flask db upgrade
 
-chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}/migrations /var/log/${BUILD_NAME} /backup/mysql_backup.log /backup/rsync.log
+chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}/migrations /var/log/${BUILD_NAME} /backup
 
 exit
