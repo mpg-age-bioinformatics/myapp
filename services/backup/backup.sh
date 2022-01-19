@@ -2,6 +2,11 @@
 [ -z "${MYSQL_USER}" ] && { echo "=> MYSQL_USER cannot be empty" && exit 1; }
 [ -z "${MYSQL_PASSWORD}" ] && { echo "=> MYSQL_PASS cannot be empty" && exit 1; }
 
+while ! mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${BUILD_NAME}"; 
+do echo "Waiting for mysql.. " && sleep 4
+done
+echo "Found ${BUILD_NAME} db."
+
 DATE=$(date +%Y%m%d%H%M)
 echo "=> Backup started at $(date "+%Y-%m-%d %H:%M:%S")"
 DATABASES=${MYSQL_DATABASE:-${MYSQL_DB:-$(mysql -h "$MYSQL_HOST" -P "$MYSQL_PORT" -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "SHOW DATABASES;" | tr -d "| " | grep -v Database)}}

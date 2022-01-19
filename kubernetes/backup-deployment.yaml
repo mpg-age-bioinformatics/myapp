@@ -16,7 +16,14 @@ spec:
         app: backup
     spec:
       containers:
-      - env:
+      - image: mpgagebioinformatics/myapp:latest
+        imagePullPolicy: Always
+        name: backup
+        command: ["/myapp/services/backup/backup.sh"]
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 0
+        env:
         - name: APP_NAME
           value: myapp
         - name: APP_TITLE
@@ -40,13 +47,6 @@ spec:
           value: "0"
         - name: CRON_TIME
           value: 44 13 * * *
-        image: mpgagebioinformatics/myapp:latest
-        imagePullPolicy: Always
-        name: backup
-        command: ["/myapp/services/backup/entrypoint.sh"]
-        securityContext:
-          allowPrivilegeEscalation: false
-          runAsUser: 0
         resources: {}
         volumeMounts:
           - name: backup-volume-mount
