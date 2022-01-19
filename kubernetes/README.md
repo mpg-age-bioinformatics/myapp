@@ -51,6 +51,11 @@ Change context:
 kubectl config use-context <context name>
 ```
 
+Change namespace:
+```
+kubectl config set-context --current --namespace=<namespace>
+```
+
 ## 3. Deploy your App
 
 If you need to get registry authorization to pull containers you will need to create a matching secret. eg.:
@@ -69,14 +74,22 @@ kubectl apply -f secrets.yaml
 ```
 You can use `openssl` to generate safe keys `openssl rand -base64 <desired_length>`.
 
-If working with cephs:
+If working with cephs, start by starting the file system:
 ```
 kubectl apply -f ceph-filesystem.yaml
+```
+Followed by the storage class and volume claims:
+```
 kubectl apply -f ceph-storageclass.yaml
 kubectl apply -f ceph-users-volume-claim.yaml
 kubectl apply -f ceph-db-volume-claim.yaml
 kubectl apply -f ceph-backup-volume-claim.yaml
 ```
+Inline:
+```
+kubectl apply -f ceph-storageclass.yaml ceph-users-volume-claim.yaml ceph-db-volume-claim.yaml ceph-backup-volume-claim.yaml
+```
+
 Other generage the volumes and persistent volume claims for your local machine with:
 ```bash
 kubectl apply -f users-volume.yaml
@@ -92,6 +105,10 @@ kubectl apply -f mariadb-deployment.yaml
 kubectl apply -f redis-deployment.yaml
 kubectl apply -f rsync-pod.yaml
 ```
+Inline:
+```
+kubectl apply -f mariadb-deployment.yaml redis-deployment.yaml rsync-pod.yaml
+```
 At this point, if you have data to be restored, you can bring it
 to the backup volume by 
 ```
@@ -100,8 +117,12 @@ kubectl cp ~/myapp_backup/* rsync:/backup/
 Afterwards, you can keep on launching your services:
 ```
 kubectl apply -f init-pod.yaml
-kubectl create -f backup-cron.yaml
+kubectl apply -f backup-cron.yaml
 kubectl apply -f server-deployment.yaml
+```
+Inline:
+```
+kubectl apply -f init-pod.yaml backup-cron.yaml server-deployment.yaml
 ```
 For traefik ingress use:
 ```
