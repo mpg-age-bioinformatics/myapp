@@ -32,7 +32,7 @@ then
 fi
 
 echo "${CRON_TIME} /${BUILD_NAME}/services/backup/backup.sh >> /backup/mysql_backup.log 2>&1" > /crontab.conf
-echo "${CRON_TIME} rsync -rtvh --delete /myapp_data/users/ /backup/users_data/ >> /backup/rsync.log 2>&1" >> /crontab.conf
+# echo "${CRON_TIME} rsync -rtvh --delete /myapp_data/users/ /backup/users_data/ >> /backup/rsync.log 2>&1" >> /crontab.conf
 crontab /crontab.conf
 echo "=> Running cron task manager"
 # exec crond -f
