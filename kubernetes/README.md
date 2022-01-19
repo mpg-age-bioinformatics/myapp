@@ -82,9 +82,19 @@ Use deployments to start your pods:
 ```bash
 kubectl apply -f mariadb-deployment.yaml
 kubectl apply -f redis-deployment.yaml
-kubectl apply -f init-deployment.yaml
-kubectl apply -f server-deployment.yaml
+kubectl apply -f rsync-pod.yaml
+```
+At this point, if you have data to be restored, you can bring it
+to the backup volume by 
+```
+kubectl cp ~/myapp_backup/* rsync:/backup/
+```
+Afterwards, you can keep on launching your services:
+```
+kubectl apply -f init-pod.yaml
 kubectl create -f backup-cron.yaml
+kubectl apply -f server-deployment.yaml
+kubectl apply -f traefik-ingress.yaml
 ```
 This will start respective deployments and services. Services make sure that in case pod dies and a new one starts the address in use to contact the pod is not IP dependent.
 
