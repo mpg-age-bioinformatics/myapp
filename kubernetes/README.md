@@ -102,8 +102,12 @@ Afterwards, you can keep on launching your services:
 kubectl apply -f init-pod.yaml
 kubectl create -f backup-cron.yaml
 kubectl apply -f server-deployment.yaml
+```
+For traefik ingress use:
+```
 kubectl apply -f traefik-ingress.yaml
 ```
+
 This will start respective deployments and services. Services make sure that in case pod dies and a new one starts the address in use to contact the pod is not IP dependent.
 
 Check that your pods and services are running:
