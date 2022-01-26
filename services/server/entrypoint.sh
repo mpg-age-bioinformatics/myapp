@@ -14,7 +14,7 @@ elif [[ "$FLASK_ENV" == "development" ]] ;
   then
     # if [[ "${UPGRADE_REQS}" = "yes" ]] ;
       # then
-        /myapp/utils/getenv.sh
+        /${BUILD_NAME}/utils/getenv.sh
     # fi
 
     tail -f /dev/null
