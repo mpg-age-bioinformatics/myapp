@@ -43,6 +43,6 @@ then
   done
 fi
 
-rsync -rtvh --delete /myapp_data/users/ /backup/users_data/ >> /backup/rsync.log 2>&1
+rsync -rtvh --delete /${BUILD_NAME}_data/users/ /backup/users_data/ >> /backup/rsync.log 2>&1
 
 echo "=> Backup process finished at $(date "+%Y-%m-%d %H:%M:%S")"

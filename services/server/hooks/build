@@ -22,7 +22,7 @@ if [ "${DOCKER_TAG}" == "latest" ] ;
     then 
         echo ":: Tag: ${DOCKER_TAG}"
         MYAPP_VERSION=$(git rev-parse --short HEAD)
-        docker build --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
+        docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
         docker push ${repoName}:latest && 
         echo ":: build & push tag: latest"
         # docker buildx create --use
@@ -42,7 +42,7 @@ elif [ "${1}" == "nightly" ] ;
 
         text=":: !FAILED! "
         docker buildx create --use && \
-        docker buildx build --platform linux/amd64,linux/arm64 --no-cache --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nightly -f services/server/Dockerfile . --push && \
+        docker buildx build --platform linux/amd64,linux/arm64 --no-cache --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nightly -f services/server/Dockerfile . --push && \
         docker buildx build --platform linux/amd64,linux/arm64 --cache-from ${repoName}:nightly --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:latest -f services/server/Dockerfile . --push && \
         text=":: "
         echo "${text}build & push tag: nightly"
@@ -111,7 +111,7 @@ elif [ "${1}" == "aarch64" ] ;
         MYAPP_VERSION=$(git rev-parse --short HEAD)
         echo ":: git #${MYAPP_VERSION}"
         text=":: !FAILED! "
-        docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-aarch64 -f services/server/Dockerfile . && \
+        docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-aarch64 -f services/server/Dockerfile . && \
         text=":: "
         echo "${text}build myapp:nightly-aarch64"
         # docker system prune -f 
@@ -149,7 +149,7 @@ elif [ "${1}" == "aarch64" ] ;
 
 else
     echo ":: Tag: ${DOCKER_TAG}"
-    docker build --build-arg MYAPP_VERSION=${DOCKER_TAG} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
+    docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${DOCKER_TAG} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
     docker tag ${repoName}:latest ${repoName}:${DOCKER_TAG}
     docker tag ${repoName}:latest ${repoName}:stable
     docker push ${repoName}:latest

@@ -30,7 +30,8 @@ apt-get install -yq libcairo2-dev python3 python3-pip pkg-config mariadb-client 
 python3 -m pip install -U pip && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
-ENV BUILD_NAME myapp
+ARG BUILD_NAME
+ENV BUILD_NAME ${BUILD_NAME}
 
 # Add myapp user for running the service
 RUN groupadd ${BUILD_NAME} --gid=1000 && useradd -m ${BUILD_NAME} --uid=1000 --gid=1000 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
@@ -52,7 +53,7 @@ ENV MYAPP_VERSION ${MYAPP_VERSION}
 ENV UPGRADE_REQS ${UPGRADE_REQS}
 
 RUN if [ "${UPGRADE_REQS}" = "yes" ]] ; then \
-echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; /myapp/utils/getenv.sh ; \
+echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; /${BUILD_NAME}/utils/getenv.sh ; \
 else echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install --ignore-installed pyxdg==0.26 ; pip3 install -r /${BUILD_NAME}/requirements.txt ; \
 fi
 
@@ -60,6 +61,10 @@ COPY LICENSE.md README.md config.py ${BUILD_NAME}.py requirements.txt setup.py .
 COPY services /${BUILD_NAME}/services
 COPY ${BUILD_NAME} /${BUILD_NAME}/${BUILD_NAME}
 COPY .git /${BUILD_NAME}/.git
+
+## TEMPORARY FLASKI2 compatible init and backup containers
+RUN mkdir -p /submissions /${BUILD_NAME}_private
+RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /submissions /${BUILD_NAME}_private
 
 # Setup default user, when enter docker container
 USER ${BUILD_NAME}:${BUILD_NAME}
