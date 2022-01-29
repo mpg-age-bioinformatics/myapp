@@ -57,9 +57,9 @@ echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}
 else echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install --ignore-installed pyxdg==0.26 ; pip3 install -r /${BUILD_NAME}/requirements.txt ; \
 fi
 
-COPY LICENSE.md README.md config.py ${BUILD_NAME}.py requirements.txt setup.py .flaskenv /${BUILD_NAME}/
+COPY LICENSE.md README.md config.py myapp.py requirements.txt setup.py .flaskenv /${BUILD_NAME}/
 COPY services /${BUILD_NAME}/services
-COPY ${BUILD_NAME} /${BUILD_NAME}/${BUILD_NAME}
+COPY myapp /${BUILD_NAME}/myapp
 COPY .git /${BUILD_NAME}/.git
 
 ## TEMPORARY FLASKI2 compatible init and backup containers
