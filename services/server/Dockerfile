@@ -20,6 +20,8 @@ apt-get install -yq --no-install-recommends locales && \
 apt-get clean && rm -rf /var/lib/apt/lists/* && \
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
 
+ENV TZ="Europe/Berlin"
+
 ENV SHELL /bin/bash
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8

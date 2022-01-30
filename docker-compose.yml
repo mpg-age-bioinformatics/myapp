@@ -17,7 +17,7 @@ services:
     - data:/${APP_NAME}_data/users
     - ./:/${APP_NAME}
     - ~/myapp_backup/stats:/backup/stats
-    - ~/myapp_backup/users_data:/backup/users_data
+    - ~/myapp_backup/users_data:/backup/users_data:ro
     - ~/myapp_backup/mariadb:/backup/mariadb:ro
   environment:
     - APP_NAME=myapp
