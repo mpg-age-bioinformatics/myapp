@@ -65,8 +65,8 @@ COPY myapp /${BUILD_NAME}/myapp
 COPY .git /${BUILD_NAME}/.git
 
 ## TEMPORARY FLASKI2 compatible init and backup containers
-RUN mkdir -p /submissions /${BUILD_NAME}_private
-RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /submissions /${BUILD_NAME}_private
+RUN mkdir -p /submissions /${BUILD_NAME}_private /mpcdf
+RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /submissions /${BUILD_NAME}_private /mpcdf
 
 # Setup default user, when enter docker container
 USER ${BUILD_NAME}:${BUILD_NAME}
