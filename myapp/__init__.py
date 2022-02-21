@@ -23,13 +23,30 @@ PUBLIC_VIEWS=[ ] + _PUBLIC_VIEWS
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# class PrefixMiddleware(object):
+
+#     def __init__(self, app, prefix=''):
+#         self.app = app
+#         self.prefix = prefix
+
+#     def __call__(self, environ, start_response):
+
+#         if environ['PATH_INFO'].startswith(self.prefix):
+#             environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+#             environ['SCRIPT_NAME'] = self.prefix
+#             return self.app(environ, start_response)
+#         else:
+#             start_response('404', [('Content-Type', 'text/plain')])
+#             return ["This url does not belong to the app.".encode()]
+
+# app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/v3')
+
 # app = werkzeug.wsgi.ProxyMiddleware(app, {
 #     '/v3': {
 #         'remove_prefix':True
 #         # 'target': 'http://127.0.0.1:5001/',
 #     }
 # })
-
 
 # from werkzeug.middleware.dispatcher import DispatcherMiddleware
 # from werkzeug.wrappers import Response
