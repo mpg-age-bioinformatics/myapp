@@ -52,7 +52,7 @@ fi
 USER_EOF
 
 mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} << _EOF_
-USE ${BUILD_NAME}
+USE ${DB_NAME}
 DROP TABLE IF EXISTS alembic_version;
 _EOF_
 
