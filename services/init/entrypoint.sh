@@ -11,7 +11,7 @@ while ! mysqladmin --user=root --password=${MYSQL_ROOT_PASSWORD} --host=${MYSQL_
         echo "Waiting for mysql.. " && sleep 4
 done
 
-if mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${BUILD_NAME}";
+if mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${DB_NAME}";
     then
         echo "${BUILD_NAME} database already exists."
     else
@@ -31,7 +31,7 @@ if [[ "$RESTORE_DB" == "1" ]] ;
     then
         tail -F /backup/mysql_backup.log /backup/rsync.log &
         echo "=> Restore latest backup"
-        LATEST_BACKUP=$(find /backup/mariadb -maxdepth 1 -name "latest.${BUILD_NAME}.sql.gz" | tail -1 )
+        LATEST_BACKUP=$(find /backup/mariadb -maxdepth 1 -name "latest.${DB_NAME}.sql.gz" | tail -1 )
         echo "=> Restore database from ${LATEST_BACKUP}"
         set -o pipefail
         if gunzip --stdout "${LATEST_BACKUP}" | mysql -h "${MYSQL_HOST}" -u "${MYSQL_USER}" -p"${MYSQL_PASSWORD}"
