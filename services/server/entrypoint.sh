@@ -12,7 +12,7 @@ if [[ "$FLASK_ENV" == "production" ]] ;
     if [[ "$SCRIPT_NAME" != "" ]] ;
       then
         echo "prefix: $SCRIPT_NAME"
-        SCRIPT_NAME=/${SCRIPT_NAME} gunicorn -b 0.0.0.0:8000 --timeout 60000 -w ${N_WORKERS} ${BUILD_NAME}:app
+        gunicorn -e SCRIPT_NAME=/${SCRIPT_NAME} -b 0.0.0.0:8000 --timeout 60000 -w ${N_WORKERS} ${BUILD_NAME}:app
       else
         gunicorn -b 0.0.0.0:8000 --timeout 60000 -w ${N_WORKERS} ${BUILD_NAME}:app
       fi
