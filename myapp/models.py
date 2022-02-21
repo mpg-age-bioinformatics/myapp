@@ -35,6 +35,7 @@ class User(UserMixin, db.Model):
     firstname = db.Column(db.String(64), index=True)
     lastname = db.Column(db.String(64), index=True)
     username = db.Column(db.String(64), index=True,unique=True)
+    organization = db.Column(db.String(120), index=True) # flaski2
     email = db.Column(db.String(120), index=True, unique=True)
     disk_quota = db.Column(db.Float, nullable=False, default=2.5e+8)
     mailed_files = db.Column( PickleType )
