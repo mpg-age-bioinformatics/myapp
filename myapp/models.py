@@ -176,16 +176,16 @@ def load_user(user_id):
         return User.query.get(user_id)
     return None
 
-# @login_manager.unauthorized_handler
-# def unauthorized():
-#     """Redirect unauthorized users to Login page."""
-#     url_path=request.path
-#     if url_path:
-#         url_path=url_path.split("/")
-#     if len(url_path) > 2 :
-#         url_path=f'next/{url_path[1]}'
-#     else:
-#         url_path=""
-#     # return redirect(f'{app.config["APP_URL"]}/login/{url_path}')
-#     return redirect(url_for(f'login/{url_path}'))
-#     # return redirect(f'/login/{url_path}')    
+@login_manager.unauthorized_handler
+def unauthorized():
+    """Redirect unauthorized users to Login page."""
+    url_path=request.path
+    if url_path:
+        url_path=url_path.split("/")
+    if len(url_path) > 2 :
+        url_path=f'next/{url_path[1]}'
+    else:
+        url_path=""
+    # return redirect(f'{app.config["APP_URL"]}/login/{url_path}')
+    # return redirect(url_for(f'login/{url_path}/'))
+    return redirect(f'/login/{url_path}')    
