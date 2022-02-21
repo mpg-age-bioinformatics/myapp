@@ -10,7 +10,7 @@ from flask import request
 import os
 import base64
 import onetimepass
-from flask import redirect, request
+from flask import redirect, request, url_for
 
 
 class PrivateRoutes(db.Model):
@@ -186,4 +186,6 @@ def unauthorized():
         url_path=f'next/{url_path[1]}'
     else:
         url_path=""
-    return redirect(f'{app.config["APP_URL"]}/login/{url_path}')
+    # return redirect(f'{app.config["APP_URL"]}/login/{url_path}')
+    return redirect(url_for(f'login/{url_path}'))
+    # return redirect(f'/login/{url_path}')    

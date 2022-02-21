@@ -9,6 +9,7 @@ services:
     context: ./
     dockerfile: services/server/Dockerfile
     args:
+      BUILD_NAME: myapp
       MYAPP_VERSION: dev
       UPGRADE_REQS: "no"
   user: root
@@ -49,6 +50,7 @@ services:
     context: ./
     dockerfile: services/server/Dockerfile
     args:
+      BUILD_NAME: myapp
       MYAPP_VERSION: dev
       UPGRADE_REQS: "no"
   restart: always
@@ -93,6 +95,7 @@ services:
     context: ./
     dockerfile: ./services/server/Dockerfile
     args:
+      BUILD_NAME: myapp
       MYAPP_VERSION: dev
       UPGRADE_REQS: "no"
   user: root
