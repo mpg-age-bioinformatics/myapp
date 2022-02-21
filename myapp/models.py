@@ -16,8 +16,8 @@ from flask import redirect, request
 class PrivateRoutes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     route = db.Column(db.String(64), index=True,unique=True)
-    users = db.Column(PickleType, index=True, unique=False)
-    users_domains = db.Column(PickleType, index=True, unique=False)
+    users = db.Column(PickleType,unique=False) #  index=True, 
+    users_domains = db.Column(PickleType, unique=False) # index=True, 
 
     # viewers_ids = db.Column(PickleType, index=True, unique=False)
     # users_domains = db.Column(PickleType, index=True, unique=False)
