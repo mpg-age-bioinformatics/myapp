@@ -9,7 +9,13 @@ echo "Found ${DB_NAME} db."
 
 if [[ "$FLASK_ENV" == "production" ]] ; 
   then
-    gunicorn -b 0.0.0.0:8000 --timeout 60000 -w ${N_WORKERS} ${BUILD_NAME}:app
+    if [[ "$SCRIPT_NAME" != "" ]] ;
+      then
+        echo "prefix: $SCRIPT_NAME"
+        SCRIPT_NAME=/${SCRIPT_NAME} gunicorn -b 0.0.0.0:8000 --timeout 60000 -w ${N_WORKERS} ${BUILD_NAME}:app
+      else
+        gunicorn -b 0.0.0.0:8000 --timeout 60000 -w ${N_WORKERS} ${BUILD_NAME}:app
+      fi
 elif [[ "$FLASK_ENV" == "development" ]] ; 
   then
     # if [[ "${UPGRADE_REQS}" = "yes" ]] ;
