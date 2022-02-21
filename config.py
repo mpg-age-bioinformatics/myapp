@@ -34,7 +34,8 @@ class Config(object):
     MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'mypass'
     MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'mariadb'
     MYSQL_PORT = os.environ.get('MYSQL_PORT') or '3306'
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://%s:%s@%s:%s/%s' %(MYSQL_USER,MYSQL_PASSWORD,MYSQL_HOST,MYSQL_PORT,APP_NAME)
+    DB_NAME = os.environ.get('DB_NAME') or 'myapp'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://%s:%s@%s:%s/%s' %(MYSQL_USER,MYSQL_PASSWORD,MYSQL_HOST,MYSQL_PORT,DB_NAME)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'localhost'
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 8025)

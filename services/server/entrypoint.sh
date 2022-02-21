@@ -1,10 +1,10 @@
 #!/bin/bash
 
-while ! mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${BUILD_NAME}"; 
+while ! mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${DB_NAME}"; 
   do 
     echo "Waiting for mysql.. " && sleep 4
 done
-echo "Found ${BUILD_NAME} db."
+echo "Found ${DB_NAME} db."
 
 
 if [[ "$FLASK_ENV" == "production" ]] ; 

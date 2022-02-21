@@ -11,10 +11,10 @@ touch /backup/mysql_backup.log
 touch /backup/rsync.log
 tail -F /backup/mysql_backup.log /backup/rsync.log &
 
-while ! mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${BUILD_NAME}"; 
+while ! mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${DB_NAME}"; 
 do echo "Waiting for mysql.. " && sleep 4
 done
-echo "Found ${BUILD_NAME} db."
+echo "Found ${DB_NAME} db."
 
 if [ "${INIT_BACKUP}" -gt "0" ]; 
 then
