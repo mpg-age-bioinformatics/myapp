@@ -10,6 +10,11 @@ from flask_mail import Mail
 from flask_session import Session
 from waitress import serve
 
+# from werkzeug import wsgi
+# import werkzeug
+
+# from werkzeug.middleware.dispatcher import ProxyMiddleware
+
 from myapp.routes._vars import _PRIVATE_ROUTES, _PUBLIC_VIEWS
 
 PRIVATE_ROUTES=[ ] + _PRIVATE_ROUTES
@@ -17,6 +22,36 @@ PUBLIC_VIEWS=[ ] + _PUBLIC_VIEWS
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+# app = werkzeug.wsgi.ProxyMiddleware(app, {
+#     '/v3': {
+#         'remove_prefix':True
+#         # 'target': 'http://127.0.0.1:5001/',
+#     }
+# })
+
+
+# from werkzeug.middleware.dispatcher import DispatcherMiddleware
+# from werkzeug.wrappers import Response
+
+# app.wsgi_app = DispatcherMiddleware(
+#     app,
+#     {'/v3': app.wsgi_app}
+# )
+
+# def prefix_route(route_function, prefix='', mask='{0}{1}'):
+#   '''
+#     Defines a new route function with a prefix.
+#     The mask argument is a `format string` formatted with, in that order:
+#       prefix, route
+#   '''
+#   def newroute(route, *args, **kwargs):
+#     '''New function to prefix the route'''
+#     return route_function(mask.format(prefix, route), *args, **kwargs)
+#   return newroute
+# app.route = prefix_route(app.route, '/v3')
+# app.config['APPLICATION_ROOT'] = '/v3'
+
 db = SQLAlchemy(app ,engine_options={"pool_pre_ping":True, "pool_size":0,"pool_recycle":-1} )
 migrate = Migrate(app, db)
 login_manager = LoginManager(app)
@@ -24,6 +59,13 @@ login_manager.login_view = '/login/'
 mail = Mail(app)
 sess = Session()
 sess.init_app(app)
+
+# from werkzeug.wsgi import DispatcherMiddleware
+# app.wsgi_app = DispatcherMiddleware(
+#     app,
+#     {'/v3': app.wsgi_app},
+# )
+
 
 from myapp import models, errors
 from myapp.routes import index, register, home, login, forgot, logout, contact, about, privacy, impressum, admin, settings

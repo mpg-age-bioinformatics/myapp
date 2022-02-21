@@ -35,7 +35,7 @@ class Config(object):
     MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'mariadb'
     MYSQL_PORT = os.environ.get('MYSQL_PORT') or '3306'
     DB_NAME = os.environ.get('DB_NAME') or 'myapp'
-    PREFIX = os.environ.get('PREFIX') or False
+    # APPLICATION_ROOT = os.environ.get('APPLICATION_ROOT') is not None
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://%s:%s@%s:%s/%s' %(MYSQL_USER,MYSQL_PASSWORD,MYSQL_HOST,MYSQL_PORT,DB_NAME)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'localhost'

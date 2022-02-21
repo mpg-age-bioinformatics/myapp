@@ -17,13 +17,9 @@ import os
 
 META_TAGS=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,'} ]
 
-dash_kwargs={}
-if app.config["PREFIX"] :
-    page_prefix=app.config["PREFIX"]
-    dash_kwargs["requests_pathname_prefix"]=f"/{page_prefix}/"
-
-
-dashapp = dash.Dash("index",url_base_pathname='/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"], **dash_kwargs)# , assets_folder="/flaski/flaski/static/dash/")
+# 
+# requests_pathname_prefix must end with routes_pathname_prefix
+dashapp = dash.Dash("index", url_base_pathname="/", meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 # protect_dashviews(dashapp)
 
 # cache = Cache(dashapp.server, config={
@@ -107,12 +103,12 @@ def make_layout(pathname):
     return page_content
 
 
-# @dashapp.callback(
-#         Output("navbar-collapse", "is_open"),
-#         [Input("navbar-toggler", "n_clicks")],
-#         [State("navbar-collapse", "is_open")])
-# def toggle_navbar_collapse(n, is_open):
-#     if n:
-#         return not is_open
-#     return is_open
+@dashapp.callback(
+        Output("navbar-collapse", "is_open"),
+        [Input("navbar-toggler", "n_clicks")],
+        [State("navbar-collapse", "is_open")])
+def toggle_navbar_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
 
