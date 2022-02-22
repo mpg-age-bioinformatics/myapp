@@ -1,7 +1,7 @@
 from hashlib import md5
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-from myapp import app, db, login_manager, PRIVATE_ROUTES, PUBLIC_VIEWS
+from myapp import app, db, login_manager, PRIVATE_ROUTES, PUBLIC_VIEWS, PAGE_PREFIX 
 from flask_login import UserMixin
 from time import time
 import jwt
@@ -160,7 +160,7 @@ def load_user(user_id):
         if not user.active:
             return None
         r=request.endpoint
-        r=r.split("/")[1]
+        r=r.split(f"{PAGE_PREFIX}/")[1]
         if ( r in PRIVATE_ROUTES ) and ( r not in PUBLIC_VIEWS ):
             r_obj=PrivateRoutes.query.filter_by(route=r).first()
             if not r_obj :
@@ -181,7 +181,7 @@ def unauthorized():
     """Redirect unauthorized users to Login page."""
     url_path=request.path
     if url_path:
-        url_path=url_path.split("/")
+        url_path=url_path.split(f"{PAGE_PREFIX}/")
     if len(url_path) > 2 :
         url_path=f'next/{url_path[1]}'
     else:

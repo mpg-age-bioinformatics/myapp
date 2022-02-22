@@ -1,4 +1,4 @@
-from myapp import app, db
+from myapp import app, db, PAGE_PREFIX
 import dash
 from dash.dependencies import Input, Output, State
 from dash import dcc, html
@@ -9,7 +9,7 @@ from datetime import datetime
 from ._utils import META_TAGS ,check_email, navbar_A
 from flask_login import current_user
 
-dashapp = dash.Dash("contact",url_base_pathname='/contact/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])
+dashapp = dash.Dash("contact",url_base_pathname=f'{PAGE_PREFIX}/contact/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])
 
 firstname_input = html.Div(
     [
@@ -49,9 +49,9 @@ footer=html.Footer(
         [
             dbc.Col(
                 [
-                    html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
-                    html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
-                    html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/")               
+                    html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/login/"),
+                    html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/forgot/"),
+                    html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/register/")               
                 ],
                 style={ 'display':'flex', 'justifyContent':'center'}
             )
@@ -115,7 +115,7 @@ def check_logged(pathname):
     Output('submission-feedback', 'children'),
     Input('url', 'pathname'))
 def check_sent(pathname):
-    if pathname == "/contact/sent/":
+    if pathname == f"{PAGE_PREFIX}/contact/sent/":
         return dbc.Alert( "You're message has been sent." ,color="success")
 
 @dashapp.callback(
@@ -152,5 +152,5 @@ def send_contact_email(n_clicks, firstname, lastname, email, message):
 
     # send_contact(firstname, lastname, email, message)
 
-    return first_name_ , last_name_, email_, message_, dcc.Location(pathname="/contact/sent/", id='index')
+    return first_name_ , last_name_, email_, message_, dcc.Location(pathname=f"{PAGE_PREFIX}/contact/sent/", id='index')
     

@@ -1,4 +1,4 @@
-from myapp import app
+from myapp import app, PAGE_PREFIX
 from flask import session
 from flask_login import logout_user
 import dash
@@ -9,7 +9,7 @@ from myapp.models import User
 from ._utils import META_TAGS
 import time
 
-dashapp = dash.Dash("logout",url_base_pathname='/logout/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("logout",url_base_pathname=f'{PAGE_PREFIX}/logout/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 dashapp.layout=html.Div(
     [ 
@@ -29,4 +29,4 @@ def do_logout(pathname):
     session.clear()
     logout_user()
     time.sleep(2)
-    return dcc.Location(pathname="/login/logout/", id='login')
+    return dcc.Location(pathname=f"{PAGE_PREFIX}/login/logout/", id='login')

@@ -1,4 +1,4 @@
-from myapp import app, db
+from myapp import app, db, PAGE_PREFIX
 import dash
 from dash.dependencies import Input, Output, State
 from dash import dcc, html
@@ -10,7 +10,7 @@ from ._utils import META_TAGS, check_email, password_check, navbar_A, protect_da
 from flask_login import current_user
 from ._about import _about
 
-dashapp = dash.Dash("about",url_base_pathname='/about/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("about",url_base_pathname=f'{PAGE_PREFIX}/about/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 # protect_dashviews(dashapp)
 
@@ -24,8 +24,8 @@ privacy_impressum=html.Footer(
         [
             dbc.Col(
                 [
-                    html.A("Impressum", style=links_style, href="/impressum/"),
-                    html.A("Privacy", style=links_style, href="/privacy/"),
+                    html.A("Impressum", style=links_style, href=f"{PAGE_PREFIX}/impressum/"),
+                    html.A("Privacy", style=links_style, href=f"{PAGE_PREFIX}/privacy/"),
                 ],
                 style={ 'display':'flex', 'justifyContent':'center'}
             )

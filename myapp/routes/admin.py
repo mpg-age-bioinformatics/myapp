@@ -1,4 +1,4 @@
-from myapp import app, db, PRIVATE_ROUTES
+from myapp import app, db, PRIVATE_ROUTES, PAGE_PREFIX
 import dash
 from dash.dependencies import Input, Output, State
 from dash import dcc, html
@@ -71,7 +71,7 @@ def get_user_status(email):
 *{datetime.now()}*'''
     return user
 
-dashapp = dash.Dash("admin",url_base_pathname='/admin/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])
+dashapp = dash.Dash("admin",url_base_pathname=f'{PAGE_PREFIX}/admin/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])
 
 protect_dashviews(dashapp)
 
@@ -89,7 +89,7 @@ alert_short_style={"max-width":"458px"}
     Input('url', 'pathname'))
 def make_layout(pathname):
     if not current_user.administrator :
-        return dcc.Location(pathname="/index/", id='index')
+        return dcc.Location(pathname=f"{PAGE_PREFIX}/index/", id='index')
 
     def make_form_row(input_field, button_field):
         form_row=dbc.Form( 

@@ -1,4 +1,4 @@
-from myapp import app, db
+from myapp import app, db, PAGE_PREFIX
 from flask import session, request, url_for
 from flask_login import current_user, login_user, logout_user
 import dash
@@ -11,7 +11,7 @@ from datetime import datetime
 from werkzeug.urls import url_parse
 from ._utils import META_TAGS, check_email, navbar_A
 
-dashapp = dash.Dash("login",url_base_pathname='/login/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("login",url_base_pathname=f'{PAGE_PREFIX}/login/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 username_input = html.Div(
     [
@@ -49,9 +49,9 @@ footer=html.Footer(
         [
             dbc.Col(
                 [
-                    html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/"),
-                    html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
-                    html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")
+                    html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/register/"),
+                    html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/forgot/"),
+                    html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/contact/")
                 ],
                 style={ 'display':'flex', 'justifyContent':'center'}
             )
@@ -77,7 +77,7 @@ def generate_content(pathname):
     # print("!!", request.path)
     if current_user:
         if current_user.is_authenticated:
-            return dcc.Location(pathname="/home/", id='index')
+            return dcc.Location(pathname=f"{PAGE_PREFIX}/home/", id='index')
     return dbc.Row( 
         [
             dbc.Col( 
@@ -180,17 +180,17 @@ def generate_otp_content(pathname):
     Output('token-feedback', 'children'),
     Input('url', 'pathname'))
 def verify_email_token(pathname):
-    if pathname == "/login/email/":
+    if pathname == f"{PAGE_PREFIX}/login/email/":
         return dbc.Alert( "Please confirm your email address." ,color="primary")
-    if pathname == "/login/forgot/":
+    if pathname == f"{PAGE_PREFIX}/login/forgot/":
         return dbc.Alert( "You're password has been reset." ,color="success")
-    if pathname == "/login/logout/":
+    if pathname == f"{PAGE_PREFIX}/login/logout/":
         return dbc.Alert( "You've been logged out." ,color="primary")
-    if pathname == "/login/success/":
+    if pathname == f"{PAGE_PREFIX}/login/success/":
         return dbc.Alert( "Success! To finish your registration please check your email." , color="success")
 
-    if "/login/admin/" in pathname:
-        token=pathname.split("/login/admin/")[-1]
+    if f"{PAGE_PREFIX}/login/admin/" in pathname:
+        token=pathname.split(f"{PAGE_PREFIX}/login/admin/")[-1]
         if token:
             user=User.verify_allow_user_token(token)
             if user:
@@ -206,10 +206,10 @@ def verify_email_token(pathname):
 
     if current_user:
         if current_user.is_authenticated:
-            return dcc.Location(pathname="/home/", id='index')
+            return dcc.Location(pathname=f"{PAGE_PREFIX}/home/", id='index')
 
-    if pathname.split("/login/")[-1].split("/")[0] != "next" :
-        token=pathname.split("/login/")[-1]
+    if pathname.split(f"{PAGE_PREFIX}/login/")[-1].split("/")[0] != "next" :
+        token=pathname.split(f"{PAGE_PREFIX}/login/")[-1]
     else:
         token=None
     if not token:
@@ -300,11 +300,11 @@ def login_buttom(n_clicks, username, passA, keepsigned, pathname):
     db.session.add(user)
     db.session.commit()
 
-    if pathname.split("/login/")[-1].split("/")[0] == "next" :
+    if pathname.split(f"{PAGE_PREFIX}/login/")[-1].split("/")[0] == "next" :
         next_page=pathname.split("/")[-1]
         # print("!!!", next_page)
     else:
-        next_page = '/home/'
+        next_page = f"{PAGE_PREFIX}/home/"
     # if not next_page or url_parse(next_page).netloc != '':
     #     
     return None, None, dcc.Location(pathname=next_page, id='index'), page_, otp_
@@ -322,7 +322,7 @@ def login_buttom(n_clicks, username, passA, keepsigned, pathname):
     )
 def otp_buttoms(otp_clicks, cancel_clicks, username, passA, keepsigned, otp):
     if cancel_clicks:
-        dcc.Location(pathname="/index/", id='index', refresh=True)
+        dcc.Location(pathname=f"{PAGE_PREFIX}/index/", id='index', refresh=True)
     if otp_clicks:
         went_wrong=dbc.Alert( "Something went wrong!" ,color="danger", style={"width":"100%"})
         not_verified=dbc.Alert( "Could not verify token." ,color="danger", style={"width":"100%"})
@@ -366,11 +366,11 @@ def otp_buttoms(otp_clicks, cancel_clicks, username, passA, keepsigned, otp):
         db.session.add(user)
         db.session.commit()
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = '/home/'
+            next_page = f'{PAGE_PREFIX}/home/'
         return dcc.Location(pathname=next_page, id='index')
 
     elif cancel_clicks :
-        return dcc.Location(pathname="/index/", id='index', refresh=True)
+        return dcc.Location(pathname=f"{PAGE_PREFIX}/index/", id='index', refresh=True)
     
     return None
 

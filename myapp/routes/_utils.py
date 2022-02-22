@@ -2,7 +2,7 @@ import re
 from flask_login import login_required
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-from myapp import app
+from myapp import app, PAGE_PREFIX  
 import base64
 from ._vars import user_navbar_links, other_nav_dropdowns, _PRIVATE_ROUTES
 from myapp.models import PrivateRoutes
@@ -85,7 +85,7 @@ navbar_A = dbc.NavbarSimple(
             html.A(
                 app.config['APP_TITLE'], 
                 style={"color":"gray","text-decoration": "none","textAlign":"right","margin-bottom":"25px","margin-top":"0px", "margin-right":"20px"},
-                href="/index/"
+                href=f"{PAGE_PREFIX}/index/"
             )
         ) 
     ],
@@ -105,7 +105,8 @@ def make_nav_dropdown(nav_dic, label):
         elif nav_dic[l] == "__title__":
             dropdown_children.append( dbc.DropdownMenuItem(l, header=True) ),
         else:
-            dropdown_children.append( dbc.DropdownMenuItem(l, href=nav_dic[l], external_link=True) )
+            l_=nav_dic[l]
+            dropdown_children.append( dbc.DropdownMenuItem(l, href=f"{PAGE_PREFIX}{l_}", external_link=True) )
 
     dd=dbc.DropdownMenu(
         label=label,
@@ -124,9 +125,9 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
             if "Admin" not in list( user_links.keys() ):
                 del( user_links["fixed_separator_2"] )
                 del( user_links["Logout"] )
-                user_links["Admin"]="/admin/"
+                user_links["Admin"]=f"{PAGE_PREFIX}/admin/"
                 user_links["fixed_separator_2"]="-"
-                user_links["Logout"]="/logout/"
+                user_links["Logout"]=f"{PAGE_PREFIX}/logout/"
 
     user_drop_down=make_nav_dropdown(user_links,current_user.username)
 
@@ -146,7 +147,8 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
                 uid=current_user.id
                 if uid not in users :
                     continue
-            dd_links[l]=dd_links_[l]
+            l_=dd_links_[l]
+            dd_links[l]=f"{PAGE_PREFIX}{l_}"
 
         previous_dd=make_nav_dropdown(dd_links,label)
         other_dd=other_dd+previous_dd

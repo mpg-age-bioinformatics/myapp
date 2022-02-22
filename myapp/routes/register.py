@@ -1,4 +1,4 @@
-from myapp import app, db
+from myapp import app, db, PAGE_PREFIX
 import dash
 from dash.dependencies import Input, Output, State
 from dash import dcc, html
@@ -9,8 +9,8 @@ from datetime import datetime
 from ._utils import META_TAGS, check_email, password_check, navbar_A
 from flask_login import current_user
 
-# 
-dashapp = dash.Dash("register",url_base_pathname='/register/',meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+
+dashapp = dash.Dash("register", url_base_pathname=f'{PAGE_PREFIX}/register/',meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 firstname_input = html.Div(
     [
@@ -83,9 +83,9 @@ footer=html.Footer(
         [
             dbc.Col(
                [ 
-                    html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
-                    html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/forgot/"),
-                    html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")
+                    html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/login/"),
+                    html.A("Forgot Password", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/forgot/"),
+                    html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/contact/")
                 ] , 
                 style={ 'display':'flex', 'justifyContent':'center'}
             )
@@ -109,7 +109,7 @@ dashapp.layout=html.Div(
 def generate_content(pathname):
     if current_user:
         if current_user.is_authenticated:
-            return dcc.Location(pathname="/home/", id='index')
+            return dcc.Location(pathname=f"{PAGE_PREFIX}/home/", id='index')
     return dbc.Row( 
         [
             dbc.Col( 
@@ -149,7 +149,7 @@ def generate_content(pathname):
                                     dbc.Col(
                                         [ 
                                             read , 
-                                            html.A("Privacy Statment.", href="/privacy/",style={"margin-left":"4px",'whiteSpace': 'pre-wrap'})
+                                            html.A("Privacy Statment.", href=f"{PAGE_PREFIX}/privacy/",style={"margin-left":"4px",'whiteSpace': 'pre-wrap'})
                                         ],
                                         style={ 'display':'flex', 'justifyContent':'left'}
                                     )
@@ -180,7 +180,7 @@ def generate_content(pathname):
 def check_logged(pathname):
     if current_user:
         if current_user.is_authenticated:
-            return dcc.Location(pathname="/home/", id='index')
+            return dcc.Location(pathname=f"{PAGE_PREFIX}/home/", id='index')
 
 @dashapp.callback(
     Output('pass-power', 'children'),
@@ -305,6 +305,6 @@ def submit_register(n_clicks,first_name, last_name, username, email,passA, passB
         send_validate_email(user, step="user")
 
     # submission_=dbc.Alert( "Success! To finish your registration please check your email." , style={"margin-top":"20px"},color="success")
-    return first_name_,last_name_,username_, email_,passA_,passB_,agree_, dcc.Location(pathname="/login/success/", id='index')
+    return first_name_,last_name_,username_, email_,passA_,passB_,agree_, dcc.Location(pathname=f"{PAGE_PREFIX}/login/success/", id='index')
 
 

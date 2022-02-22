@@ -1,4 +1,4 @@
-from myapp import app, db
+from myapp import app, db, PAGE_PREFIX
 import dash
 from dash.dependencies import Input, Output, State
 from dash import dcc, html
@@ -9,8 +9,7 @@ from datetime import datetime
 from ._utils import META_TAGS, check_email, password_check, navbar_A, protect_dashviews, make_navbar_logged
 from flask_login import current_user
 
-
-dashapp = dash.Dash("home",url_base_pathname='/home/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("home",url_base_pathname=f'{PAGE_PREFIX}/home/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 protect_dashviews(dashapp)
 

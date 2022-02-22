@@ -1,4 +1,4 @@
-from myapp import app, db
+from myapp import app, db, PAGE_PREFIX
 from flask_login import current_user
 import dash
 from dash.dependencies import Input, Output, State
@@ -9,7 +9,7 @@ from myapp.email import send_password_reset_email
 from datetime import datetime
 from ._utils import META_TAGS, check_email, password_check, navbar_A
 
-dashapp = dash.Dash("forgot",url_base_pathname='/forgot/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("forgot",url_base_pathname=f'{PAGE_PREFIX}/forgot/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 username_input = html.Div(
     [
@@ -48,9 +48,9 @@ footer=html.Footer(
         [
             dbc.Col(
                 [
-                    html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/login/"),
-                    html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/register/"),
-                    html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href="/contact/")
+                    html.A("Login", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/login/"),
+                    html.A("Register", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/register/"),
+                    html.A("Contact", style={"color":"#35443f", "margin-left":"12px", "margin-right":"12px"}, href=f"{PAGE_PREFIX}/contact/")
                 ],
                 style={ 'display':'flex', 'justifyContent':'center'}
             )
@@ -135,7 +135,7 @@ def request_change(n_clicks, pathname, passA, passB):
     user.password_set=datetime.utcnow()
     user.set_password(passA)
     db.session.commit()
-    return passA_, passB_, dcc.Location(pathname="/login/forgot/", id='login')
+    return passA_, passB_, dcc.Location(pathname=f"{PAGE_PREFIX}/login/forgot/", id='login')
     
 
 @dashapp.callback(

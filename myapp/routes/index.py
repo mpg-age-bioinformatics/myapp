@@ -1,5 +1,5 @@
 import re
-from myapp import app
+from myapp import app, PAGE_PREFIX
 from flask_login import current_user
 from flask_caching import Cache
 import dash
@@ -17,8 +17,8 @@ import os
 
 META_TAGS=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,'} ]
 
-# requests_pathname_prefix must end with routes_pathname_prefix
-dashapp = dash.Dash("index", url_base_pathname="/", meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("index", url_base_pathname=f"{PAGE_PREFIX}/", meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+
 # protect_dashviews(dashapp)
 
 # cache = Cache(dashapp.server, config={
@@ -46,25 +46,25 @@ def make_layout(pathname):
     if current_user :
         if current_user.is_authenticated :
             if current_user.active :
-                target="/home/"
+                target=f"{PAGE_PREFIX}/home/"
                 open_content=html.Div(id="page-footer",style={"height":"10px"})
                 refresh=True
 
     if not target:
-        if pathname not in ['/index/open/', '/open/'] :
-            target="/index/open/"
+        if pathname not in [f'{PAGE_PREFIX}/index/open/', f'{PAGE_PREFIX}/open/'] :
+            target=f"{PAGE_PREFIX}/index/open/"
             open_content=html.Div(id="page-footer", style={"height":"10px"})
             refresh=False
 
         else :
-            target="/index/"
+            target=f"{PAGE_PREFIX}/index/"
             open_content=html.Div([
                             dbc.Row( 
                                 html.Footer( [ 
-                                    html.A("About", style=links_style, href="/about/"),
-                                    html.A("Login", style=links_style, href="/login/"),
-                                    html.A("Register", style=links_style, href="/register/"),
-                                    html.A("Contact", style=links_style, href="/contact/")
+                                    html.A("About", style=links_style, href=f"{PAGE_PREFIX}/about/"),
+                                    html.A("Login", style=links_style, href=f"{PAGE_PREFIX}/login/"),
+                                    html.A("Register", style=links_style, href=f"{PAGE_PREFIX}/register/"),
+                                    html.A("Contact", style=links_style, href=f"{PAGE_PREFIX}/contact/")
                                 ] , 
                                 style={"margin-top": 25, "margin-bottom": 5,},
                                 ),

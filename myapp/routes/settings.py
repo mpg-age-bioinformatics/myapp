@@ -1,4 +1,4 @@
-from myapp import app, db
+from myapp import app, db, PAGE_PREFIX
 import dash
 from dash.dependencies import Input, Output, State
 from dash import dcc, html
@@ -17,7 +17,7 @@ import os
 import random
 
 
-dashapp = dash.Dash("settings",url_base_pathname='/settings/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("settings",url_base_pathname=f'{PAGE_PREFIX}/settings/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 protect_dashviews(dashapp)
 
@@ -437,9 +437,9 @@ def toggle_modal(n1, n2,disable, is_open,otp):
                     firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),\
                 reply_to=app.config['MAIL_USERNAME'] )
 
-            return is_open, 0,0,0, dcc.Location(pathname="/settings/2fa/",refresh=True, id="settings-disable"), False, msg, otp
+            return is_open, 0,0,0, dcc.Location(pathname=f"{PAGE_PREFIX}/settings/2fa/",refresh=True, id="settings-disable"), False, msg, otp
     if n2 == 1 :
-        return not is_open, 0,0,0, dcc.Location(pathname="/settings/",refresh=True, id="settings-enable"), False, msg, otp
+        return not is_open, 0,0,0, dcc.Location(pathname=f"{PAGE_PREFIX}/settings/",refresh=True, id="settings-enable"), False, msg, otp
     return is_open, 0,0,0, None, False, msg, otp
 
 @dashapp.callback(
@@ -580,7 +580,7 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpa
                 logout_user()
                 time.sleep(2)
 
-                emailA_=dcc.Location(pathname="/logout/email/", id='login')
+                emailA_=dcc.Location(pathname=f"{PAGE_PREFIX}/logout/email/", id='login')
                 return first_name_,last_name_,username_, emailA_, emailB_, cpass_, passA_,passB_,notify_,submission_,clear_cpass_, clear_passA_, clear_passB_
 
     if ( passA ) and ( not current_user.check_password(passA) ):
