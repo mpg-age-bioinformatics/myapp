@@ -125,9 +125,9 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
             if "Admin" not in list( user_links.keys() ):
                 del( user_links["fixed_separator_2"] )
                 del( user_links["Logout"] )
-                user_links["Admin"]=f"{PAGE_PREFIX}/admin/"
+                user_links["Admin"]=f"/admin/"
                 user_links["fixed_separator_2"]="-"
-                user_links["Logout"]=f"{PAGE_PREFIX}/logout/"
+                user_links["Logout"]=f"/logout/"
 
     user_drop_down=make_nav_dropdown(user_links,current_user.username)
 
@@ -148,7 +148,7 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
                 if uid not in users :
                     continue
             l_=dd_links_[l]
-            dd_links[l]=f"{PAGE_PREFIX}{l_}"
+            dd_links[l]=f"{l_}"
 
         previous_dd=make_nav_dropdown(dd_links,label)
         other_dd=other_dd+previous_dd
