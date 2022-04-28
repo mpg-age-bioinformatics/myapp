@@ -9,6 +9,8 @@ import os
 from flask_mail import Mail
 from flask_session import Session
 from waitress import serve
+import redis
+
 
 from myapp.routes._vars import _PRIVATE_ROUTES, _PUBLIC_VIEWS
 
@@ -18,13 +20,22 @@ PUBLIC_VIEWS=[ ] + _PUBLIC_VIEWS
 app = Flask(__name__)
 app.config.from_object(Config)
 if app.config["CACHE_TYPE"] == "RedisCache" :
-    import redis
     redis_password = os.environ.get('REDIS_PASSWORD') or 'REDIS_PASSWORD'
     redis_address = os.environ.get('REDIS_ADDRESS') or None
     session_redis= redis.from_url('redis://:%s@%s' %(redis_password,redis_address))
     app.config["SESSION_TYPE"] = 'redis'
     app.config["REDIS_ADDRESS"]=redis_address
     app.config["SESSION_REDIS"]=session_redis
+else:
+    sentinel = redis.sentinel.Sentinel([ ( os.environ.get('CACHE_REDIS_SENTINELS_address') , os.environ.get('CACHE_REDIS_SENTINELS_port') )  ], password=os.environ.get('REDIS_PASSWORD') )
+    # SESSION_REDIS = redis.from_url('redis://:%s@%s' %(redis_password,REDIS_ADDRESS))
+    app.config["SESSION_REDIS"] = sentinel.master_for(os.environ.get('CACHE_REDIS_SENTINELS_address'), decode_responses=True)
+
+# redis.sentinel.Sentinel([
+#             ("localhost", 26379)
+#         ]).master_for("localhost-redis-sentinel").flushall()
+
+
 
 db = SQLAlchemy(app ,engine_options={"pool_pre_ping":True, "pool_size":0,"pool_recycle":-1} )
 migrate = Migrate(app, db)
