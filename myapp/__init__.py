@@ -17,14 +17,13 @@ PUBLIC_VIEWS=[ ] + _PUBLIC_VIEWS
 
 app = Flask(__name__)
 app.config.from_object(Config)
-# if app.config["CACHE_TYPE"] == "RedisCache" :
-#     print(app.config)
-#     del(app.config["CACHE_REDIS_SENTINELS_address"])
-#     del(app.config["CACHE_REDIS_SENTINELS_port"])
-#     del(app.config["CACHE_REDIS_PASSWORD"])
-# elif app.config["CACHE_TYPE"] == "RedisSentinelCache" :
-#     del(app.config["REDIS_ADDRESS"])
-#     del(app.config["SESSION_REDIS"])
+if app.config["CACHE_TYPE"] == "RedisCache" :
+    app.config["CACHE_REDIS_SENTINELS_address"]=None
+    app.config["CACHE_REDIS_SENTINELS_port"]=None
+    app.config["CACHE_REDIS_PASSWORD"]=None
+elif app.config["CACHE_TYPE"] == "RedisSentinelCache" :
+    app.config["REDIS_ADDRESS"]=None
+    app.config["SESSION_REDIS"]=None
 
 db = SQLAlchemy(app ,engine_options={"pool_pre_ping":True, "pool_size":0,"pool_recycle":-1} )
 migrate = Migrate(app, db)
