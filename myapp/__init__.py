@@ -23,7 +23,6 @@ if app.config["CACHE_TYPE"] == "RedisCache" :
     redis_password = os.environ.get('REDIS_PASSWORD') or 'REDIS_PASSWORD'
     redis_address = os.environ.get('REDIS_ADDRESS') or None
     session_redis= redis.from_url('redis://:%s@%s' %(redis_password,redis_address))
-    app.config["SESSION_TYPE"] = 'redis'
     app.config["REDIS_ADDRESS"]=redis_address
     app.config["SESSION_REDIS"]=session_redis
 else:
