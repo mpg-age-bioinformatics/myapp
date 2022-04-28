@@ -28,7 +28,7 @@ if app.config["CACHE_TYPE"] == "RedisCache" :
 else:
     sentinel = redis.sentinel.Sentinel([ ( os.environ.get('CACHE_REDIS_SENTINELS_address') , os.environ.get('CACHE_REDIS_SENTINELS_port') )  ], password=os.environ.get('REDIS_PASSWORD') )
     # SESSION_REDIS = redis.from_url('redis://:%s@%s' %(redis_password,REDIS_ADDRESS))
-    app.config["SESSION_REDIS"] = sentinel.master_for(os.environ.get('CACHE_REDIS_SENTINELS_address'), decode_responses=True)
+    app.config["SESSION_REDIS"] = sentinel # sentinel.master_for(os.environ.get('CACHE_REDIS_SENTINELS_address'), socket_timeout=0.1, password=os.environ.get('REDIS_PASSWORD') )#, decode_responses=True)
 
 # redis.sentinel.Sentinel([
 #             ("localhost", 26379)
