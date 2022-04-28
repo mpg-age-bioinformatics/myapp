@@ -31,9 +31,6 @@ class Config(object):
     CACHE_REDIS_SENTINELS = [ [ os.environ.get('CACHE_REDIS_SENTINELS_address') or None ,  os.environ.get('CACHE_REDIS_SENTINELS_port') or None ] ]
     CACHE_REDIS_SENTINEL_MASTER = os.environ.get('CACHE_REDIS_SENTINEL_MASTER') or None
     CACHE_REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD') or 'REDIS_PASSWORD'
-    redis_password = os.environ.get('REDIS_PASSWORD') or 'REDIS_PASSWORD'
-    REDIS_ADDRESS = os.environ.get('REDIS_ADDRESS') or None
-    SESSION_REDIS = redis.from_url('redis://:%s@%s' %(redis_password,REDIS_ADDRESS))
     MYSQL_USER = os.environ.get('MYSQL_USER') or APP_NAME
     MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'mypass'
     MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'mariadb'
