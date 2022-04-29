@@ -25,16 +25,10 @@ if app.config["CACHE_TYPE"] == "RedisCache" :
     session_redis= redis.from_url('redis://:%s@%s' %(redis_password,redis_address))
     app.config["REDIS_ADDRESS"]=redis_address
     app.config["SESSION_REDIS"]=session_redis
-else:
-    sentinel = redis.sentinel.Sentinel([ ( os.environ.get('CACHE_REDIS_SENTINELS_address') , os.environ.get('CACHE_REDIS_SENTINELS_port') )  ], password=os.environ.get('REDIS_PASSWORD') )
-    # SESSION_REDIS = redis.from_url('redis://:%s@%s' %(redis_password,REDIS_ADDRESS))
-    app.config["SESSION_REDIS"] = sentinel # sentinel.master_for(os.environ.get('CACHE_REDIS_SENTINELS_address'), socket_timeout=0.1, password=os.environ.get('REDIS_PASSWORD') )#, decode_responses=True)
-
-# redis.sentinel.Sentinel([
-#             ("localhost", 26379)
-#         ]).master_for("localhost-redis-sentinel").flushall()
-
-
+elif app.config["CACHE_TYPE"] == "RedisSentinelCache" :
+    sentinel = redis.sentinel.Sentinel([ (os.environ.get('CACHE_REDIS_SENTINELS_address'), os.environ.get('CACHE_REDIS_SENTINELS_port')) ], password=os.environ.get('REDIS_PASSWORD'), sentinel_kwargs={"password": os.environ.get('REDIS_PASSWORD')})
+    connection=sentinel.master_for(os.environ.get('CACHE_REDIS_SENTINEL_MASTER'), socket_timeout=0.1)
+    app.config["SESSION_REDIS"]=connection
 
 db = SQLAlchemy(app ,engine_options={"pool_pre_ping":True, "pool_size":0,"pool_recycle":-1} )
 migrate = Migrate(app, db)
