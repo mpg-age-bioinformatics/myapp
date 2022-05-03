@@ -61,6 +61,7 @@ fi
 
 COPY LICENSE.md README.md config.py myapp.py requirements.txt setup.py .flaskenv /${BUILD_NAME}/
 COPY services /${BUILD_NAME}/services
+COPY utils /${BUILD_NAME}/utils
 COPY myapp /${BUILD_NAME}/myapp
 COPY .git /${BUILD_NAME}/.git
 
