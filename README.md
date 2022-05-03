@@ -6,7 +6,7 @@ myapp is a universal backbone for flask-dash based apps with user level authenti
 
 ```
 MYAPP_VERSION=$(git rev-parse --short HEAD)
-repoName=mpgagebioinformatics/myapp-flaski2:{MYAPP_VERSION}
+repoName=mpgagebioinformatics/myapp-flaski2:${MYAPP_VERSION}
 docker build --build-arg BUILD_NAME=flaski --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName} -f services/server/Dockerfile .
 docker push ${repoName}
 ```
