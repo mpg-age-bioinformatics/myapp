@@ -1,4 +1,11 @@
 #!/bin/bash
+if [[ "$FLASK_ENV" == "rsync" ]] ; 
+  then 
+    echo "5 * * * * /${BUILD_NAME}/utils/owncloud.client.py" > /${BUILD_NAME}_data/owncloud.cron
+    crontab /${BUILD_NAME}_data/owncloud.cron
+    rm /${BUILD_NAME}_data/owncloud.cron
+fi
+
 
 while ! mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${DB_NAME}"; 
   do 
