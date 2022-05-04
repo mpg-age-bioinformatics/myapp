@@ -5,6 +5,7 @@ parser = argparse.ArgumentParser(description="Add users and domains to private r
 parser.add_argument('--upload', metavar="<local_folders>", type=str, nargs='*', help="Upload files from folders.", default=["/mpcdf", "/submissions"])
 parser.add_argument('--download', metavar="<local_folders>", type=str, nargs='*', help="Local folders to download files to.")
 parser.add_argument('--target', metavar="<remote_folder>", type=str, nargs='*', help="Owncloud target folder.", default=["mpcdf_submissions", "age_submissions"] )
+parser.add_argument('--config', metavar="<config_file>", type=str, nargs='?', help="Config file." )
 args = parser.parse_args()
 
 import owncloud
@@ -13,11 +14,18 @@ import sys
 from datetime import datetime
 import traceback
 
-# print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Started.")          
+# print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Started.")
 
-ADDRESS=os.environ.get('OWNCLOUD_ADDRESS')
-USER=os.environ.get('OWNCLOUD_USER')
-PASS=os.environ.get('OWNCLOUD_PASS')
+if args.config:
+    with open(args.config , "r") as fin:
+        line=fin.readlines()[0].split("\n").split(",")
+    ADDRESS=line[0]
+    USER=line[1]
+    PASS=line[2]
+else:
+    ADDRESS=os.environ.get('OWNCLOUD_ADDRESS')
+    USER=os.environ.get('OWNCLOUD_USER')
+    PASS=os.environ.get('OWNCLOUD_PASS')
 
 oc = owncloud.Client(ADDRESS)
 oc.login( USER, PASS )
