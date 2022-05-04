@@ -72,3 +72,4 @@ Werkzeug==2.0.2
 wheel==0.32.3
 WTForms==2.3.3
 zipp==3.6.0
+pyocclient==0.6
