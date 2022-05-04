@@ -13,7 +13,7 @@ import sys
 from datetime import datetime
 import traceback
 
-print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Started.")          
+# print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Started.")          
 
 ADDRESS=os.environ.get('OWNCLOUD_ADDRESS')
 USER=os.environ.get('OWNCLOUD_USER')
@@ -63,5 +63,5 @@ if args.download :
                     sys.stdout.flush()
             except Exception as e :
                 print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "-- ! EXCEPTION ! --", "|", e, traceback.format_exc())  
-print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Finished.")          
-sys.stdout.flush()
+# print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Finished.")          
+# sys.stdout.flush()
