@@ -18,7 +18,7 @@ import traceback
 
 if args.config:
     with open(args.config , "r") as fin:
-        line=fin.readlines()[0].split("\n").split(",")
+        line=fin.readlines()[0].split("\n")[0].split(",")
     ADDRESS=line[0]
     USER=line[1]
     PASS=line[2]
