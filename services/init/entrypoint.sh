@@ -6,16 +6,21 @@ touch /backup/mysql_backup.log
 touch /backup/rsync.log
 tail -F /backup/mysql_backup.log /backup/rsync.log &
 
-while ! mysqladmin --user=root --password=${MYSQL_ROOT_PASSWORD} --host=${MYSQL_HOST} status ; 
-    do 
-        echo "Waiting for mysql.. " && sleep 4
-done
-
-if mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${DB_NAME}";
+if mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use flaski";
     then
-        echo "${BUILD_NAME} database already exists."
+        echo "Flaski database already exists."
     else
-        mysql --user=root --password=${MYSQL_ROOT_PASSWORD} --host=${MYSQL_HOST} << _EOF_
+
+        while ! mysqladmin --user=root --password=${MYSQL_ROOT_PASSWORD} --host=${MYSQL_HOST} status ; 
+            do 
+                echo "Waiting for mysql.. " && sleep 4
+        done
+
+        if mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${DB_NAME}";
+            then
+                echo "${BUILD_NAME} database already exists."
+            else
+                mysql --user=root --password=${MYSQL_ROOT_PASSWORD} --host=${MYSQL_HOST} << _EOF_
 CREATE USER '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';
 CREATE USER '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
 CREATE DATABASE ${DB_NAME} /*\!40100 DEFAULT CHARACTER SET utf8 */;
@@ -24,8 +29,9 @@ GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${MYSQL_USER}'@'%';
 FLUSH PRIVILEGES;
 _EOF_
 
-      echo "mysql database created.."
-fi
+                echo "mysql database created.."
+        fi
+    fi
 
 if [[ "$RESTORE_DB" == "1" ]] ; 
     then
