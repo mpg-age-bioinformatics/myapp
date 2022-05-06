@@ -19,7 +19,11 @@ PUBLIC_VIEWS=[ ] + _PUBLIC_VIEWS
 
 app = Flask(__name__)
 app.config.from_object(Config)
-if app.config["CACHE_TYPE"] == "RedisCache" :
+if app.config["SESSION_TYPE"] == "sqlalchemy":
+    import sqlalchemy
+    engine = sqlalchemy.create_engine(app.config["SQLALCHEMY_DATABASE_URI"] , echo=True)
+    app.config["SESSION_SQLALCHEMY"] = engine
+elif app.config["CACHE_TYPE"] == "RedisCache" :
     redis_password = os.environ.get('REDIS_PASSWORD') or 'REDIS_PASSWORD'
     redis_address = os.environ.get('REDIS_ADDRESS') or None
     session_redis= redis.from_url('redis://:%s@%s' %(redis_password,redis_address))

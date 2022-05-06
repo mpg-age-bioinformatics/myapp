@@ -66,6 +66,7 @@ pycairo==1.21.0
 pycparser==2.21
 pycrypto==2.6.1
 PyGObject==3.30.4
+pyocclient==0.6
 pyparsing==3.0.8
 python-dateutil==2.8.2
 pytz==2021.3
@@ -80,6 +81,6 @@ typing-extensions==3.10.0.2
 urllib3==1.26.7
 Werkzeug==2.0.2
 wheel==0.32.3
-wrapt==1.14.0
+wrapt==1.14.1
 WTForms==2.3.3
 zipp==3.6.0
