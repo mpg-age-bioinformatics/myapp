@@ -1,8 +1,8 @@
 #!/bin/bash
 
 CRON_TIME="0 3 * * *"
-MYSQL_HOST="mariadb"
-MYSQL_PORT="3306"
+# MYSQL_HOST="mariadb"
+# MYSQL_PORT="3306"
 TIMEOUT="30s"
 
 mkdir -p /backup/users_data /backup/mariadb
