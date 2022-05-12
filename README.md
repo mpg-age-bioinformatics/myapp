@@ -9,4 +9,8 @@ MYAPP_VERSION=$(git rev-parse --short HEAD)
 repoName=mpgagebioinformatics/myapp-flaski2:${MYAPP_VERSION}
 docker build --build-arg BUILD_NAME=flaski --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName} -f services/server/Dockerfile .
 docker push ${repoName}
+
+# or
+
+MYAPP_VERSION=$(git rev-parse --short HEAD) && repoName=mpgagebioinformatics/myapp-flaski2:latest && docker build --build-arg BUILD_NAME=flaski --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName} -f services/server/Dockerfile . && docker push ${repoName}
 ```
