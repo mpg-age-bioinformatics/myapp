@@ -2,6 +2,7 @@
 
 import argparse
 parser = argparse.ArgumentParser(description="Add users and domains to private routes.")
+parser.add_argument('-v', '--verbose', action="store_true")
 parser.add_argument('--upload', metavar="<local_folders>", type=str, nargs='*', help="Upload files from folders.", default=["/mpcdf", "/submissions"])
 parser.add_argument('--download', metavar="<local_folders>", type=str, nargs='*', help="Local folders to download files to.")
 parser.add_argument('--target', metavar="<remote_folder>", type=str, nargs='*', help="Owncloud target folder.", default=["mpcdf_submissions", "age_submissions"] )
@@ -14,7 +15,8 @@ import sys
 from datetime import datetime
 import traceback
 
-# print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Started.")
+if args.v :
+    print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Started.")
 
 if args.config:
     with open(args.config , "r") as fin:
@@ -28,10 +30,8 @@ else:
     PASS=os.environ.get('OWNCLOUD_PASS')
 
 
-
 # upload
 loggedin=False
-
 if not args.download :
     dic=dict(zip( args.upload, args.target ))
     for folder in args.upload: 
