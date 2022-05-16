@@ -27,16 +27,20 @@ else:
     USER=os.environ.get('OWNCLOUD_USER')
     PASS=os.environ.get('OWNCLOUD_PASS')
 
-oc = owncloud.Client(ADDRESS)
-oc.login( USER, PASS )
+
 
 # upload
+loggedin=False
 
 if not args.download :
     dic=dict(zip( args.upload, args.target ))
     for folder in args.upload: 
         TARGET=dic[folder]
         files=os.listdir(folder)
+        if ( files ) and ( not loggedin ):
+            oc = owncloud.Client(ADDRESS)
+            oc.login( USER, PASS )
+            loggedin=True
         for f in files :
             try:     
                 response=oc.put_file( os.path.join( TARGET, f ), os.path.join( folder, f ) )
@@ -53,7 +57,9 @@ if not args.download :
 # download
 
 if args.download :
-    dic=dict(zip( args.download, args.target ))
+    oc = owncloud.Client(ADDRESS)
+    oc.login( USER, PASS )
+    dic=dict( zip( args.download, args.target ) )
     for folder in args.download: 
         TARGET=dic[folder]
         contents=oc.list( f'{TARGET}/' )
