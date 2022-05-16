@@ -15,8 +15,9 @@ import sys
 from datetime import datetime
 import traceback
 
-if args.v :
+if args.verbose :
     print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Started.")
+    sys.stdout.flush()
 
 if args.config:
     with open(args.config , "r") as fin:
