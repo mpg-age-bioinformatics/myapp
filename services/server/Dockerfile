@@ -59,7 +59,7 @@ ARG UPGRADE_REQS
 ENV MYAPP_VERSION ${MYAPP_VERSION}
 ENV UPGRADE_REQS ${UPGRADE_REQS}
 
-RUN if [ "${UPGRADE_REQS}" == "yes" ]] ; then \
+RUN if [[ "${UPGRADE_REQS}" == "yes" ]] ; then \
 echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; /${BUILD_NAME}/utils/getenv.sh ; \
 else echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install --ignore-installed pyxdg==0.26 ; pip3 install -r /${BUILD_NAME}/requirements.txt ; \
 fi
