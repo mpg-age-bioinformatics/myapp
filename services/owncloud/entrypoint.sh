@@ -38,7 +38,6 @@ if [[ "$RESTORE_DB" == "1" ]] ;
         tail -F /backup/mysql_backup.log /backup/rsync.log &
         echo "=> Restore latest backup"
         LATEST_BACKUP=$(find /backup/mariadb -maxdepth 1 -name "latest.${DB_NAME}.sql.gz" | tail -1 )
-        echo " trying this file: ${LATEST_BACKUP}"
         if [ -f ${LATEST_BACKUP} ] ;
             then 
                 echo "=> Restore database from ${LATEST_BACKUP}"
