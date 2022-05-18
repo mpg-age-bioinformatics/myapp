@@ -56,7 +56,6 @@ if not args.download :
                 print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "-- ! EXCEPTION ! --", f, "|", e, traceback.format_exc())
 
 # download
-
 if args.download :
     oc = owncloud.Client(ADDRESS)
     oc.login( USER, PASS )
@@ -66,17 +65,22 @@ if args.download :
         contents=oc.list( f'{TARGET}/' )
         for c in contents:
             c_name=c.get_name()
-            try:
-                download=oc.get_file( os.path.join( TARGET, c_name ), local_file=os.path.join( folder, c_name ))
-                if download:
-                    # print(c.get_path())
-                    oc.delete( os.path.join( TARGET, c_name ) )
-                    print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", f"Downloaded {c_name}")
-                    sys.stdout.flush()
-                else:
-                    print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", f"Could not download {c_name}")
-                    sys.stdout.flush()
-            except Exception as e :
-                print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "-- ! EXCEPTION ! --", "|", e, traceback.format_exc())  
+            if not os.path.isfile(os.path.join( folder, c_name )):
+                try:
+                    download=oc.get_file( os.path.join( TARGET, c_name ), local_file=os.path.join( folder, c_name ))
+                    if download:
+                        # print(c.get_path())
+                        oc.delete( os.path.join( TARGET, c_name ) )
+                        print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", f"Downloaded {c_name}")
+                        sys.stdout.flush()
+                    else:
+                        print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", f"Could not download {c_name}")
+                        sys.stdout.flush()
+                except Exception as e :
+                    print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "-- ! EXCEPTION ! --", "|", e, traceback.format_exc())
+            else:
+                oc.delete( os.path.join( TARGET, c_name ) )
+                print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", f"File already exists. Removed from source: {c_name}.")          
+                sys.stdout.flush()
 # print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Finished.")          
 # sys.stdout.flush()
