@@ -6,7 +6,7 @@ touch /backup/mysql_backup.log
 touch /backup/rsync.log
 tail -F /backup/mysql_backup.log /backup/rsync.log &
 
-if mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use flaski";
+if mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${DB_NAME}";
     then
         echo "Flaski database already exists."
     else
@@ -38,13 +38,18 @@ if [[ "$RESTORE_DB" == "1" ]] ;
         tail -F /backup/mysql_backup.log /backup/rsync.log &
         echo "=> Restore latest backup"
         LATEST_BACKUP=$(find /backup/mariadb -maxdepth 1 -name "latest.${DB_NAME}.sql.gz" | tail -1 )
-        echo "=> Restore database from ${LATEST_BACKUP}"
-        set -o pipefail
-        if gunzip --stdout "${LATEST_BACKUP}" | mysql -h "${MYSQL_HOST}" -u "${MYSQL_USER}" -p"${MYSQL_PASSWORD}"
-            then
-                echo "=> Restore succeeded"
-            else
-                echo "=> Restore failed"
+        if [ -f ${LATEST_BACKUP} ] ;
+            then 
+                echo "=> Restore database from ${LATEST_BACKUP}"
+                set -o pipefail
+                if gunzip --stdout "${LATEST_BACKUP}" | mysql -h "${MYSQL_HOST}" -u "${MYSQL_USER}" -p"${MYSQL_PASSWORD}"
+                    then
+                        echo "=> Restore succeeded"
+                    else
+                        echo "=> Restore failed"
+                fi
+        else
+            echo "=> No file to recover from."
         fi
 
 fi
