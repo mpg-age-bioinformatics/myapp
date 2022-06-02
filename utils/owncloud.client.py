@@ -54,6 +54,9 @@ if not args.download :
                     sys.stdout.flush()
             except Exception as e :
                 print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "-- ! EXCEPTION ! --", f, "|", e, traceback.format_exc())
+            
+    if loggedin:
+        oc.logout()
 
 # download
 if args.download :
@@ -82,5 +85,6 @@ if args.download :
                 oc.delete( os.path.join( TARGET, c_name ) )
                 print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", f"File already exists. Removed from source: {c_name}.")          
                 sys.stdout.flush()
+    oc.logout()
 # print( datetime.now().strftime("%d/%m/%Y %H:%M:%S"), "|", "Finished.")          
 # sys.stdout.flush()
