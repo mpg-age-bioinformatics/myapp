@@ -71,8 +71,8 @@ COPY myapp /${BUILD_NAME}/myapp
 COPY .git /${BUILD_NAME}/.git
 
 ## TEMPORARY FLASKI2 compatible init and backup containers
-RUN mkdir -p /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/
-RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/
+RUN mkdir -p /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/ /submissions_ftp
+RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/ /submissions_ftp
 # /flaski_data /flaski_data/users 
 # RUN chmod -R g+w /submissions /flaski_private /mpcdf /flaski_data /flaski_data/users /backup
 
