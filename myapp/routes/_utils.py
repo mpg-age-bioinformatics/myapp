@@ -4,9 +4,10 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 from myapp import app, PAGE_PREFIX  
 import base64
-from ._vars import user_navbar_links, other_nav_dropdowns, _PRIVATE_ROUTES
+from ._vars import user_navbar_links, other_nav_dropdowns, _PRIVATE_ROUTES, _PUBLIC_VIEWS
 from myapp.models import PrivateRoutes
 
+_PR = [ s for s in _PRIVATE_ROUTES if s not in _PUBLIC_VIEWS ]
 
 META_TAGS=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,'} ]
 
@@ -139,7 +140,7 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
         dd_links={}
         for l in list(dd_links_.keys() ):
             app_route=dd_links_[l].split("/")[1]
-            if app_route in _PRIVATE_ROUTES :
+            if app_route in _PR :
                 route_obj=PrivateRoutes.query.filter_by(route=app_route).first()
                 if not route_obj :
                     continue
