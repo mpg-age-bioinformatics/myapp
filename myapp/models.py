@@ -11,7 +11,7 @@ import os
 import base64
 import onetimepass
 from flask import redirect, request, url_for
-
+from ._models import *
 
 class PrivateRoutes(db.Model):
     id = db.Column(db.Integer, primary_key=True)

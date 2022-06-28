@@ -67,7 +67,7 @@ pycparser==2.21
 pycrypto==2.6.1
 PyGObject==3.30.4
 pyocclient==0.6
-pyparsing==3.0.8
+pyparsing==3.0.9
 python-dateutil==2.8.2
 pytz==2021.3
 pyxdg==0.26
