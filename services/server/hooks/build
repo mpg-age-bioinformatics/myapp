@@ -29,24 +29,32 @@ if [ "${DOCKER_TAG}" == "latest" ] ;
         # docker buildx build --platform linux/amd64,linux/arm64 --no-cache --build-arg MYAPP_VERSION="${MYAPP_VERSION}" -t ${repoName}:latest -f services/server/Dockerfile . --push && \
 
 
-elif [ "${1}" == "nightly" ] ;
+elif [ "${1}" == "amd64" ] ;
     then 
+
         MYAPP_VERSION=$(git rev-parse --short HEAD)
         echo ":: git #${MYAPP_VERSION}"
+        text=":: !FAILED! "
+        docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-amd64 -f services/server/Dockerfile . && \
+        text=":: "
+        echo "${text}build myapp:nightly-amd64"
+        
+        # MYAPP_VERSION=$(git rev-parse --short HEAD)
+        # echo ":: git #${MYAPP_VERSION}"
+
+        # # text=":: !FAILED! "
+        # # docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-amd64 -f services/server/Dockerfile . && \
+        # # text=":: "
+        # # echo "${text}build myapp:nightly-amd64"
+        # # docker system prune -f 
 
         # text=":: !FAILED! "
-        # docker build --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-amd64 -f services/server/Dockerfile . && \
+        # docker buildx create --use && \
+        # docker buildx build --platform linux/amd64,linux/arm64 --no-cache --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nightly -f services/server/Dockerfile . --push && \
+        # docker buildx build --platform linux/amd64,linux/arm64 --cache-from ${repoName}:nightly --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:latest -f services/server/Dockerfile . --push && \
         # text=":: "
-        # echo "${text}build myapp:nightly-amd64"
-        # docker system prune -f 
-
-        text=":: !FAILED! "
-        docker buildx create --use && \
-        docker buildx build --platform linux/amd64,linux/arm64 --no-cache --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:nightly -f services/server/Dockerfile . --push && \
-        docker buildx build --platform linux/amd64,linux/arm64 --cache-from ${repoName}:nightly --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" -t ${repoName}:latest -f services/server/Dockerfile . --push && \
-        text=":: "
-        echo "${text}build & push tag: nightly"
-        echo "${text}build & push tag: latest"
+        # echo "${text}build & push tag: nightly"
+        # echo "${text}build & push tag: latest"
         # docker stop $(docker ps | grep buildkitd | awk '{print $7}' )
         # docker rm $(docker ps -a -q)
         # docker system prune -f 
@@ -105,6 +113,15 @@ elif [ "${1}" == "nightly" ] ;
         #         fi
 
         # done 
+
+elif [ "${1}" == "arm64" ] ;
+    then 
+        MYAPP_VERSION=$(git rev-parse --short HEAD)
+        echo ":: git #${MYAPP_VERSION}"
+        text=":: !FAILED! "
+        docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-arm64 -f services/server/Dockerfile . && \
+        text=":: "
+        echo "${text}build myapp:nightly-arm64"
 
 elif [ "${1}" == "aarch64" ] ;
     then 
