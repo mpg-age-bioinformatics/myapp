@@ -50,4 +50,4 @@ else
 
 fi
 
-echo ":: Finished"
+echo "- Finished"
