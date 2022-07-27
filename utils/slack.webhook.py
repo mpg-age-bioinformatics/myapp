@@ -49,6 +49,7 @@ if args.f :
         for s in summary :
             if  "!FAILED!" in s :
                 success=False
+        summary=[ s for s in summary if "!FAILED!" not in s ]
 
         summary="".join(summary)
 

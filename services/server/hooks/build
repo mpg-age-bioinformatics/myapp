@@ -13,8 +13,8 @@ else
     repoName=${IMAGE_NAME:0:tagStart-1}
 fi
 
-echo ":: Repo: ${repoName}"
-echo ":: Date: $(date '+%d/%m/%Y %H:%M:%S')"
+echo "- Repo: ${repoName}"
+echo "- Date: $(date '+%d/%m/%Y %H:%M:%S')"
 
 cd ../../
 
@@ -33,7 +33,7 @@ elif [ "${1}" == "nightly" ] ;
         echo ":: git #${MYAPP_VERSION}"
         text=":: !FAILED! "
         docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-${2} -f services/server/Dockerfile . && \
-        text=":: "
+        text="- "
         echo "${text}build myapp:nightly-${2}"
 
 else
