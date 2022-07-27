@@ -135,6 +135,12 @@ def request_change(n_clicks, pathname, passA, passB):
     user.password_set=datetime.utcnow()
     user.set_password(passA)
     db.session.commit()
+
+    if not user.confirmed_on:
+        user.confirmed_on = datetime.now()
+        db.session.add(user)
+        db.session.commit()
+
     return passA_, passB_, dcc.Location(pathname=f"{PAGE_PREFIX}/login/forgot/", id='login')
     
 
