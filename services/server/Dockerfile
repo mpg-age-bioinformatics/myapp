@@ -15,7 +15,7 @@ echo "deb-src http://ftp.debian.org/debian buster main non-free contrib" >> /etc
 echo "deb http://ftp.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list && \
 echo "deb-src http://ftp.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list 
 
-RUN apt-get update && apt-get -yq dist-upgrade && \
+RUN apt-get -o Acquire::Check-Valid-Until=false update && apt-get -yq dist-upgrade && \
 apt-get install -yq --no-install-recommends locales && \
 apt-get clean && rm -rf /var/lib/apt/lists/* && \
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
@@ -27,7 +27,7 @@ ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
-RUN apt-get update && apt-get -yq dist-upgrade && \
+RUN apt-get -o Acquire::Check-Valid-Until=false update && apt-get -yq dist-upgrade && \
 apt-get install -yq libcairo2-dev python3 python3-pip pkg-config mariadb-client cron rsync sudo && \
 python3 -m pip install -U pip && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
