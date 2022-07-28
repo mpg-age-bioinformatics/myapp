@@ -49,7 +49,7 @@ class Config(object):
     INSTANCE = os.environ.get('INSTANCE') or "PRODUCTION"
     COMMIT = commit
     ADMINS = os.environ.get('ADMINS').split(",") or ['jboucas@gmail.com']
-    PREAUTH = os.environ.get('PREAUTH') or True
+    PREAUTH = os.environ.get('PREAUTH') or False
 
     # PRIVATE_APPS = os.environ.get('PRIVATE_APPS') or None
 
