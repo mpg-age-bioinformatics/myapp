@@ -30,7 +30,7 @@ elif [ "${1}" == "nightly" ] ;
     then 
 
         MYAPP_VERSION=$(git rev-parse --short HEAD)
-        echo ":: git #${MYAPP_VERSION}"
+        echo "- git #${MYAPP_VERSION}"
         text=":: !FAILED! "
         docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION="nightly-${MYAPP_VERSION}" --no-cache -t ${repoName}:nightly-${2} -f services/server/Dockerfile . && \
         text="- "
