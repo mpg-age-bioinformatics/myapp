@@ -74,14 +74,15 @@ if args.f :
             ]
         }
         
-        slack_data_long_file={
-                "type": "section",
-                "text": {
-                    "type": "plain_text",
-                    "text": summary
+        if summary:
+            slack_data_long_file={
+                    "type": "section",
+                    "text": {
+                        "type": "plain_text",
+                        "text": summary
+                    }
                 }
-            }
-    slack_data_long["blocks"]=slack_data_long["blocks"]+[slack_data_long_file]
+            slack_data_long["blocks"]=slack_data_long["blocks"]+[slack_data_long_file]
 
 response = requests.post(
     args.w , data=json.dumps(slack_data_long),
