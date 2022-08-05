@@ -47,4 +47,6 @@ fi
 
 rsync -rtvh --delete /${BUILD_NAME}_data/users/ /backup/users_data/ >> /backup/rsync.log 2>&1
 
+chown -R ${BUILD_NAME}:${BUILD_NAME} /backup/users_data
+
 echo "=> Backup process finished at $(date "+%Y-%m-%d %H:%M:%S")"
