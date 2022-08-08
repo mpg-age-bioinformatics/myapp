@@ -122,15 +122,17 @@ def make_nav_dropdown(nav_dic, label):
 
 def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropdowns, user_links=user_navbar_links, expand='sm'):
     if type(user_links) == dict:
+        user_links_=user_links.copy()
         if current_user.administrator :
             if "Admin" not in list( user_links.keys() ):
-                del( user_links["fixed_separator_2"] )
-                del( user_links["Logout"] )
-                user_links["Admin"]=f"/admin/"
-                user_links["fixed_separator_2"]="-"
-                user_links["Logout"]=f"/logout/"
-
-    user_drop_down=make_nav_dropdown(user_links,current_user.username)
+                del( user_links_["fixed_separator_2"] )
+                del( user_links_["Logout"] )
+                user_links_["Admin"]=f"/admin/"
+                user_links_["fixed_separator_2"]="-"
+                user_links_["Logout"]=f"/logout/"
+        user_drop_down=make_nav_dropdown(user_links_,current_user.username)
+    else:
+        user_drop_down=make_nav_dropdown(user_links,current_user.username)
 
     other_dd=[]
     for o in other_dropdowns :
