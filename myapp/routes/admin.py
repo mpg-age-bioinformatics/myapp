@@ -42,9 +42,9 @@ def get_user_status(email):
     else:
         view_apps='- view_apps: None'
     
-    if user.user_apps:
+    if user.user_myapps:
         user_apps=[]
-        for i in user.user_apps :
+        for i in user.user_myapps :
             route_obj=PrivateRoutes.query.filter_by(id=i).first()
             if not route_obj:
                 continue
@@ -473,12 +473,12 @@ def routes_change_btns(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domai
             users_ids=[]
         for email in grant_emails:
             u=User.query.filter_by(email=email).first()
-            user_apps=u.user_apps
+            user_apps=u.user_myapps
             print("--",user_apps)
             if not user_apps:
                 print("--NOT")
                 user_apps=[route_obj.id]
-            u.user_apps=list(set(user_apps))
+            u.user_myapps=list(set(user_apps))
             db.session.add(u)
             db.session.commit()
             users_ids.append(u.id)
@@ -531,9 +531,9 @@ def routes_change_btns(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domai
         revoke_ids=[]
         for email in revoke_emails:
             u=User.query.filter_by(email=email).first()
-            user_apps=u.user_apps
+            user_apps=u.user_myapps
             user_apps=[ s for s in user_apps if s != route_obj.id ]
-            u.user_apps=user_apps
+            u.user_myapps=user_apps
             db.session.add(u)
             db.session.commit()
             revoke_ids.append(u.id)

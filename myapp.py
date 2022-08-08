@@ -70,18 +70,18 @@ def change_private_routes(route , change, emails=None, domain=None):
                 print(e, "could not be found!" )
                 sys.stdout.flush()
             else:
-                if not user.user_apps:
-                    user.user_apps=[]
+                if not user.user_myapps:
+                    user.user_myapps=[]
                 if change:
                     route_obj.users=list(set(route_obj.users+[ user.id ]))
-                    user.user_apps=list(set(user.user_apps+[ route_obj.id ]))
+                    user.user_myapps=list(set(user.user_myapps+[ route_obj.id ]))
                 else:
                     route_obj.users=[ s for s in route_obj.users if s != user.id ]
-                    user.user_apps=[ s for s in user.user_apps if s != route_obj.id ]
+                    user.user_myapps=[ s for s in user.user_myapps if s != route_obj.id ]
                 db.session.add(user)
                 db.session.commit()
                 uids.append(user.id)
-                print(f'{user.email}: {", ".join([ PrivateRoutes.query.filter_by(id=i).first().route for i in user.user_apps ] )}')
+                print(f'{user.email}: {", ".join([ PrivateRoutes.query.filter_by(id=i).first().route for i in user.user_myapps ] )}')
                 sys.stdout.flush()
         if change:
             route_obj.users=list(set(route_obj.users+uids))

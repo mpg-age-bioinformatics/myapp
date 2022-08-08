@@ -51,6 +51,7 @@ class User(UserMixin, db.Model):
     multipleapps=db.Column(db.Boolean, nullable=False, default=False)
     notifyme=db.Column(db.Boolean, nullable=False, default=True)
     user_apps = db.Column( PickleType )
+    user_myapps = db.Column( PickleType )
     view_apps = db.Column( PickleType )
     domain = db.Column(db.String(120), index=True, unique=False)
     administrator=db.Column(db.Boolean, nullable=False, default=False)
