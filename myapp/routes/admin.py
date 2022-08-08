@@ -474,9 +474,7 @@ def routes_change_btns(l_clicks, g_clicks, r_clicks, add_domain_clicks, rm_domai
         for email in grant_emails:
             u=User.query.filter_by(email=email).first()
             user_apps=u.user_myapps
-            print("--",user_apps)
             if not user_apps:
-                print("--NOT")
                 user_apps=[route_obj.id]
             u.user_myapps=list(set(user_apps))
             db.session.add(u)
