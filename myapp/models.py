@@ -161,7 +161,14 @@ def load_user(user_id):
         if not user.active:
             return None
         r=request.endpoint
-        r=r.split(f"{PAGE_PREFIX}/")[1]
+
+        r=r.split(f"{PAGE_PREFIX}/")
+        if len(r) < 2 :
+            r=request.endpoint
+            raise NameError(f"{r} endpoint not found")
+        else:
+            r = r[1].split("/")[0]
+
         if ( r in PRIVATE_ROUTES ) and ( r not in PUBLIC_VIEWS ):
             r_obj=PrivateRoutes.query.filter_by(route=r).first()
             if not r_obj :
