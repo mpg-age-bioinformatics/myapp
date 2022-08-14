@@ -165,7 +165,8 @@ def load_user(user_id):
         r=r.split(f"{PAGE_PREFIX}/")
         if len(r) < 2 :
             r=request.endpoint
-            raise NameError(f"{r} endpoint not found")
+            message=f"{r} endpoint not found"
+            raise NameError(message)
         else:
             r = r[1].split("/")[0]
 
