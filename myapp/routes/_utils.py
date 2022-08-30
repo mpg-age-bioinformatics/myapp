@@ -112,10 +112,15 @@ def make_nav_dropdown(nav_dic, label):
     dd=dbc.DropdownMenu(
         label=label,
         children=dropdown_children,
-        className="mr-1",
+        className="mr-1",#"mb-3",
         nav=True,
         in_navbar=True,
-        align_end=True
+        align_end=True,
+        # style={"optionHeight":"280px"}#,'overflow-y': 'auto'}
+        # style={'max-height': '280px','overflow-y': 'auto'} #,'overflow-y': 'auto'}
+        # style={"white-space": "nowrap", "overflow": "scroll", "text-overflow": "ellipsis"}
+        #optionHeight=280
+        # style={'height': '280px','overflow-y': 'auto'}
     )
 
     return [ dd ]
@@ -214,6 +219,7 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
         color="light",
         sticky="top",
         expand=expand,
+        # style={"overflow":"auto"}
         
     )
 

@@ -57,6 +57,7 @@ def get_user_status(email):
         user_apps='- user_apps: None'
 
     user=f'''**{user.email}**\n\n\
+    - id: {user.id}\n\
     - name: {user.firstname} {user.lastname}\n\
     - registered on: {user.registered_on}\n\
     - confirmed on: {user.confirmed_on}\n\
