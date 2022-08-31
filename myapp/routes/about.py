@@ -44,8 +44,8 @@ dashapp.layout=dbc.Row(
                 privacy_impressum 
             ], 
             align="top", 
-            style={"textAlign":"justify",'margin-left':"15px", 'margin-right':"15px","margin-top":"100px",'margin-bottom':"50px"},
-            sm=10, md=10, lg=8, xl=5
+            style={"textAlign":"justify",'margin-left':"15px", 'margin-right':"15px","margin-top":"100px",'margin-bottom':"50px","padding-left":"25px", "padding-right":"25px"},
+            xs=12, sm=10, md=10, lg=8, xl=5
         ), 
         navbar_A 
     ] ,
