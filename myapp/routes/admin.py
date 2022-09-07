@@ -59,6 +59,7 @@ def get_user_status(email):
     user=f'''**{user.email}**\n\n\
     - id: {user.id}\n\
     - name: {user.firstname} {user.lastname}\n\
+    - doamin: {user.domain}\n\
     - registered on: {user.registered_on}\n\
     - confirmed on: {user.confirmed_on}\n\
     - last seen: {user.last_seen}\n\
