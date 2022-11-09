@@ -59,7 +59,7 @@ SQLAlchemy==1.4.25
 tenacity==8.0.1
 typing-extensions==3.10.0.2
 urllib3==1.26.7
-waitress==2.0.0
+waitress==2.1.2
 Werkzeug==2.0.2
 wheel==0.32.3
 WTForms==2.3.3
