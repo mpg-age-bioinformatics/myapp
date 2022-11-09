@@ -58,7 +58,7 @@ keyring==17.1.1
 keyrings.alt==3.1.1
 Mako==1.2.2
 MarkupSafe==2.0.1
-numpy==1.21.2
+numpy==1.22.0
 packaging==21.3
 pip==21.2.4
 plotly==5.3.1
