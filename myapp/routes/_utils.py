@@ -107,7 +107,10 @@ def make_nav_dropdown(nav_dic, label):
             dropdown_children.append( dbc.DropdownMenuItem(l, header=True) ),
         else:
             l_=nav_dic[l]
-            dropdown_children.append( dbc.DropdownMenuItem(l, href=f"{PAGE_PREFIX}{l_}", external_link=True) )
+            if "http" in l_ :
+                dropdown_children.append( dbc.DropdownMenuItem(l, href=f"{l_}", external_link=True) )
+            else:
+                dropdown_children.append( dbc.DropdownMenuItem(l, href=f"{PAGE_PREFIX}{l_}", external_link=True) )
 
     dd=dbc.DropdownMenu(
         label=label,
