@@ -6,7 +6,7 @@ A live example of a *myapp* based deployment can be found on [https://flaski.age
 
 Key points:
 
-- backbone with included connection to *mysql* (optionally *Galera*) and *redis* (optionally *Sentinel*).
+- Backbone with included connection to *mysql* (optionally *Galera*) and *redis* (optionally *Sentinel*).
 
 - Apps can be added by adding route files to the build, ie. having them as part of the main App (eg. [flaski](https://github.com/mpg-age-bioinformatics/flaski) ) or by running them as an independent containter (eg. [myapp-eg-container](https://github.com/mpg-age-bioinformatics/myapp-eg-container)).
 
