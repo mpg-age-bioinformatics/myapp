@@ -1,6 +1,6 @@
 # myapp
 
-myapp is a universal backbone for flask-dash based apps with user level authentication. flaskapp can be deployed using the `docker-compose.yml` or on a [kubernetes](https://github.com/jorgeboucas/myapp/tree/master/kubernetes#kubernetes) cluster.
+myapp is a universal backbone for flask-dash based apps with user level authentication. 
 
 ## Deploying myapp
 
@@ -10,16 +10,7 @@ export APP_NAME="myapp"
 ```
 as seen in the base folder of this repo.
 
-If you need to generate self-signed certificates you can do so by:
-```
-mkdir -p ~/${APP_NAME}_data/certificates 
-openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -keyout ~/${APP_NAME}_data/certificates/key.pem -out ~/${APP_NAME}_data/certificates/cert.pem -subj "/C=DE/ST=NRW/L=Cologne/O=MPS/CN=${APP_NAME}"
-openssl dhparam -out ~/${APP_NAME}_data/certificates/dhparam.pem 2048
-```
-
-On a Mac double click on the cert.pem file to open it and add it to the Keychain. In key chain double click on the certificate to change Trust : When using this certificate : Always trust. 
-
-If running myapp on development mode make sure that you change the variable `FLASK_ENV` to `development` in `docker-compose.yml`.
+If running myapp on development mode make sure that you change the variable `FLASK_ENV` to `development` in `docker-compose.yml` otherwise use `production`.
 
 For production export secret variables into `.env.prod`:
 ```bash
