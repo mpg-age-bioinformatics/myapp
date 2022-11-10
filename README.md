@@ -10,7 +10,7 @@ Key points:
 
 - Apps can be added by adding route files to the build, ie. having them as part of the main App (eg. [flaski](https://github.com/mpg-age-bioinformatics/flaski) ) or by running them as an independent containter (eg. [myapp-eg-container](https://github.com/mpg-age-bioinformatics/myapp-eg-container)).
 
-- Multiple dependent or independent instances/pods/containers can be added under the same *domain* eg. www.myapp.com ; www.myapp.com/age ; www.myapp.com/genomics (eg. [myapp-eg-container](https://github.com/mpg-age-bioinformatics/myapp-eg-container)).
+- Multiple dependent or independent instances/pods/containers can be added under the same *domain* eg. w<span>ww.</span>myapp.com ; w<span>ww.</span>myapp.com/age ; w<span>ww.</span>myapp.com/genomics (eg. [myapp-eg-container](https://github.com/mpg-age-bioinformatics/myapp-eg-container)).
 
 - *User level authentication* for running or visualizing each App is built in.
 
