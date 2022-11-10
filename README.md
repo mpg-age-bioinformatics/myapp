@@ -23,3 +23,5 @@ Key points:
 - Backups are performed by an independent `backup` container.
 
 - *myapp* deployments are fully scalable, we run our production environment on *kubernetes* and local development over *docker* compose.
+
+- *amd64*, *arm64*, and * aarch64* builds are tested daily.
