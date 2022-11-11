@@ -1,0 +1,112 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: server
+  namespace: myapp
+spec:
+  selector:
+    app: server
+  ports:
+    - protocol: TCP
+      port: 8000
+      name: web
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  namespace: myapp
+  labels:
+    app: server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: server
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+      - name: server
+        image: mpgagebioinformatics/myapp:latest
+        imagePullPolicy: Always
+        env:
+        - name: N_WORKERS
+          value: "4"
+        - name: ADMINS
+          value: your@email.com
+        - name: APP_NAME
+          value: myapp
+        - name: APP_TITLE
+          value: myapp
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: myapp-secrets
+              key: SECRET_KEY
+        - name: APP_URL
+          value: https://myapp.localhost
+        - name: PAGE_PREFIX
+          value: ""
+        - name: FLASK_ENV
+          value: production
+        - name: LOGS
+          value: /var/log/myapp/
+        - name: MAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: emailpass
+              key: pass
+        - name: MAIL_PORT
+          value: "587"
+        - name: MAIL_SERVER
+          value: mail.age.mpg.de
+        - name: MAIL_USERNAME
+          value: your@email.com
+        - name: MAIL_USE_TLS
+          value: "1"
+        - name: MYSQL_HOST
+          value: mariadb
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: myapp-secrets
+              key: MYSQL_PASSWORD
+        - name: DB_NAME
+          value: myapp
+        - name: MYSQL_USER
+          value: myapp
+        - name: CACHE_TYPE
+          value: RedisCache
+        - name: REDIS_ADDRESS
+          value: redis:6379/0
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: myapp-secrets
+              key: REDIS_PASSWORD
+        ports:
+          - name: http
+            containerPort: 8000
+        resources: {}
+        # volumeMounts:
+        # - name: users-volume-mount
+        #   mountPath: /myapp_data/users/
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: dockerlogin
+      # volumes:
+      # - name: users-volume-mount
+      #   persistentVolumeClaim:
+      #     claimName: users3-pvc
+status: {}
