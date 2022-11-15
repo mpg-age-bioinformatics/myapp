@@ -1,6 +1,6 @@
 # myapp
 
-*myapp* is a backbone for flask-dash based apps giving you access to the entire flask ecosystem for web development and the simplicy of dash for building Apps in python.
+*myapp* is a backbone for flask-dash based apps giving you access to the entire flask ecosystem for web development and the simplicy of dash for building Apps in python. In essency, it brings the full power of web development to python enthusiasts.
 
 A live example of a *myapp* based deployment can be found on [https://flaski.age.mpg.de](https://flaski.age.mpg.de).
 
