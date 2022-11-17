@@ -9,12 +9,7 @@ from myapp.models import PrivateRoutes
 
 _PR = [ s for s in _PRIVATE_ROUTES if s not in _PUBLIC_VIEWS ]
 
-META_TAGS=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,'} ]
-
-META_TAGS_=META_TAGS[0]
-for k in list(_META_TAGS.keys()):
-    META_TAGS_[k]=_META_TAGS[k]
-META_TAGS[0]=META_TAGS_
+META_TAGS=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,'} ] + _META_TAGS
 
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
