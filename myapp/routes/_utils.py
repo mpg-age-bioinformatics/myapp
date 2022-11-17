@@ -4,12 +4,17 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 from myapp import app, PAGE_PREFIX  
 import base64
-from ._vars import user_navbar_links, other_nav_dropdowns, _PRIVATE_ROUTES, _PUBLIC_VIEWS
+from ._vars import user_navbar_links, other_nav_dropdowns, _PRIVATE_ROUTES, _PUBLIC_VIEWS, _META_TAGS
 from myapp.models import PrivateRoutes
 
 _PR = [ s for s in _PRIVATE_ROUTES if s not in _PUBLIC_VIEWS ]
 
 META_TAGS=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,'} ]
+
+META_TAGS_=META_TAGS[0]
+for k in list(_META_TAGS.keys()):
+    META_TAGS_[k]=_META_TAGS[k]
+META_TAGS[0]=META_TAGS_
 
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 

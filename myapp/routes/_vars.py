@@ -1,5 +1,6 @@
 _PRIVATE_ROUTES=[]
 _PUBLIC_VIEWS=[]
+_META_TAGS={}
 
 user_navbar_links={
     "Home":"/home/",\
