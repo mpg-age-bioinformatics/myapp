@@ -17,7 +17,7 @@ import os
 import random
 
 
-dashapp = dash.Dash("settings",url_base_pathname=f'{PAGE_PREFIX}/settings/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("settings",url_base_pathname=f'{PAGE_PREFIX}/settings/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Settings", assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 protect_dashviews(dashapp)
 

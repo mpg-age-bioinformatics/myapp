@@ -85,6 +85,7 @@ navbar_A = dbc.NavbarSimple(
         dbc.NavItem( 
             html.A(
                 app.config['APP_TITLE'], 
+                target='_blank',
                 style={"color":"gray","text-decoration": "none","textAlign":"right","margin-bottom":"25px","margin-top":"0px", "margin-right":"20px"},
                 href=f"{PAGE_PREFIX}/index/"
             )
@@ -108,9 +109,9 @@ def make_nav_dropdown(nav_dic, label):
         else:
             l_=nav_dic[l]
             if "http" in l_ :
-                dropdown_children.append( dbc.DropdownMenuItem(l, href=f"{l_}", external_link=True) )
+                dropdown_children.append( dbc.DropdownMenuItem(l, href=f"{l_}", target='_blank', external_link=True) )
             else:
-                dropdown_children.append( dbc.DropdownMenuItem(l, href=f"{PAGE_PREFIX}{l_}", external_link=True) )
+                dropdown_children.append( dbc.DropdownMenuItem(l, href=f"{PAGE_PREFIX}{l_}", target='_blank', external_link=True, ) )
 
     dd=dbc.DropdownMenu(
         label=label,
@@ -208,6 +209,7 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
                         className="g-0",
                     ),
                     href=f'{app.config["APP_URL"]}/home/',
+                    target='_blank',
                     style={"textDecoration": "none"},
                 ),
                 dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),

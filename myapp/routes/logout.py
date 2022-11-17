@@ -9,7 +9,7 @@ from myapp.models import User
 from ._utils import META_TAGS
 import time
 
-dashapp = dash.Dash("logout",url_base_pathname=f'{PAGE_PREFIX}/logout/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("logout",url_base_pathname=f'{PAGE_PREFIX}/logout/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Logout", assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 dashapp.layout=html.Div(
     [ 

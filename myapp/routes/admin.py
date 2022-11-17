@@ -73,7 +73,7 @@ def get_user_status(email):
 *{datetime.now()}*'''
     return user
 
-dashapp = dash.Dash("admin",url_base_pathname=f'{PAGE_PREFIX}/admin/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])
+dashapp = dash.Dash("admin",url_base_pathname=f'{PAGE_PREFIX}/admin/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Admin", assets_folder=app.config["APP_ASSETS"])
 
 protect_dashviews(dashapp)
 

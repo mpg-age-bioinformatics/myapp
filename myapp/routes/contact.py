@@ -9,7 +9,7 @@ from datetime import datetime
 from ._utils import META_TAGS ,check_email, navbar_A
 from flask_login import current_user
 
-dashapp = dash.Dash("contact",url_base_pathname=f'{PAGE_PREFIX}/contact/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])
+dashapp = dash.Dash("contact",url_base_pathname=f'{PAGE_PREFIX}/contact/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Contact", assets_folder=app.config["APP_ASSETS"])
 
 firstname_input = html.Div(
     [

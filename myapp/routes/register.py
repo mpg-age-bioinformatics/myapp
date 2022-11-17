@@ -10,7 +10,7 @@ from ._utils import META_TAGS, check_email, password_check, navbar_A
 from flask_login import current_user
 
 
-dashapp = dash.Dash("register", url_base_pathname=f'{PAGE_PREFIX}/register/',meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("register", url_base_pathname=f'{PAGE_PREFIX}/register/',meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Register", assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
 firstname_input = html.Div(
     [

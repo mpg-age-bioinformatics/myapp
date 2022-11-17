@@ -10,7 +10,7 @@ from ._utils import META_TAGS, check_email, password_check, navbar_A
 from flask_login import current_user
 from ._impressum import _impressum
 
-dashapp = dash.Dash("impressum",url_base_pathname=f'{PAGE_PREFIX}/impressum/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title=app.config["APP_TITLE"], assets_folder=app.config["APP_ASSETS"])# , assets_folder="/{APP_TITLE}/{APP_TITLE}/static/dash/")
+dashapp = dash.Dash("impressum",url_base_pathname=f'{PAGE_PREFIX}/impressum/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Impressum", assets_folder=app.config["APP_ASSETS"])# , assets_folder="/{APP_TITLE}/{APP_TITLE}/static/dash/")
 
 gdpr_text=dcc.Markdown(_impressum)
 
