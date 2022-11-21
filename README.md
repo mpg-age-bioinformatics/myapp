@@ -16,7 +16,9 @@ Key points:
 
 - User settings and administrator settings dashboards are included. 
 
-- *2FA* ready. *Traefik* as reverse proxy with *Let's Encrypt* as certificate authority for https in production deployments. 
+- *2FA* ready. 
+
+- *Traefik* as reverse proxy with *Let's Encrypt* as certificate authority for https in production deployments. 
 
 - Administrator authorization for each registration built as an option. 
 
