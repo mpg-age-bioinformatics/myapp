@@ -74,6 +74,7 @@ services:
    - MYSQL_HOST=mariadb
    - MYSQL_PORT=3306
    - FLASK_ENV=development
+   - FLASK_DEBUG=1
    - PRIVATE_APPS=/${APP_NAME}_private/private.apps.tsv
    - INSTANCE=(DEV)
    - ADMINS=jboucas@gmail.com

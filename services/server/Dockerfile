@@ -2,7 +2,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 # Debian buster-slim (10.1)
-FROM debian:buster-slim
+FROM python:3.10.8-slim-buster
 
 LABEL maintainer "bioinformatics@age.mpg.de"
 
@@ -15,7 +15,8 @@ echo "deb-src http://ftp.debian.org/debian buster main non-free contrib" >> /etc
 echo "deb http://ftp.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list && \
 echo "deb-src http://ftp.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list 
 
-RUN apt-get -o Acquire::Check-Valid-Until=false update && apt-get -yq dist-upgrade && \
+# apt-get -o Acquire::Check-Valid-Until=false update
+RUN apt-get update && apt-get -yq dist-upgrade && \
 apt-get install -yq --no-install-recommends locales && \
 apt-get clean && rm -rf /var/lib/apt/lists/* && \
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
@@ -28,8 +29,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 RUN apt-get -o Acquire::Check-Valid-Until=false update && apt-get -yq dist-upgrade && \
-apt-get install -yq libcairo2-dev python3 python3-pip pkg-config mariadb-client cron rsync sudo && \
-python3 -m pip install -U pip && \
+apt-get install -yq build-essential libcairo2-dev pkg-config mariadb-client cron rsync && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ARG BUILD_NAME
@@ -37,7 +37,7 @@ ENV BUILD_NAME ${BUILD_NAME}
 
 # Add myapp user for running the service
 RUN groupadd ${BUILD_NAME} --gid=1000 && useradd -m ${BUILD_NAME} --uid=1000 --gid=1000 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
-    chpasswd
+    chpasswd && passwd -d ${BUILD_NAME}
 
 # flaski2 compatible
 # RUN useradd -m flaski --uid=1001 --gid=1000 && echo "flaski:4.iMkMm4zFoNViof" | \
@@ -59,7 +59,8 @@ ARG UPGRADE_REQS
 ENV MYAPP_VERSION ${MYAPP_VERSION}
 ENV UPGRADE_REQS ${UPGRADE_REQS}
 
-RUN if test "${UPGRADE_REQS}" = "yes" ; then \
+RUN pip install --upgrade pip && \
+if test "${UPGRADE_REQS}" = "yes" ; then \
 echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; /${BUILD_NAME}/utils/getenv.sh ; \
 else echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install --ignore-installed pyxdg==0.26 ; pip3 install -r /${BUILD_NAME}/requirements.txt ; \
 fi
