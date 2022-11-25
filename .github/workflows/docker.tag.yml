@@ -25,17 +25,17 @@ jobs:
   # docker push docker.io/mpgagebioinformatics/flaski:dev
 
 
-  slackNotification:
-    needs: build
-    name: Slack Notification
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Slack Notification
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_USERNAME: github_action_bot
-        SLACK_CHANNEL: flaski
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_TITLE: "[myapp] ${GITHUB_REF#refs/*/} build and push completed"
+  # slackNotification:
+  #   needs: build
+  #   name: Slack Notification
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Slack Notification
+  #     uses: rtCamp/action-slack-notify@v2
+  #     env:
+  #       SLACK_USERNAME: github_action_bot
+  #       SLACK_CHANNEL: flaski
+  #       SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  #       SLACK_TITLE: "[myapp] ${GITHUB_REF#refs/*/} build and push completed"
 
