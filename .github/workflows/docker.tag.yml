@@ -14,7 +14,7 @@ jobs:
       run: | 
         echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin docker.io
         MYAPP_VERSION=${GITHUB_REF#refs/*/}
-        git clone https://github.com/mpg-age-bioinformatics/flaski.git ${MYAPP_VERSION}
+        git clone https://github.com/mpg-age-bioinformatics/myapp.git ${MYAPP_VERSION}
         cd ${MYAPP_VERSION}
         git checkout ${MYAPP_VERSION}
         docker buildx create --name mybuilder --driver docker-container --bootstrap --use
