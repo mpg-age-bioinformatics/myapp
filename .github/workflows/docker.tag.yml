@@ -19,7 +19,7 @@ jobs:
         git checkout ${MYAPP_VERSION}
         docker buildx create --name mybuilder --driver docker-container --bootstrap --use
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-        docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:latest -t docker.io/mpgagebioinformatics/myapp:${MYAPP_VERSION} -f services/server/Dockerfile --push .
+        docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:stable -t docker.io/mpgagebioinformatics/myapp:latest -t docker.io/mpgagebioinformatics/myapp:${MYAPP_VERSION} -f services/server/Dockerfile --push .
   
   # docker build . --tag docker.io/mpgagebioinformatics/flaski:dev
   # docker push docker.io/mpgagebioinformatics/flaski:dev
