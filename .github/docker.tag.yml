@@ -1,11 +1,8 @@
-name: latest
+name: tag
 
 on:
   push:
-    branches:
-    - main
-    tags-ignore:
-    - '**'
+    tags: [ '*.*.*' ]
     
 jobs:
   build:
@@ -16,11 +13,13 @@ jobs:
     - name: Build the Docker image
       run: | 
         echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin docker.io
-        MYAPP_VERSION=$(git rev-parse --short HEAD)
-        echo "test"
+        MYAPP_VERSION=${GITHUB_REF#refs/*/}
+        git clone https://github.com/mpg-age-bioinformatics/flaski.git ${MYAPP_VERSION}
+        cd ${MYAPP_VERSION}
+        git checkout ${MYAPP_VERSION}
         docker buildx create --name mybuilder --driver docker-container --bootstrap --use
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-        docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:latest -f services/server/Dockerfile --push .
+        docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:latest -t docker.io/mpgagebioinformatics/myapp:${MYAPP_VERSION} -f services/server/Dockerfile --push .
   
   # docker build . --tag docker.io/mpgagebioinformatics/flaski:dev
   # docker push docker.io/mpgagebioinformatics/flaski:dev
@@ -38,5 +37,5 @@ jobs:
         SLACK_USERNAME: github_action_bot
         SLACK_CHANNEL: flaski
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_TITLE: "[myapp] latest build and push completed"
+        SLACK_TITLE: "[myapp] ${GITHUB_REF#refs/*/} build and push completed"
 
