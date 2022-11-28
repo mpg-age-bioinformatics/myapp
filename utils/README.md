@@ -25,4 +25,8 @@ ___
 ```
 0 0 * * * export PATH=/usr/local/bin:/usr/bin:${PATH} && cd ~/myapp && git pull && cd ./services/server && ~/myapp/services/server/hooks/build aarch64 > ~/myapp/build.log 2>&1 ; ~/myapp/utils/slack.webhook.py -s "myapp nightly build - aarch64" -f ~/myapp/build.log -w <slack webhook address>
 ```
+
+**Dockerhub to slack webhooks**
+
+https://hub.docker.com/r/int128/slack-docker
 ___
