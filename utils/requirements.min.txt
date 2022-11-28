@@ -12,6 +12,7 @@ dash
 dash-table
 dash-bootstrap-components
 onetimepass
+pyocclient
 PyQRCode
 python-dotenv
 redis 
