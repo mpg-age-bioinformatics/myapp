@@ -43,7 +43,7 @@ jobs:
         {
           cat << EOF
         {
-          "text": "myapp `$GITHUB_SHA_SHORT` build and push FAILED"
+          "text": "myapp `${GITHUB_SHA_SHORT}` build and push FAILED"
         }
         EOF
         } 
