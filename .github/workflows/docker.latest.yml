@@ -27,15 +27,27 @@ jobs:
         generate_post_data()
         {
           cat << EOF
-        {
-          "text": "myapp $GITHUB_SHA_SHORT build and push completed"
+          {
+            "text":  myapp $GITHUB_SHA_SHORT build and push completed,
+            "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "*myapp $GITHUB_SHA_SHORT build and push completed"*"
+                    }
+                },
+                {
+                    "type": "divider"
+                }
+            ]
         }
         EOF
         } 
         curl -H "Content-Type: application/json" -X POST -d "$(generate_post_data)" ${{ secrets.SLACK_WEBHOOK }}
-    - name: Trigger flaski
-      run: | 
-        curl -XPOST -u "${{ secrets.FLASKI_GITHUB_USER }}:${{ secrets.FLASKI_GITHUB_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/mpg-age-bioinformatics/flaski/dispatches --data '{"event_type": "myapp new latest available"}' 
+    # - name: Trigger flaski
+    #   run: | 
+    #     curl -XPOST -u "${{ secrets.FLASKI_GITHUB_USER }}:${{ secrets.FLASKI_GITHUB_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/mpg-age-bioinformatics/flaski/dispatches --data '{"event_type": "myapp new latest available"}' 
     - name: Set Failure env
       if: failure()
       run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
