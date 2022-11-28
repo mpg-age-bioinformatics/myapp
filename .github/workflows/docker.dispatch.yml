@@ -1,11 +1,6 @@
-name: latest
+name: dispatch
 
-on:
-  push:
-    branches:
-    - main
-    tags-ignore:
-    - '**'
+on: repository_dispatch
     
 jobs:
   build:
@@ -32,9 +27,6 @@ jobs:
         EOF
         } 
         curl -H "Content-Type: application/json" -X POST -d "$(generate_post_data)" ${{ secrets.SLACK_WEBHOOK }}
-    - name: Trigger flaski
-      run: | 
-        curl -XPOST -u "${{ secrets.FLASKI_GITHUB_USER }}:${{ secrets.FLASKI_GITHUB_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/mpg-age-bioinformatics/flaski/dispatches --data '{"event_type": "myapp new latest"}' 
     - name: Set Failure env
       if: failure()
       run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
