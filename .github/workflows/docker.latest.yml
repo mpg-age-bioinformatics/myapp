@@ -16,9 +16,10 @@ jobs:
       run: | 
         echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin docker.io
         MYAPP_VERSION=$(git rev-parse --short HEAD)
-        docker buildx create --name mybuilder --driver docker-container --bootstrap --use
-        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-        docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:latest -f services/server/Dockerfile --push .
+        ech
+    # docker buildx create --name mybuilder --driver docker-container --bootstrap --use
+    # docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:latest -f services/server/Dockerfile --push .
     - name: Set Success env
       run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
     - name: Slack Success Notification
@@ -34,7 +35,7 @@ jobs:
         curl -H "Content-Type: application/json" -X POST -d "$(generate_post_data)" ${{ secrets.SLACK_WEBHOOK }}
     - name: Trigger flaski
       run: | 
-        curl -XPOST -u "${{ secrets.FLASKI_GITHUB_USER }}:${{ secrets.FLASKI_GITHUB_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/mpg-age-bioinformatics/flaski/dispatches --data '{"event_type": "myapp new latest"}' 
+        curl -XPOST -u "${{ secrets.FLASKI_GITHUB_USER }}:${{ secrets.FLASKI_GITHUB_TOKEN }}" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/mpg-age-bioinformatics/flaski/dispatches --data '{"event_type": "myapp new latest available"}' 
     - name: Set Failure env
       if: failure()
       run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
