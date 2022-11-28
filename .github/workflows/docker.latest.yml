@@ -10,7 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
@@ -23,6 +22,26 @@ jobs:
   
   # docker build . --tag docker.io/mpgagebioinformatics/flaski:dev
   # docker push docker.io/mpgagebioinformatics/flaski:dev
+
+  slackNotification:
+    needs: build
+    name: Slack Notification
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set env
+      run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+    - name: Slack Notification
+      run: | 
+        generate_post_data()
+        {
+          cat << EOF
+        {
+          "text": "myapp $GITHUB_SHA_SHORT build and push completed"
+        }
+        EOF
+        } 
+        curl -H "Content-Type: application/json" -X POST -d "$(generate_post_data)" ${secrets.SLACK_WEBHOOK}
 
 
   # slackNotification:
