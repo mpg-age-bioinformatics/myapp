@@ -10,7 +10,7 @@ if [ "${1}" == "nightly" ] ;
 else
 
     # currently using github actions to build images
-    exit
+    # exit
 
     # Parse image name for repo name
     tagStart=$(expr index "$IMAGE_NAME" :)
@@ -26,9 +26,13 @@ if [ "${DOCKER_TAG}" == "latest" ] ;
     then 
         echo ":: Tag: ${DOCKER_TAG}"
         MYAPP_VERSION=$(git rev-parse --short HEAD)
-        docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
-        docker push ${repoName}:latest && 
-        echo ":: build & push tag: latest"
+        docker buildx create --name mybuilder --driver docker-container --bootstrap --use
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+        docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:latest -f services/server/Dockerfile .
+ 
+        # docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
+        # docker push ${repoName}:latest && 
+        # echo ":: build & push tag: latest"
 
 elif [ "${1}" == "nightly" ] ;
     then 
@@ -42,15 +46,19 @@ elif [ "${1}" == "nightly" ] ;
 
 else
     echo ":: Tag: ${DOCKER_TAG}"
-    docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${DOCKER_TAG} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
-    docker tag ${repoName}:latest ${repoName}:${DOCKER_TAG}
-    docker tag ${repoName}:latest ${repoName}:stable
-    docker push ${repoName}:latest
-    echo ":: push tag: latest"
-    docker push ${repoName}:stable
-    echo ":: push tag: stable"
-    docker push ${repoName}:${DOCKER_TAG}
-    echo ":: push tag: ${DOCKER_TAG}"
+    docker buildx create --name mybuilder --driver docker-container --bootstrap --use
+    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:stable -t docker.io/mpgagebioinformatics/myapp:latest -t docker.io/mpgagebioinformatics/myapp:${MYAPP_VERSION} -f services/server/Dockerfile .
+  
+    # docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${DOCKER_TAG} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
+    # docker tag ${repoName}:latest ${repoName}:${DOCKER_TAG}
+    # docker tag ${repoName}:latest ${repoName}:stable
+    # docker push ${repoName}:latest
+    # echo ":: push tag: latest"
+    # docker push ${repoName}:stable
+    # echo ":: push tag: stable"
+    # docker push ${repoName}:${DOCKER_TAG}
+    # echo ":: push tag: ${DOCKER_TAG}"
 
 fi
 
