@@ -27,9 +27,11 @@ if [ "${DOCKER_TAG}" == "latest" ] ;
         echo ":: Tag: ${DOCKER_TAG}"
         MYAPP_VERSION=$(git rev-parse --short HEAD)
         docker buildx create --name mybuilder --driver docker-container --bootstrap --use
+        if [[ $0 != ]] ; then 
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
         docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:latest -f services/server/Dockerfile .
- 
+        curl -H "Content-Type: application/json" -X POST -d '{"text":"myapp ${MYAPP_VERSION} build and push completed" }' ${SLACK_WEBHOOK}
+
         # docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
         # docker push ${repoName}:latest && 
         # echo ":: build & push tag: latest"
@@ -49,7 +51,8 @@ else
     docker buildx create --name mybuilder --driver docker-container --bootstrap --use
     docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:stable -t docker.io/mpgagebioinformatics/myapp:latest -t docker.io/mpgagebioinformatics/myapp:${MYAPP_VERSION} -f services/server/Dockerfile .
-  
+    curl -H "Content-Type: application/json" -X POST -d '{"text":"myapp ${MYAPP_VERSION} build and push completed" }' ${SLACK_WEBHOOK}
+
     # docker build --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${DOCKER_TAG} --no-cache -t ${repoName}:latest -f services/server/Dockerfile .
     # docker tag ${repoName}:latest ${repoName}:${DOCKER_TAG}
     # docker tag ${repoName}:latest ${repoName}:stable
