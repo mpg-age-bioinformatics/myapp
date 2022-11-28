@@ -20,7 +20,7 @@ jobs:
     #docker buildx create --name mybuilder --driver docker-container --bootstrap --use
     #docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     #docker buildx build --platform linux/amd64,linux/arm64 --build-arg BUILD_NAME=myapp --build-arg MYAPP_VERSION=${MYAPP_VERSION} --no-cache -t docker.io/mpgagebioinformatics/myapp:latest -f services/server/Dockerfile --push .
-    - name: Set env
+    - name: Set Success env
       run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
     - name: Slack Success Notification
       run: | 
@@ -33,6 +33,9 @@ jobs:
         EOF
         } 
         curl -H "Content-Type: application/json" -X POST -d "$(generate_post_data)" ${{ secrets.SLACK_WEBHOOK }}
+    - name: Set Failure env
+      if: failure()
+      run: echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-7)" >> $GITHUB_ENV
     - name: Slack Failure Notification
       if: failure()
       run: | 
