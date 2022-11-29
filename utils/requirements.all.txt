@@ -25,6 +25,7 @@ dash-table==5.0.0
 dash-table==5.0.0
 dash-bootstrap-components==1.2.1
 onetimepass==1.0.1
+pyocclient==0.6
 PyQRCode==1.2.1
 python-dotenv==0.21.0
 redis==4.3.4
