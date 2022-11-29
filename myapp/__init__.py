@@ -45,7 +45,7 @@ sess.init_app(app)
 
 
 from myapp import models, errors
-from myapp.routes import index, register, home, login, forgot, logout, contact, about, privacy, impressum, admin, settings
+from myapp.routes import index, register, home, login, forgot, logout, contact, about, privacy, impressum, admin, settings, ext
 from myapp.routes._routes import *
  
 if not app.debug:
