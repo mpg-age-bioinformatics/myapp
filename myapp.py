@@ -96,62 +96,63 @@ def change_private_routes(route , change, emails=None, domain=None):
                 
 if __name__ == "__main__":
 
-    if sys.argv[1] not in ["admin","routes","status"]:
-        parser = argparse.ArgumentParser(description='Manage your flaskapp.')
-        parser.add_argument('function', type=str, nargs='?', choices=["admin","routes","status"], help='Choose your main function. opts=["admin","routes"]')
-        args = parser.parse_args()
+    with app.app_context():
+        if sys.argv[1] not in ["admin","routes","status"]:
+            parser = argparse.ArgumentParser(description='Manage your flaskapp.')
+            parser.add_argument('function', type=str, nargs='?', choices=["admin","routes","status"], help='Choose your main function. opts=["admin","routes"]')
+            args = parser.parse_args()
 
-    if sys.argv[1] == "admin":
-        parser = argparse.ArgumentParser(description="Grant or revoke administrator rights.")
-        parser.add_argument('admin', metavar="admin", type=str, nargs='?', choices=["admin"])
-        parser.add_argument('--add', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to grant rights to eg. john@gmail.com andre@netflix.com")
-        parser.add_argument('--rm', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to revoke rights to eg. john@gmail.com andre@netflix.com")
-        args = parser.parse_args()
+        if sys.argv[1] == "admin":
+            parser = argparse.ArgumentParser(description="Grant or revoke administrator rights.")
+            parser.add_argument('admin', metavar="admin", type=str, nargs='?', choices=["admin"])
+            parser.add_argument('--add', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to grant rights to eg. john@gmail.com andre@netflix.com")
+            parser.add_argument('--rm', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to revoke rights to eg. john@gmail.com andre@netflix.com")
+            args = parser.parse_args()
 
-        if (not args.add) and ( not args.rm):
-            print("Please use --add or --rm")
-        if args.add:
-            change_admin(args.add,True)
-        if args.rm:
-            change_admin(args.rm,False)
-        sys.stdout.flush()
-        sys.exit(0)
+            if (not args.add) and ( not args.rm):
+                print("Please use --add or --rm")
+            if args.add:
+                change_admin(args.add,True)
+            if args.rm:
+                change_admin(args.rm,False)
+            sys.stdout.flush()
+            sys.exit(0)
 
-    if sys.argv[1] == "routes":
-        parser = argparse.ArgumentParser(description="Add users and domains to private routes.")
-        parser.add_argument('routes', metavar="routes", type=str, nargs='?', choices=["routes"])
-        parser.add_argument('--route', metavar="route", type=str, nargs='?',  choices=PRIVATE_ROUTES, help=f'Route to work on options: {", ".join(PRIVATE_ROUTES)}')
-        parser.add_argument('--add-email', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to grant rights to eg. john@gmail.com andre@netflix.com")
-        parser.add_argument('--rm-email', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to revoke rights to eg. john@gmail.com andre@netflix.com")
-        parser.add_argument('--add-domain', metavar="gmail.com", type=str, nargs='?', help="Domain to grant rights to eg. gmail.com")
-        parser.add_argument('--rm-domain', metavar="gmail.com", type=str, nargs='?', help="Domain to revoke rights to eg. gmail.com")
-        args = parser.parse_args()
+        if sys.argv[1] == "routes":
+            parser = argparse.ArgumentParser(description="Add users and domains to private routes.")
+            parser.add_argument('routes', metavar="routes", type=str, nargs='?', choices=["routes"])
+            parser.add_argument('--route', metavar="route", type=str, nargs='?',  choices=PRIVATE_ROUTES, help=f'Route to work on options: {", ".join(PRIVATE_ROUTES)}')
+            parser.add_argument('--add-email', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to grant rights to eg. john@gmail.com andre@netflix.com")
+            parser.add_argument('--rm-email', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to revoke rights to eg. john@gmail.com andre@netflix.com")
+            parser.add_argument('--add-domain', metavar="gmail.com", type=str, nargs='?', help="Domain to grant rights to eg. gmail.com")
+            parser.add_argument('--rm-domain', metavar="gmail.com", type=str, nargs='?', help="Domain to revoke rights to eg. gmail.com")
+            args = parser.parse_args()
 
-        if (not args.add_email ) and ( not args.add_domain ) and (not args.rm_email ) and ( not args.rm_domain ) :
-            print("Please use either --add-email or --rm-email or --add-domain or --rm-domain")
-        if args.add_email:
-            change_private_routes( args.route, True, emails=args.add_email)
-        if args.rm_email:
-            change_private_routes( args.route, False, emails=args.rm_email)
-        if args.add_domain:
-            change_private_routes( args.route, True, domain=args.add_domain)
-        if args.rm_domain:
-            change_private_routes( args.route, False, domain=args.rm_domain)
-        sys.stdout.flush()
-        sys.exit(0)
+            if (not args.add_email ) and ( not args.add_domain ) and (not args.rm_email ) and ( not args.rm_domain ) :
+                print("Please use either --add-email or --rm-email or --add-domain or --rm-domain")
+            if args.add_email:
+                change_private_routes( args.route, True, emails=args.add_email)
+            if args.rm_email:
+                change_private_routes( args.route, False, emails=args.rm_email)
+            if args.add_domain:
+                change_private_routes( args.route, True, domain=args.add_domain)
+            if args.rm_domain:
+                change_private_routes( args.route, False, domain=args.rm_domain)
+            sys.stdout.flush()
+            sys.exit(0)
 
-    if sys.argv[1] == "status":
-        parser = argparse.ArgumentParser(description="Grant or revoke administrator rights.")
-        parser.add_argument('status', metavar="status", type=str, nargs='?', choices=["status"])
-        parser.add_argument('--add', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to activate eg. john@gmail.com andre@netflix.com")
-        parser.add_argument('--rm', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to deactivate eg. john@gmail.com andre@netflix.com")
-        args = parser.parse_args()
+        if sys.argv[1] == "status":
+            parser = argparse.ArgumentParser(description="Grant or revoke administrator rights.")
+            parser.add_argument('status', metavar="status", type=str, nargs='?', choices=["status"])
+            parser.add_argument('--add', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to activate eg. john@gmail.com andre@netflix.com")
+            parser.add_argument('--rm', metavar="email@gmail.com", type=str, nargs='*', help="Emails of users to deactivate eg. john@gmail.com andre@netflix.com")
+            args = parser.parse_args()
 
-        if (not args.add) and ( not args.rm):
-            print("Please use --add or --rm")
-        if args.add:
-            change_active_status(args.add,True)
-        if args.rm:
-            change_active_status(args.rm,False)
-        sys.stdout.flush()
-        sys.exit(0)
+            if (not args.add) and ( not args.rm):
+                print("Please use --add or --rm")
+            if args.add:
+                change_active_status(args.add,True)
+            if args.rm:
+                change_active_status(args.rm,False)
+            sys.stdout.flush()
+            sys.exit(0)
