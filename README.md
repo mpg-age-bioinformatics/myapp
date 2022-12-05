@@ -6,6 +6,8 @@ Agile web development for data scientists.
 
 A live example of a *myapp* based deployment can be found on [https://flaski.age.mpg.de](https://flaski.age.mpg.de).
 
+![myapp](/myapp.png)
+
 Key points:
 
 - Backbone with included connection to *mysql* (optionally *Galera*) and *redis* (optionally *Sentinel*).
