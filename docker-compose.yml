@@ -63,7 +63,7 @@ services:
    - APP_TITLE=myapp
    - DB_NAME=myapp
    - APP_URL=https://myapp.localhost # eg. https://myapp.localhost or a https://myapp.localhost/v3
-  #  - PAGE_PREFIX="" # eg . "/v3"
+   - PAGE_PREFIX="" # eg . "/v3"
    - LOGS=/var/log/${APP_NAME}/
    - SECRET_KEY=${SECRET_KEY}
   #  - SESSION_TYPE=sqlalchemy
