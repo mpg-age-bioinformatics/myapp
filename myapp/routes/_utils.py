@@ -208,7 +208,7 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
                         align="center",
                         className="g-0",
                     ),
-                    href=f'{app.config["APP_URL"]}/home/',
+                    href=f'{app.config["PAGE_PREFIX"]}/home/',
                     target='_blank',
                     style={"textDecoration": "none"},
                 ),

@@ -168,7 +168,7 @@ def make_layout(pathname):
                                     color="secondary",
                                     className="me-1",
                                     n_clicks=0,
-                                    href=f'{app.config["APP_URL"]}/settings',
+                                    href=f'{app.config["PAGE_PREFIX"]}/settings',
                                     external_link=True
                                 )
                             ],
