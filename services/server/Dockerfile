@@ -37,7 +37,7 @@ ARG BUILD_NAME
 ENV BUILD_NAME ${BUILD_NAME}
 
 # Add myapp user for running the service
-RUN groupadd ${BUILD_NAME} --gid=1000 && useradd -m ${BUILD_NAME} --uid=60564 --gid=17600 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
+RUN groupadd ${BUILD_NAME} --gid=60564 && useradd -m ${BUILD_NAME} --uid=60564 --gid=17600 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
     chpasswd && passwd -d ${BUILD_NAME}
 
 # flaski2 compatible
