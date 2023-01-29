@@ -1,10 +1,12 @@
 #!/bin/bash
 
-mkdir -p /backup/users_data /backup/mariadb
+[ -z "${BACKUP_PATH}" ] && BACKUP_PATH=/backup
 
-touch /backup/mysql_backup.log
-touch /backup/rsync.log
-tail -F /backup/mysql_backup.log /backup/rsync.log &
+mkdir -p ${BACKUP_PATH}/users_data ${BACKUP_PATH}/mariadb
+
+# touch ${BACKUP_PATH}/mysql_backup.log
+# touch ${BACKUP_PATH}/rsync.log
+# tail -F ${BACKUP_PATH}/mysql_backup.log ${BACKUP_PATH}/rsync.log &
 
 if mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${DB_NAME}";
     then
@@ -35,9 +37,9 @@ _EOF_
 
 if [[ "$RESTORE_DB" == "1" ]] ; 
     then
-        tail -F /backup/mysql_backup.log /backup/rsync.log &
+        # tail -F ${BACKUP_PATH}/mysql_backup.log ${BACKUP_PATH}/rsync.log &
         echo "=> Restore latest backup"
-        LATEST_BACKUP=$(find /backup/mariadb -maxdepth 1 -name "latest.${DB_NAME}.sql.gz" | tail -1 )
+        LATEST_BACKUP=$(find ${BACKUP_PATH}/mariadb -maxdepth 1 -name "latest.${DB_NAME}.sql.gz" | tail -1 )
         if [ -f ${LATEST_BACKUP} ] ;
             then 
                 echo "=> Restore database from ${LATEST_BACKUP}"
@@ -54,13 +56,17 @@ if [[ "$RESTORE_DB" == "1" ]] ;
 
 fi
 
-chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data /${BUILD_NAME}_data/users /var/log/${BUILD_NAME} /backup/mysql_backup.log /backup/rsync.log
+# chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data /${BUILD_NAME}_data/users /var/log/${BUILD_NAME} /backup/mysql_backup.log /backup/rsync.log
 
-sudo -i -u ${BUILD_NAME} bash << USER_EOF
+# sudo -i -u ${BUILD_NAME} bash << USER_EOF
+# if [[ "$RESTORE_USERS_DATA" == "1" ]] ; then
+#   rsync -rtvh ${BACKUP_PATH}/users_data/ /${BUILD_NAME}_data/users/ >> ${BACKUP_PATH}/rsync.log 2>&1
+# fi
+# USER_EOF
 if [[ "$RESTORE_USERS_DATA" == "1" ]] ; then
-  rsync -rtvh /backup/users_data/ /${BUILD_NAME}_data/users/ >> /backup/rsync.log 2>&1
+    rsync -rtvh ${BACKUP_PATH}/users_data/latest/ /${BUILD_NAME}_data/users/
+    chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data/users
 fi
-USER_EOF
 
 mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} << _EOF_
 USE ${DB_NAME}
@@ -70,6 +76,8 @@ _EOF_
 rm -rf migrations/* 
 flask db init && flask db migrate -m "Initial migration." && flask db upgrade
 
-chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}/migrations /var/log/${BUILD_NAME} /backup
+chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}/migrations /var/log/${BUILD_NAME} 
+
+#/backup
 
 exit

@@ -5,11 +5,14 @@
 # MYSQL_PORT="3306"
 TIMEOUT="30s"
 
-mkdir -p /backup/users_data /backup/mariadb
+[ -z "${BACKUP_PATH}" ] && BACKUP_PATH=/backup
 
-touch /backup/mysql_backup.log
-touch /backup/rsync.log
-tail -F /backup/mysql_backup.log /backup/rsync.log &
+
+mkdir -p ${BACKUP_PATH}/users_data ${BACKUP_PATH}/mariadb
+
+touch ${BACKUP_PATH}/backup.log
+# touch /backup/rsync.log
+# tail -F /backup/mysql_backup.log /backup/rsync.log &
 
 while ! mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} -e "use ${DB_NAME}"; 
 do echo "Waiting for mysql.. " && sleep 4
@@ -32,7 +35,7 @@ echo "Found ${DB_NAME} db."
 #     find /backup/mariadb -maxdepth 1 -name 'latest.${DB_NAME}.sql.gz' | tail -1 | xargs /${BUILD_NAME}/services/backup/restore.sh
 # fi
 
-echo "${CRON_TIME} /${BUILD_NAME}/services/backup/backup.sh >> /backup/mysql_backup.log 2>&1" > /crontab.conf
+echo "${CRON_TIME} /${BUILD_NAME}/services/backup/backup.sh >> ${BACKUP_PATH}/backup.log 2>&1" > /crontab.conf
 # echo "${CRON_TIME} rsync -rtvh --delete /myapp_data/users/ /backup/users_data/ >> /backup/rsync.log 2>&1" >> /crontab.conf
 crontab /crontab.conf
 echo "=> Running cron task manager"
