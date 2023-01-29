@@ -3,6 +3,8 @@
 [ -z "${MYSQL_PASSWORD}" ] && { echo "=> MYSQL_PASS cannot be empty" && exit 1; }
 
 [ -z "${BACKUP_PATH}" ] && BACKUP_PATH=/backup
+[ -z "${LOGS_PATH_PREFIX}" ] && LOGS_PATH=/backup/
+
 
 mkdir -p ${BACKUP_PATH}/users_data ${BACKUP_PATH}/mariadb
 
@@ -30,8 +32,8 @@ do
       echo "==> Creating symlink to latest backup: $(basename "$FILENAME".gz)"
       rm "$LATEST" 2> /dev/null
       cd ${BACKUP_PATH}/mariadb && ln -s $(basename "$FILENAME".gz) $(basename "$LATEST") && cd - && \
-      echo "${db}_backup_job $(date +%s)" > ${BACKUP_PATH}/${db}_backup_job.prom.$$ && \
-      mv ${BACKUP_PATH}/${db}_backup_job.prom.$$ ${BACKUP_PATH}/${db}_backup_job.prom
+      echo "${db}_backup_job $(date +%s)" > ${LOGS_PATH_PREFIX}${db}_backup_job.prom.$$ && \
+      mv ${LOGS_PATH_PREFIX}${db}_backup_job.prom.$$ ${LOGS_PATH_PREFIX}${db}_backup_job.prom
       DB_COUNTER=$(( DB_COUNTER + 1 ))  
       ## generate prometheus report file
     else
@@ -74,16 +76,16 @@ mkdir -p "${BACKUP_DIR}"
 if [ "$(find -L ${BACKUP_DIR} -name latest)" != "${LATEST_LINK}"  ] ; 
   then
     rsync -av --delete "${SOURCE_DIR}/" --exclude=".cache" "${BACKUP_PATH}" && \
-    echo "users_data_backup_job $(date +%s)" > ${BACKUP_PATH}/users_data_backup_job.prom.$$ && \
-    mv ${BACKUP_PATH}/users_data_backup_job.prom.$$ ${BACKUP_PATH}/users_data_backup_job.prom
+    echo "users_data_backup_job $(date +%s)" > ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ && \
+    mv ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ ${LOGS_PATH_PREFIX}users_data_backup_job.prom
 else ;
   rsync -av --delete \
     "${SOURCE_DIR}/" \
     --link-dest "${LATEST_LINK}" \
     --exclude=".cache" \
     "${BACKUP_PATH}" && \
-    echo "users_data_backup_job $(date +%s)" > ${BACKUP_PATH}/users_data_backup_job.prom.$$ && \
-    mv ${BACKUP_PATH}/users_data_backup_job.prom.$$ ${BACKUP_PATH}/users_data_backup_job.prom
+    echo "users_data_backup_job $(date +%s)" > ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ && \
+    mv ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ ${LOGS_PATH_PREFIX}users_data_backup_job.prom
 fi
 
 rm -rf "${LATEST_LINK}"
@@ -97,8 +99,5 @@ do
   rm -rf "${TARGET}"
   echo "==> Backup ${TARGET} deleted" >> ${BACKUP_PATH}/users_data/rsync.log 2>&1
 done
-
-    echo "mariadb_backup_job $(date +%s)" > ${BACKUP_PATH}/mariadb/mariadb_backup_job.prom.$$
-    mv ${BACKUP_PATH}/mariadb/mariadb_backup_job.prom.$$ ${BACKUP_PATH}/mariadb/mariadb_backup_job.prom
 
 echo "=> Backup process finished at $(date "+%Y-%m-%d %H:%M:%S")"
