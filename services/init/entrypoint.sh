@@ -72,7 +72,7 @@ for f in ca-cert.pem client-key.pem client-cert.pem ;
     do
         if [ -f ${BACKUP_PATH}/certs/${f} ] ;
             then
-                if [ ! -f /etc/mysql/certs/certs/${f} ] ;
+                if [ "$(find /etc/mysql/certs/ -name ${f})" != "/etc/mysql/certs/${f}" ] ;
                     then
                         rsync -rtvh ${BACKUP_PATH}/certs/${f} /etc/mysql/certs/${f}
                 fi 
