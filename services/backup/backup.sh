@@ -67,7 +67,7 @@ set -o pipefail
 
 readonly SOURCE_DIR="/${BUILD_NAME}_data/users/"
 readonly BACKUP_DIR="${BACKUP_PATH}/users_data"
-readonly DATETIME="$(date '+%Y-%m-%d_%H:%M:%S')"
+readonly DATETIME="$(date '+%Y%m%d_%H%M%S')"
 readonly BACKUP_PATH="${BACKUP_DIR}/${DATETIME}"
 readonly LATEST_LINK="${BACKUP_DIR}/latest"
 
