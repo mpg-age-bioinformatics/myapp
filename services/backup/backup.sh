@@ -69,11 +69,16 @@ readonly LATEST_LINK="${BACKUP_DIR}/latest"
 
 mkdir -p "${BACKUP_DIR}"
 
-rsync -av --delete \
-  "${SOURCE_DIR}/" \
-  --link-dest "${LATEST_LINK}" \
-  --exclude=".cache" \
-  "${BACKUP_PATH}" >> ${BACKUP_PATH}/users_data/rsync.log 2>&1
+if [ "$(find -L ${BACKUP_DIR} -name latest)" != "${LATEST_LINK}"  ] ; 
+  then
+    rsync -av --delete "${SOURCE_DIR}/" --exclude=".cache" "${BACKUP_PATH}"
+else ;
+  rsync -av --delete \
+    "${SOURCE_DIR}/" \
+    --link-dest "${LATEST_LINK}" \
+    --exclude=".cache" \
+    "${BACKUP_PATH}"
+fi
 
 rm -rf "${LATEST_LINK}"
 ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
