@@ -80,18 +80,6 @@ for f in ca-cert.pem client-key.pem client-cert.pem ;
 done
 
 
-if [[ -d "${MYSQL_CERTS}" ]] ;
-        #     then 
-        #         MYSQL_CERTS=$(readlink -f ${MYSQL_CERTS})
-        #         for f in ca-cert.pem client-key.pem client-cert.pem ; 
-        #             do
-        #                 ${KUBECTL} -n ${namespace} cp ${MYSQL_CERTS}/${f} rsync:/etc/mysql/certs/${f}
-        #         done
-        # fi
-
-
-
-
 mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} << _EOF_
 USE ${DB_NAME}
 DROP TABLE IF EXISTS alembic_version;
@@ -101,7 +89,5 @@ rm -rf migrations/*
 flask db init && flask db migrate -m "Initial migration." && flask db upgrade
 
 chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}/migrations /var/log/${BUILD_NAME} 
-
-#/backup
 
 exit
