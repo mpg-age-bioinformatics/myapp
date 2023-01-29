@@ -37,7 +37,7 @@ ARG BUILD_NAME
 ENV BUILD_NAME ${BUILD_NAME}
 
 # Add myapp user for running the service
-RUN groupadd ${BUILD_NAME} --gid=1000 && useradd -m ${BUILD_NAME} --uid=1000 --gid=1000 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
+RUN groupadd ${BUILD_NAME} --gid=1000 && useradd -m ${BUILD_NAME} --uid=60564 --gid=17600 && echo "${BUILD_NAME}:4.iMkMm4zFoNViof" | \
     chpasswd && passwd -d ${BUILD_NAME}
 
 # flaski2 compatible
@@ -72,14 +72,16 @@ COPY utils /${BUILD_NAME}/utils
 COPY myapp /${BUILD_NAME}/myapp
 COPY .git /${BUILD_NAME}/.git
 
+RUN rm -rf /${BUILD_NAME}/migrations
+
 ## TEMPORARY FLASKI2 compatible init and backup containers
 RUN mkdir -p /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/ /submissions_ftp
 RUN touch /${BUILD_NAME}/utils/.requirements.all.txt.tmp 
 RUN touch /${BUILD_NAME}/utils/.requirements.all.txt
 RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}/utils/requirements.all.txt /${BUILD_NAME}/utils/requirements.min.txt /${BUILD_NAME}/utils/.requirements.all.txt.tmp /${BUILD_NAME}/utils/requirements.all.txt
-RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/ /submissions_ftp
+RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/ /submissions_ftp 
 # /flaski_data /flaski_data/users 
-# RUN chmod -R g+w /submissions /flaski_private /mpcdf /flaski_data /flaski_data/users /backup
+RUN chmod -R g+w /submissions /flaski_private /mpcdf /flaski_data /flaski_data/users /backup
 
 # Setup default user, when enter docker container
 USER ${BUILD_NAME}:${BUILD_NAME}
