@@ -47,8 +47,6 @@ RUN groupadd ${BUILD_NAME} --gid=17600 && useradd -m ${BUILD_NAME} --uid=60564 -
 # data folders and access rights
 RUN mkdir -p /var/log/${BUILD_NAME} /${BUILD_NAME}/.git /${BUILD_NAME}/data /${BUILD_NAME}/${BUILD_NAME} /${BUILD_NAME}/migrations /${BUILD_NAME}/utils /${BUILD_NAME}/services /${BUILD_NAME}_data/users /backup/users_data /backup/mariadb
 RUN touch /mysql_backup.log && touch /rsync.log /owncloud.log
-RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data /${BUILD_NAME}_data/users /${BUILD_NAME}/migrations /var/log/${BUILD_NAME} /mysql_backup.log /rsync.log /owncloud.log
-RUN chmod o+w /mysql_backup.log /rsync.log /owncloud.log && chmod g+w /mysql_backup.log /rsync.log /owncloud.log
 
 # comment during development
 COPY requirements.txt /${BUILD_NAME}/requirements.txt
@@ -74,11 +72,14 @@ COPY .git /${BUILD_NAME}/.git
 
 RUN rm -rf /${BUILD_NAME}/migrations
 
-## TEMPORARY FLASKI2 compatible init and backup containers
-RUN mkdir -p /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/ /submissions_ftp
 RUN touch /${BUILD_NAME}/utils/.requirements.all.txt.tmp 
 RUN touch /${BUILD_NAME}/utils/.requirements.all.txt
-RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}/utils/requirements.all.txt /${BUILD_NAME}/utils/requirements.min.txt /${BUILD_NAME}/utils/.requirements.all.txt.tmp /${BUILD_NAME}/utils/requirements.all.txt
+RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data /${BUILD_NAME}_data/users /${BUILD_NAME} /var/log/${BUILD_NAME} /mysql_backup.log /rsync.log /owncloud.log
+# RUN chmod o+w /mysql_backup.log /rsync.log /owncloud.log && chmod g+w /mysql_backup.log /rsync.log /owncloud.log
+
+## TEMPORARY FLASKI2 compatible init and backup containers
+RUN mkdir -p /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/ /submissions_ftp
+#/utils/requirements.all.txt /${BUILD_NAME}/utils/requirements.min.txt /${BUILD_NAME}/utils/.requirements.all.txt.tmp /${BUILD_NAME}/utils/requirements.all.txt
 RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/ /submissions_ftp 
 # /flaski_data /flaski_data/users 
 # RUN chmod -R g+w /submissions /flaski_private /mpcdf /flaski_data /flaski_data/users /backup
