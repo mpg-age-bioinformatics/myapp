@@ -81,7 +81,7 @@ RUN touch /${BUILD_NAME}/utils/.requirements.all.txt
 RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}/utils/requirements.all.txt /${BUILD_NAME}/utils/requirements.min.txt /${BUILD_NAME}/utils/.requirements.all.txt.tmp /${BUILD_NAME}/utils/requirements.all.txt
 RUN chown -R ${BUILD_NAME}:${BUILD_NAME} /submissions /flaski_private /mpcdf /backup/oc_data/ /oc_data/ /submissions_ftp 
 # /flaski_data /flaski_data/users 
-RUN chmod -R g+w /submissions /flaski_private /mpcdf /flaski_data /flaski_data/users /backup
+# RUN chmod -R g+w /submissions /flaski_private /mpcdf /flaski_data /flaski_data/users /backup
 
 # Setup default user, when enter docker container
 USER ${BUILD_NAME}:${BUILD_NAME}
