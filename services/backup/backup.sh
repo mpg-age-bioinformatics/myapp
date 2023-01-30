@@ -71,14 +71,16 @@ readonly DATETIME="$(date '+%Y%m%d_%H%M%S')"
 readonly BACKUP_STAMP="${BACKUP_DIR}/${DATETIME}/"
 readonly LATEST_LINK="${BACKUP_DIR}/latest"
 
-mkdir -p "${BACKUP_DIR}"
+mkdir -p "${BACKUP_STAMP}"
 
 if [ "$(find -L ${BACKUP_DIR} -name latest)" != "${LATEST_LINK}"  ] 
   then
-    rsync -av --delete "${SOURCE_DIR}/" --exclude=".cache" "${BACKUP_STAMP}" && \
+    echo "running first backup"
+    rsync -av --delete "${SOURCE_DIR}" --exclude=".cache" "${BACKUP_STAMP}" && \
     echo "users_data_backup_job $(date +%s)" > ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ && \
     mv ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ ${LOGS_PATH_PREFIX}users_data_backup_job.prom
 else
+  echo "running incremental backup"
   rsync -av --delete \
     "${SOURCE_DIR}/" \
     --link-dest "${LATEST_LINK}" \
