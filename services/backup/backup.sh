@@ -68,14 +68,14 @@ set -o pipefail
 readonly SOURCE_DIR="/${BUILD_NAME}_data/users/"
 readonly BACKUP_DIR="${BACKUP_PATH}/users_data"
 readonly DATETIME="$(date '+%Y%m%d_%H%M%S')"
-readonly BACKUP_PATH="${BACKUP_DIR}/${DATETIME}"
+readonly BACKUP_STAMP="${BACKUP_DIR}/${DATETIME}/"
 readonly LATEST_LINK="${BACKUP_DIR}/latest"
 
 mkdir -p "${BACKUP_DIR}"
 
 if [ "$(find -L ${BACKUP_DIR} -name latest)" != "${LATEST_LINK}"  ] 
   then
-    rsync -av --delete "${SOURCE_DIR}/" --exclude=".cache" "${BACKUP_PATH}" && \
+    rsync -av --delete "${SOURCE_DIR}/" --exclude=".cache" "${BACKUP_STAMP}" && \
     echo "users_data_backup_job $(date +%s)" > ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ && \
     mv ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ ${LOGS_PATH_PREFIX}users_data_backup_job.prom
 else
@@ -83,21 +83,21 @@ else
     "${SOURCE_DIR}/" \
     --link-dest "${LATEST_LINK}" \
     --exclude=".cache" \
-    "${BACKUP_PATH}" && \
+    "${BACKUP_STAMP}" && \
     echo "users_data_backup_job $(date +%s)" > ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ && \
     mv ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ ${LOGS_PATH_PREFIX}users_data_backup_job.prom
 fi
 
 rm -rf "${LATEST_LINK}"
-ln -s "${BACKUP_PATH}" "${LATEST_LINK}"
+ln -s "${BACKUP_STAMP}" "${LATEST_LINK}"
 
 MAX_FOLDERS=30
-while [ "$(find ${BACKUP_PATH}/users_data -maxdepth 1 -type d | wc -l)" -gt "$MAX_FILES" ]
+while [ "$(find ${BACKUP_PATH}/users_data -maxdepth 1 -type d | wc -l)" -gt "$MAX_FOLDERS" ]
 do
   TARGET=$(find ${BACKUP_PATH}/users_data -maxdepth 1 -type d | sort | head -n 1)
-  echo "==> Max number of backups ($MAX_BACKUPS) reached. Deleting ${TARGET} ..."
+  echo "==> Max number of backups ($MAX_FOLDERS) reached. Deleting ${TARGET} ..."
   rm -rf "${TARGET}"
-  echo "==> Backup ${TARGET} deleted" >> ${BACKUP_PATH}/users_data/rsync.log 2>&1
+  echo "==> Backup ${TARGET} deleted"
 done
 
 echo "=> Backup process finished at $(date "+%Y-%m-%d %H:%M:%S")"
