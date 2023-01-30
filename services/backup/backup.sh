@@ -73,12 +73,12 @@ readonly LATEST_LINK="${BACKUP_DIR}/latest"
 
 mkdir -p "${BACKUP_DIR}"
 
-if [ "$(find -L ${BACKUP_DIR} -name latest)" != "${LATEST_LINK}"  ] ; 
+if [ "$(find -L ${BACKUP_DIR} -name latest)" != "${LATEST_LINK}"  ] 
   then
     rsync -av --delete "${SOURCE_DIR}/" --exclude=".cache" "${BACKUP_PATH}" && \
     echo "users_data_backup_job $(date +%s)" > ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ && \
     mv ${LOGS_PATH_PREFIX}users_data_backup_job.prom.$$ ${LOGS_PATH_PREFIX}users_data_backup_job.prom
-else ;
+else
   rsync -av --delete \
     "${SOURCE_DIR}/" \
     --link-dest "${LATEST_LINK}" \
