@@ -68,16 +68,21 @@ if [[ "$RESTORE_USERS_DATA" == "1" ]] ; then
     chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}_data/users
 fi
 
-for f in ca-cert.pem client-key.pem client-cert.pem ; 
-    do
-        if [ -f ${BACKUP_PATH}/certs/${f} ] ;
-            then
-                if [ "$(find /etc/mysql/certs/ -name ${f})" != "/etc/mysql/certs/${f}" ] ;
-                    then
-                        rsync -rtvh ${BACKUP_PATH}/certs/${f} /etc/mysql/certs/${f}
-                fi 
-        fi
-done
+if [[ "$RESTORE_CERTS" == "1" ]] ; then
+
+    for f in ca-cert.pem client-key.pem client-cert.pem ; 
+        do
+            if [ -f ${BACKUP_PATH}/certs/${f} ] ;
+                then
+                    rsync -rtvh ${BACKUP_PATH}/certs/${f} /etc/mysql/certs/${f}
+            fi
+    done
+fi
+
+if [[ "$RESTORE_DATALAKE" == "1" ]] ; then
+    rsync -rtvh ${BACKUP_PATH}/aarnaseqlake /flaski_private/
+fi
+
 
 
 mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} << _EOF_
