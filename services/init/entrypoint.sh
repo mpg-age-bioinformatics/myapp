@@ -85,6 +85,8 @@ fi
 
 
 
+if [[ "$UPGRADE_DB" == "1" ]] ; then
+
 mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} << _EOF_
 USE ${DB_NAME}
 DROP TABLE IF EXISTS alembic_version;
@@ -92,6 +94,10 @@ _EOF_
 
 rm -rf migrations/* 
 flask db init && flask db migrate -m "Initial migration." && flask db upgrade
+
+fi
+
+
 
 chown -R ${BUILD_NAME}:${BUILD_NAME} /${BUILD_NAME}/migrations /var/log/${BUILD_NAME} 
 
