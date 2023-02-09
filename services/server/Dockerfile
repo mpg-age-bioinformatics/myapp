@@ -2,7 +2,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 # Debian buster-slim (10.1)
-FROM python:3.10.8-slim-buster
+FROM python:3.12.0a4-slim-buster
 
 LABEL maintainer "bioinformatics@age.mpg.de"
 
