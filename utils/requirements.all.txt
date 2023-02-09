@@ -60,7 +60,7 @@ python-dateutil==2.8.2
 pytz==2022.6
 pyxdg==0.26
 requests==2.28.1
-setuptools==63.2.0
+setuptools==65.5.1
 six==1.16.0
 SQLAlchemy==1.4.44
 tenacity==8.1.0
