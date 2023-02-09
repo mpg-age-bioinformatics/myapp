@@ -2,7 +2,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 # Debian buster-slim (10.1)
-FROM python:3.12.0a4-slim-buster
+FROM python:3.12.0a4-slim-bullseye
 
 LABEL maintainer "bioinformatics@age.mpg.de"
 
@@ -10,10 +10,10 @@ USER root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN echo "deb http://ftp.debian.org/debian buster main non-free contrib" >> /etc/apt/sources.list && \
-echo "deb-src http://ftp.debian.org/debian buster main non-free contrib" >> /etc/apt/sources.list && \
-echo "deb http://ftp.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list && \
-echo "deb-src http://ftp.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list 
+RUN echo "deb http://ftp.debian.org/debian bullseye main non-free contrib" >> /etc/apt/sources.list && \
+echo "deb-src http://ftp.debian.org/debian bullseye main non-free contrib" >> /etc/apt/sources.list && \
+echo "deb http://ftp.debian.org/debian bullseye-updates main contrib non-free" >> /etc/apt/sources.list && \
+echo "deb-src http://ftp.debian.org/debian bullseye-updates main contrib non-free" >> /etc/apt/sources.list 
 
 # apt-get -o Acquire::Check-Valid-Until=false update
 RUN apt-get update && apt-get -yq dist-upgrade && \
