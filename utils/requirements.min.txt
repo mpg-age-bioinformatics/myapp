@@ -21,3 +21,4 @@ PyJWT
 pandas
 gunicorn
 PyMySQL
+setuptools==65.5.1 
