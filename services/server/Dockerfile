@@ -2,7 +2,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 # Debian buster-slim (10.1)
-FROM python:3.12.0a4-slim-bullseye
+FROM python:3.10-slim-bullseye
 
 LABEL maintainer "bioinformatics@age.mpg.de"
 
@@ -56,13 +56,13 @@ ARG MYAPP_VERSION
 ARG UPGRADE_REQS
 
 ENV MYAPP_VERSION ${MYAPP_VERSION}
-ENV UPGRADE_REQS ${UPGRADE_REQS}
+# ENV UPGRADE_REQS ${UPGRADE_REQS}
 
-RUN pip install --upgrade pip && \
-if test "${UPGRADE_REQS}" = "yes" ; then \
-echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; /${BUILD_NAME}/utils/getenv.sh ; \
-else echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install --ignore-installed pyxdg==0.26 ; pip3 install -r /${BUILD_NAME}/requirements.txt ; \
-fi
+RUN pip install --upgrade pip 
+RUN if test "${UPGRADE_REQS}" = "yes" ; then echo "${MYAPP_VERSION}  : requirements.min.txt" ; pip3 install -r /${BUILD_NAME}/utils/requirements.min.txt ; /${BUILD_NAME}/utils/getenv.sh ; fi
+# RUN if test "${UPGRADE_REQS}" != "yes" ; then echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install --ignore-installed pyxdg==0.26 ; pip3 install -r /${BUILD_NAME}/requirements.txt ; fi
+RUN if test "${UPGRADE_REQS}" != "yes" ; then echo "${MYAPP_VERSION}  : requirements.txt" ; pip3 install -r /${BUILD_NAME}/requirements.txt ; fi
+
 
 COPY LICENSE.md README.md config.py myapp.py requirements.txt setup.py .flaskenv /${BUILD_NAME}/
 COPY services /${BUILD_NAME}/services
