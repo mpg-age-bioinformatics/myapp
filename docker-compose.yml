@@ -25,6 +25,7 @@ services:
     - FLASK_ENV=init
     - RESTORE_DB=0
     - RESTORE_USERS_DATA=0
+    - UPGRADE_DB=1
     - DB_NAME=myapp
     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     - SECRET_KEY=${SECRET_KEY}
@@ -63,7 +64,7 @@ services:
    - APP_TITLE=myapp
    - DB_NAME=myapp
    - APP_URL=https://myapp.localhost # eg. https://myapp.localhost or a https://myapp.localhost/v3
-   - PAGE_PREFIX="" # eg . "/v3"
+  #  - PAGE_PREFIX="" # eg . "/v3"
    - LOGS=/var/log/${APP_NAME}/
    - SECRET_KEY=${SECRET_KEY}
   #  - SESSION_TYPE=sqlalchemy
