@@ -28,7 +28,7 @@ onetimepass==1.0.1
 pyocclient==0.6
 PyQRCode==1.2.1
 python-dotenv==0.21.1
-redis==4.5.1
+redis==4.5.3
 waitress==2.1.2
 PyJWT==2.6.0
 pandas==1.5.3
