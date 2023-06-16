@@ -270,7 +270,6 @@ def submit_register(n_clicks,first_name, last_name, username, email,passA, passB
             email_=dbc.Alert( "email already in use" ,color="warning")
     if not passA:
         passA_=dbc.Alert( "*required" ,color="warning")
-        passdic=password_check(passA)
     else:
         passdic=password_check(passA)
         if passdic["passtype"] != "strong" :
