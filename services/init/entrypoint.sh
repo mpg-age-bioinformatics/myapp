@@ -79,8 +79,8 @@ if [[ "$RESTORE_CERTS" == "1" ]] ; then
     done
 fi
 
-if [[ "$RESTORE_DATALAKE" == "1" ]] ; then
-    rsync -rtvh ${BACKUP_PATH}/aarnaseqlake /flaski_private/
+if [[ "$RESTORE_DATA" == "1" ]] ; then
+    rsync -rtvh ${BACKUP_PATH}/data/ /flaski_private/
 fi
 
 
