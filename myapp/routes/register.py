@@ -188,10 +188,14 @@ def check_logged(pathname):
     prevent_initial_call=True)
 def check_pass_power(passA):
     passdic=password_check(passA)
-    if passdic["passtype"] == "weak":
-        return dbc.Alert( "please use a strong password" ,color="danger")
-    elif passdic["passtype"] == "medium":
-        return dbc.Alert( "please use a strong password" ,color="warning")
+    if passdic["passtype"] == "short":
+        return dbc.Alert( "password is too short" ,color="danger")
+    elif passdic["passtype"] == "digit_none":
+        return dbc.Alert( "password must contain at least one digit" ,color="warning")
+    elif passdic["passtype"] == "case_none":
+        return dbc.Alert( "password must contain at least one lowercase and uppercase letter" ,color="warning")
+    elif passdic["passtype"] == "symbol_none":
+        return dbc.Alert( "password must contain at least one symbol" ,color="warning")
     elif passdic["passtype"] == "strong":
         return dbc.Alert( "strong password" ,id="alert-auto", color="success",is_open=True, duration=1500)
 
