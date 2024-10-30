@@ -70,3 +70,5 @@ Werkzeug==2.2.2
 wheel==0.38.4
 wrapt==1.14.1
 WTForms==3.0.1
+biopython==1.84
+reportlab==4.2.5
