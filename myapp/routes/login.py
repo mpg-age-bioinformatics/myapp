@@ -8,7 +8,8 @@ import dash_bootstrap_components as dbc
 from myapp.models import User
 from myapp.email import send_validate_email
 from datetime import datetime
-from werkzeug.urls import url_parse
+# from werkzeug.urls import url_parse
+from urllib.parse import urlparse as url_parse 
 from ._utils import META_TAGS, check_email, navbar_A
 import time
 
