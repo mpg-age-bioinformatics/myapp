@@ -22,5 +22,3 @@ pandas
 gunicorn
 PyMySQL
 setuptools==65.5.1 
-biopython
-reportlab
