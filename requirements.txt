@@ -72,3 +72,4 @@ wrapt==1.14.1
 WTForms==3.0.1
 biopython==1.84
 reportlab==4.2.5
+pillow>=10.3.0 # not directly required, pinned by Snyk to avoid a vulnerability
