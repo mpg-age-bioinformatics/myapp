@@ -29,7 +29,7 @@ pyocclient==0.6
 PyQRCode==1.2.1
 python-dotenv==0.21.1
 redis==4.5.1
-waitress==2.1.2
+waitress==3.0.1
 PyJWT==2.6.0
 pandas==1.5.3
 gunicorn==20.1.0
