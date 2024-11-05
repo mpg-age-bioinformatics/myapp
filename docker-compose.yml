@@ -52,7 +52,7 @@ services:
     args:
       BUILD_NAME: myapp
       MYAPP_VERSION: dev
-      UPGRADE_REQS: "no"
+      UPGRADE_REQS: "yes"
   restart: always
   volumes:
    - data:/${APP_NAME}_data/users

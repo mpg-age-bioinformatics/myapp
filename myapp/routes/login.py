@@ -11,7 +11,6 @@ from datetime import datetime
 # from werkzeug.urls import url_parse
 from urllib.parse import urlparse as url_parse 
 from ._utils import META_TAGS, check_email, navbar_A
-import time
 
 dashapp = dash.Dash("login",url_base_pathname=f'{PAGE_PREFIX}/login/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Login", assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
 
@@ -175,8 +174,6 @@ def generate_otp_content(pathname):
         justify="center",
         style={"min-height": "95vh", 'verticalAlign': 'center'}
     )
-
-    time.sleep(2)
 
     return otp_content
 
