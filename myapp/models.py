@@ -47,7 +47,7 @@ class User(UserMixin, db.Model):
     privacy =  db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
     inactive_reason=db.Column(db.String(240))
-    password_hash = db.Column(db.String(128))
+    password_hash = db.Column(db.String(255))
     multipleapps=db.Column(db.Boolean, nullable=False, default=False)
     notifyme=db.Column(db.Boolean, nullable=False, default=True)
     user_apps = db.Column( PickleType )
