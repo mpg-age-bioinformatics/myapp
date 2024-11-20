@@ -48,7 +48,7 @@ future==0.18.3
 greenlet==2.0.2
 idna==3.4
 itsdangerous==2.1.2
-Jinja2==3.1.2
+Jinja2==3.1.4
 Mako==1.2.4
 MarkupSafe==2.1.2
 numpy==1.24.2
