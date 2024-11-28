@@ -54,10 +54,10 @@ if not app.debug:
         # Commented as authentication method changed
         # if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
         #     auth = (app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
-        if app.config['MAIL_USER'] and app.config['MAIL_PASSWORD']:
-            auth = (app.config['MAIL_USER'], app.config['MAIL_PASSWORD'])
-        elif app.config['MAIL_USERNAME'] and app.config['MAIL_PASSWORD']:
+        if app.config['MAIL_USERNAME'] and app.config['MAIL_PASSWORD']:
             auth = (app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+        elif app.config['MAIL_USERNAME_ADDRESS'] and app.config['MAIL_PASSWORD']:
+            auth = (app.config['MAIL_USERNAME_ADDRESS'], app.config['MAIL_PASSWORD'])
         secure = None
         if app.config['MAIL_USE_TLS']:
             secure = ()

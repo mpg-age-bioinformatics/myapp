@@ -377,13 +377,13 @@ def toggle_modal(n1, n2,disable, is_open,otp):
 
                 body="2FA has been enabled."
                 send_email(f'[{app.config["APP_TITLE"]}] 2FA enabled', \
-                    sender=app.config['MAIL_USERNAME'], \
+                    sender=app.config['MAIL_USERNAME_ADDRESS'], \
                     recipients=[ current_user.email ], \
                     text_body=render_template('email/general.txt',
                         firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),
                     html_body=render_template('email/general.html',
                         firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),\
-                    reply_to=app.config['MAIL_USERNAME'] )
+                    reply_to=app.config['MAIL_USERNAME_ADDRESS'] )
 
                 msg= dbc.Row(
                         [
@@ -429,13 +429,13 @@ def toggle_modal(n1, n2,disable, is_open,otp):
 
             body="2FA has been disabled."
             send_email(f'[{app.config["APP_TITLE"]}] 2FA disabled', \
-                sender=app.config['MAIL_USERNAME'], \
+                sender=app.config['MAIL_USERNAME_ADDRESS'], \
                 recipients=[ current_user.email ], \
                 text_body=render_template('email/general.txt',
                     firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),
                 html_body=render_template('email/general.html',
                     firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),\
-                reply_to=app.config['MAIL_USERNAME'] )
+                reply_to=app.config['MAIL_USERNAME_ADDRESS'] )
 
             return is_open, 0,0,0, dcc.Location(pathname=f"{PAGE_PREFIX}/settings/2fa/",refresh=True, id="settings-disable"), False, msg, otp
     if n2 == 1 :
@@ -545,13 +545,13 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpa
 
             body="You username has been changed."
             send_email(f'[{app.config["APP_TITLE"]}] username changed', \
-                sender=app.config['MAIL_USERNAME'], \
+                sender=app.config['MAIL_USERNAME_ADDRESS'], \
                 recipients=[ current_user.email ], \
                 text_body=render_template('email/general.txt',
                     firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),
                 html_body=render_template('email/general.html',
                     firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),\
-                reply_to=app.config['MAIL_USERNAME'] )
+                reply_to=app.config['MAIL_USERNAME_ADDRESS'] )
 
             username_=make_response( "Username changed." ,color="success", duration=1500)
 
@@ -602,13 +602,13 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpa
 
             body="You password has been changed."
             send_email(f'[{app.config["APP_TITLE"]}] password changed', \
-                sender=app.config['MAIL_USERNAME'], \
+                sender=app.config['MAIL_USERNAME_ADDRESS'], \
                 recipients=[ current_user.email ], \
                 text_body=render_template('email/general.txt',
                     firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),
                 html_body=render_template('email/general.html',
                     firstname=current_user.firstname, body=body,app_name=app.config["APP_TITLE"]),\
-                reply_to=app.config['MAIL_USERNAME'] )
+                reply_to=app.config['MAIL_USERNAME_ADDRESS'] )
 
 
             passA_=make_response( "Password changed." ,color="success", duration=1500)
