@@ -80,6 +80,7 @@ services:
    - INSTANCE=(DEV)
    - ADMINS=jboucas@gmail.com
    - MAIL_USERNAME=jboucas@gmail.com
+   - MAIL_USER=${MAIL_USER}
   #  - MAIL_PORT=465 # comment if using the dev server
   #  - MAIL_USE_TLS=1 # comment if using the dev server
   labels:
