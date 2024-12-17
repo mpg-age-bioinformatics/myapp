@@ -66,7 +66,7 @@ def send_validate_email(user, step="user"):
     if step=="user":
         send_email(f'Welcome to {APP_TITLE}!',
                 sender=app.config['MAIL_USERNAME_ADDRESS'],
-                recipients=[user.email],
+                recipients=[user.email, app.config['MAIL_USERNAME_ADDRESS']],
                 text_body=render_template('email/validate_email.txt',
                                             user=user, token=token, app_name=APP_TITLE, app_url=APP_URL),
                 html_body=render_template('email/validate_email.html',
