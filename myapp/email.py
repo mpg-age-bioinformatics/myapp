@@ -6,16 +6,18 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 import io
 import os
+import requests
 
 APP_NAME=app.config['APP_NAME']
 APP_URL=app.config['APP_URL']
 APP_TITLE=app.config['APP_TITLE']
 
+SLACK_HOOK=app.config['SLACK_HOOK']
 EMAIL_LOG_DIR=os.path.join(app.config["USERS_DATA"], 'email_logs')
 SEND_FAILED_FILE=os.path.join(EMAIL_LOG_DIR, 'failed.log')
 SEND_SUCCESS_FILE=os.path.join(EMAIL_LOG_DIR, 'success.log')
 
-def write_email_log(file_path, msg, e = None):
+def write_email_log(file_path, msg, e=None):
     try:
         os.makedirs(EMAIL_LOG_DIR, exist_ok=True)
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -24,11 +26,10 @@ def write_email_log(file_path, msg, e = None):
             file.write("Subject: " + str(msg.subject) + "\n")
             file.write("Sender: " + str(msg.sender) + "\n")
             file.write("Recipients: " + str(msg.recipients) + "\n")
-            file.write("Body: " + str(msg.body) + "\n")
-            file.write("HTML Body: " + str(msg.html) + "\n")
             file.write("Reply-To: " + str(msg.reply_to) + "\n")
+            file.write("Body: " + str(msg.body) + "\n")
             if e is not None:
-                file.write(f"Exception: {e} \n")
+                file.write(f"Exception: {str(e)} \n")
             file.write("-" * 50 + "\n")
 
         # keep the log file size in check, max 500kb
@@ -42,6 +43,29 @@ def write_email_log(file_path, msg, e = None):
     except Exception as e:
         print(f"Failed to write email log to file: {e}")
 
+def send_slack_notification(slack_hook, msg, e=None):
+    try:
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        message = (
+            f"*Flaski Email Sending Failed!*\n\n"
+            f"*Time:* {current_time}\n"
+            f"*Subject:* {str(msg.subject)}\n"
+            f"*Sender:* {str(msg.sender)}\n"
+            f"*Recipients:* {str(msg.recipients)}\n"
+            f"*Reply-To:* {str(msg.reply_to)}\n"
+            f"*Body:* {str(msg.body)}\n"
+        )
+        if e is not None:
+            message += f"*Exception:* {str(e)}\n"
+        
+        payload = {
+            "text": message
+        }
+        headers = {"Content-Type": "application/json"}
+        requests.post(slack_hook, json=payload, headers=headers)
+    except:
+        pass
+
 def send_async_email(app, msg):
     with app.app_context():
         try:
@@ -49,6 +73,8 @@ def send_async_email(app, msg):
             write_email_log(SEND_SUCCESS_FILE, msg)
         except Exception as e: 
             write_email_log(SEND_FAILED_FILE, msg, e)
+            if SLACK_HOOK is not None:
+                send_slack_notification(SLACK_HOOK, msg, e)
 
 def send_email(subject, sender, recipients, text_body, html_body, reply_to, attachment=None, attachment_path=None, attachment_type=None, open_type="rb"):
     msg = Message(subject, sender=sender, recipients=recipients, reply_to = reply_to)

@@ -52,6 +52,7 @@ class Config(object):
     ADMINS = os.environ.get('ADMINS').split(",") or ['jboucas@gmail.com']
     PREAUTH = os.environ.get('PREAUTH') or False
     WHITELISTED_IPS = os.environ.get('WHITELISTED_IPS') or ""
+    SLACK_HOOK = os.environ.get('SLACK_HOOK') or None
 
     # PRIVATE_APPS = os.environ.get('PRIVATE_APPS') or None
 
