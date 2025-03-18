@@ -29,7 +29,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 # -o Acquire::Check-Valid-Until=false 
-RUN apt-get update && apt-get -yq dist-upgrade && \
+RUN apt-get update && \
 apt-get install -yq build-essential libcairo2-dev pkg-config mariadb-client cron rsync && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
