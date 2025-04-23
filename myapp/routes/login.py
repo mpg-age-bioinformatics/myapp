@@ -12,7 +12,7 @@ from datetime import datetime
 from urllib.parse import urlparse as url_parse 
 from ._utils import META_TAGS, check_email, navbar_A
 
-dashapp = dash.Dash("login",url_base_pathname=f'{PAGE_PREFIX}/login/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Login", assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
+dashapp = dash.Dash("login",url_base_pathname=f'{PAGE_PREFIX}/login/', meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Login", assets_folder=app.config["APP_ASSETS"], suppress_callback_exceptions=True)# , assets_folder="/flaski/flaski/static/dash/")
 
 username_input = html.Div(
     [
