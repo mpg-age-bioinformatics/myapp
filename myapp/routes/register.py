@@ -8,6 +8,7 @@ from myapp.email import send_validate_email
 from datetime import datetime
 from ._utils import META_TAGS, check_email, password_check, navbar_A
 from flask_login import current_user
+from sqlalchemy.exc import IntegrityError
 
 
 dashapp = dash.Dash("register", url_base_pathname=f'{PAGE_PREFIX}/register/',meta_tags=META_TAGS, server=app, external_stylesheets=[dbc.themes.BOOTSTRAP], title="Register", assets_folder=app.config["APP_ASSETS"])# , assets_folder="/flaski/flaski/static/dash/")
@@ -297,7 +298,17 @@ def submit_register(n_clicks,first_name, last_name, username, email,passA, passB
     user.set_password(passA)
     user.registered_on=datetime.utcnow()
     db.session.add(user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        db.session.rollback()
+        if "ix_user_username" in str(e.orig):
+            username_ = dbc.Alert("Username already in use.", color="warning")
+        elif "email" in str(e.orig):
+            email_ = dbc.Alert("Email already in use.", color="warning")
+        else:
+            submission_ = dbc.Alert("A database error occurred.", color="danger")
+        return first_name_, last_name_, username_, email_, passA_, passB_, agree_, submission_
 
     if app.config['PREAUTH'] : 
         send_validate_email(user, step="admin")
