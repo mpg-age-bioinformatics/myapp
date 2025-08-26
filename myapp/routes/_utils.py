@@ -226,7 +226,6 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
             ],fluid=True
         ),
         color="light",
-        light=True,
         sticky="top",
         expand=expand,
         # style={"overflow":"auto"}
