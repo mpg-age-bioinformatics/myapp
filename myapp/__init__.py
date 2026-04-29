@@ -1,6 +1,6 @@
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, make_response
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -47,6 +47,15 @@ sess.init_app(app)
 from myapp import models, errors
 from myapp.routes import index, register, home, login, forgot, logout, contact, about, privacy, impressum, admin, settings, ext
 from myapp.routes._routes import *
+
+@app.before_request
+def ignore_known_missing_dash_assets():
+    if "/_dash-component-suites/" not in request.path:
+        return
+    filename = request.path.split("/")[-1]
+    prefix, _, rest = filename.partition(".")
+    if filename.endswith(".map") or (prefix.isdigit() and rest.startswith("async-") and rest.endswith(".js")):
+        return make_response("", 204)
  
 if not app.debug:
     if app.config['MAIL_SERVER']:

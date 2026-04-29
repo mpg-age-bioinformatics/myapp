@@ -158,7 +158,7 @@ def load_user(user_id):
 
     if user_id is not None:
         user=User.query.get(user_id)
-        if not user.active:
+        if user is None or not user.active:
             return None
         r=request.endpoint
 
