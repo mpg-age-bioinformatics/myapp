@@ -28,9 +28,12 @@ class Config(object):
     REMEMBER_COOKIE_HTTPONLY = True
     SESSION_TYPE = os.environ.get('SESSION_TYPE') or'redis' #'redis'
     CACHE_TYPE = os.environ.get('CACHE_TYPE') or 'RedisCache' # or RedisSentinelCache
-    CACHE_REDIS_SENTINELS = [ [ os.environ.get('CACHE_REDIS_SENTINELS_address') or None ,  os.environ.get('CACHE_REDIS_SENTINELS_port') or None ] ]
+    CACHE_REDIS_SENTINELS = [ ( os.environ.get('CACHE_REDIS_SENTINELS_address') or None , int(os.environ.get('CACHE_REDIS_SENTINELS_port') or 26379) ) ]
     CACHE_REDIS_SENTINEL_MASTER = os.environ.get('CACHE_REDIS_SENTINEL_MASTER') or None
     CACHE_REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD') or 'REDIS_PASSWORD'
+    CACHE_REDIS_SENTINEL_PASSWORD = os.environ.get('REDIS_PASSWORD') or 'REDIS_PASSWORD'
+    CACHE_REDIS_SOCKET_TIMEOUT = 2
+    CACHE_REDIS_SOCKET_CONNECT_TIMEOUT = 2
     MYSQL_USER = os.environ.get('MYSQL_USER') or APP_NAME
     MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD') or 'mypass'
     MYSQL_HOST = os.environ.get('MYSQL_HOST') or 'mariadb'
