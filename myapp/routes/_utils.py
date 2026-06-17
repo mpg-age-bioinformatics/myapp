@@ -160,17 +160,13 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
                 if not route_obj :
                     continue
 
-                users=route_obj.users
-                if not users :
+                users=route_obj.users or []
+                udomains=route_obj.users_domains or []
+                if not users and not udomains :
                     continue
 
-                uid=current_user.id
-                if uid not in users :
-                    udomains=route_obj.users_domains
-                    if not udomains:
-                        continue
-                    if current_user.domain not in udomains :
-                        continue
+                if ( current_user.id not in users ) and ( current_user.domain not in udomains ) :
+                    continue
 
             l_=dd_links_[l]
             dd_links[l]=f"{l_}"
