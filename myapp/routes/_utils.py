@@ -119,16 +119,12 @@ def make_nav_dropdown(nav_dic, label):
 
     dd=dbc.DropdownMenu(
         label=label,
-        children=dropdown_children,
+        # wrap items in a scrollable div so long menus (eg. Apps) scroll
+        children=[ html.Div(dropdown_children, style={"maxHeight": "85vh", "overflowY": "auto", "overflowX": "hidden"}) ],
         className="mr-1",#"mb-3",
         nav=True,
         in_navbar=True,
         align_end=True,
-        # style={"optionHeight":"280px"}#,'overflow-y': 'auto'}
-        # style={'max-height': '280px','overflow-y': 'auto'} #,'overflow-y': 'auto'}
-        # style={"white-space": "nowrap", "overflow": "scroll", "text-overflow": "ellipsis"}
-        #optionHeight=280
-        # style={'height': '280px','overflow-y': 'auto'}
     )
 
     return [ dd ]
@@ -225,8 +221,8 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
         dark=False,
         sticky="top",
         expand=expand,
-        # style={"overflow":"auto"}
-        
+        # keep the navbar (and its dropdowns) above app content
+        style={"zIndex": 1030},
     )
 
     return navbar
