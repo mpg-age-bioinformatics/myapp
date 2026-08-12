@@ -80,7 +80,7 @@ if [[ "$RESTORE_CERTS" == "1" ]] ; then
 fi
 
 if [[ "$RESTORE_DATA" == "1" ]] ; then
-    rsync -rtvh ${BACKUP_PATH}/data/ /flaski_private/
+    rsync -rtlvh --safe-links "${BACKUP_PATH}/data/" /flaski_private/
 fi
 
 
