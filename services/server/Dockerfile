@@ -1,19 +1,14 @@
 # Copyright (c) Bioinformatics Core Facility of the Max Planck Institute for Biology of Ageing.
 # Distributed under the terms of the Modified BSD License.
 
-# Debian buster-slim (10.1)
-FROM python:3.10-slim-bullseye
+# Python 3.10 on Debian 12 (Bookworm)
+FROM python:3.10-slim-bookworm
 
 LABEL maintainer "bioinformatics@age.mpg.de"
 
 USER root
 
 ENV DEBIAN_FRONTEND noninteractive
-
-RUN echo "deb http://ftp.debian.org/debian bullseye main non-free contrib" >> /etc/apt/sources.list && \
-echo "deb-src http://ftp.debian.org/debian bullseye main non-free contrib" >> /etc/apt/sources.list && \
-echo "deb http://ftp.debian.org/debian bullseye-updates main contrib non-free" >> /etc/apt/sources.list && \
-echo "deb-src http://ftp.debian.org/debian bullseye-updates main contrib non-free" >> /etc/apt/sources.list 
 
 # apt-get -o Acquire::Check-Valid-Until=false update
 RUN apt-get update && apt-get -yq dist-upgrade && \
