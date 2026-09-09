@@ -34,7 +34,19 @@ elif app.config["CACHE_TYPE"] == "RedisSentinelCache" :
     connection=sentinel.master_for(os.environ.get('CACHE_REDIS_SENTINEL_MASTER'), socket_timeout=100)
     app.config["SESSION_REDIS"]=connection
 
-db = SQLAlchemy(app ,engine_options={"pool_pre_ping":True, "pool_size":0,"pool_recycle":-1} )
+# Gunicorn uses synchronous workers, so each worker needs at most one database
+# connection at a time. Keep the per-process pool bounded so the production
+# deployment stays below MariaDB's max_user_connections limit.
+db = SQLAlchemy(
+    app,
+    engine_options={
+        "pool_pre_ping": True,
+        "pool_size": 1,
+        "max_overflow": 0,
+        "pool_timeout": 30,
+        "pool_recycle": 1800,
+    },
+)
 migrate = Migrate(app, db)
 PAGE_PREFIX=app.config["PAGE_PREFIX"]
 login_manager = LoginManager(app)
