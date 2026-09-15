@@ -34,14 +34,14 @@ elif app.config["CACHE_TYPE"] == "RedisSentinelCache" :
     connection=sentinel.master_for(os.environ.get('CACHE_REDIS_SENTINEL_MASTER'), socket_timeout=100)
     app.config["SESSION_REDIS"]=connection
 
-# Gunicorn uses synchronous workers, so each worker needs at most one database
-# connection at a time. Keep the per-process pool bounded so the production
-# deployment stays below MariaDB's max_user_connections limit.
+# Gunicorn uses synchronous workers, but a request can temporarily need a
+# second connection when code enters a nested Flask application context. Keep
+# the per-process pool bounded while allowing that nested database access.
 db = SQLAlchemy(
     app,
     engine_options={
         "pool_pre_ping": True,
-        "pool_size": 1,
+        "pool_size": 2,
         "max_overflow": 0,
         "pool_timeout": 30,
         "pool_recycle": 1800,
