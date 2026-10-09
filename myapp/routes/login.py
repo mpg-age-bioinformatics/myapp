@@ -225,7 +225,8 @@ def verify_email_token(pathname):
         else:
             msg="This account has already been confirmed. Please login."
         return dbc.Alert( msg ,color="warning" )
-    user.confirmed_on = datetime.now()
+    user.confirmed_on = datetime.utcnow()
+    user.record_email_validation()
     db.session.add(user)
     db.session.commit()
     return dbc.Alert( 'You have confirmed your account. Thanks!' ,color="success")
@@ -292,6 +293,8 @@ def login_buttom(n_clicks, username, passA, keepsigned, pathname):
     if user.otp_enabled:
         return username_, passA_, submission_ , otp_ , page_      
 
+    user.reactivate_after_password_recovery()
+    db.session.commit()
     login_user(user, remember=keepsigned_)
     session.permanent = keepsigned_
 
@@ -361,6 +364,8 @@ def otp_buttoms(otp_clicks, cancel_clicks, username, passA, keepsigned, otp):
                 else:
                     return not_verified
 
+        user.reactivate_after_password_recovery()
+        db.session.commit()
         login_user(user, remember=keepsigned_)
         session.permanent = keepsigned_
 

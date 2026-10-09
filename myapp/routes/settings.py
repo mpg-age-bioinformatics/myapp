@@ -571,6 +571,9 @@ def submit_changes(n_clicks,first_name, last_name, username, emailA, emailB, cpa
                 user=User.query.filter_by(id=current_user.id).first()
                 user.email=emailA
                 user.confirmed_on=None
+                user.email_validated_on=None
+                user.email_validation_first_sent_on=None
+                user.email_validation_last_sent_on=None
                 db.session.add(user)
                 db.session.commit()
 

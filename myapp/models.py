@@ -46,6 +46,10 @@ class User(UserMixin, db.Model):
     #confirmed = db.Column(db.Boolean, nullable=False, default=False)
     privacy =  db.Column(db.Boolean, nullable=False, default=False)
     confirmed_on = db.Column(db.DateTime, nullable=True)
+    email_validated_on = db.Column(db.DateTime, nullable=True)
+    email_validation_first_sent_on = db.Column(db.DateTime, nullable=True)
+    email_validation_last_sent_on = db.Column(db.DateTime, nullable=True)
+    email_deactivated_on = db.Column(db.DateTime, nullable=True)
     inactive_reason=db.Column(db.String(240))
     password_hash = db.Column(db.String(255))
     multipleapps=db.Column(db.Boolean, nullable=False, default=False)
@@ -107,8 +111,8 @@ class User(UserMixin, db.Model):
 
     def get_email_validation_token(self, expires_in=600):
         return jwt.encode(
-            {'reset_password': self.id, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'], algorithm='HS256') #.decode('utf-8')
+            {'validate_email': self.id, 'email': self.email, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256')
 
     def get_allow_user_token(self, expires_in=600):
         return jwt.encode(
@@ -133,11 +137,23 @@ class User(UserMixin, db.Model):
     @staticmethod
     def verify_email_token(token):
         try:
-            id = jwt.decode(token, app.config['SECRET_KEY'],
-                            algorithms=['HS256'])['reset_password']
-        except:
-            return
-        return User.query.get(id)
+            payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+            user = User.query.get(payload['validate_email'])
+        except (jwt.InvalidTokenError, KeyError, TypeError):
+            return None
+        return user if user and payload.get('email') == user.email else None
+
+    def record_email_validation(self, now=None):
+        self.email_validated_on = now or datetime.utcnow()
+        self.email_validation_first_sent_on = None
+        # Keep last_sent_on as an audit record of the most recent reminder.
+
+    def reactivate_after_password_recovery(self):
+        if (self.email_deactivated_on is not None
+                and self.password_set is not None
+                and self.password_set > self.email_deactivated_on):
+            self.email_deactivated_on = None
+            self.record_email_validation()
 
     @staticmethod
     def verify_allow_user_token(token):
@@ -158,7 +174,7 @@ def load_user(user_id):
 
     if user_id is not None:
         user=User.query.get(user_id)
-        if user is None or not user.active:
+        if user is None or not user.active or user.email_deactivated_on is not None:
             return None
         r=request.endpoint
 

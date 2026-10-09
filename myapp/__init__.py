@@ -45,6 +45,7 @@ sess.init_app(app)
 
 
 from myapp import models, errors
+from myapp import email_revalidation
 from myapp.routes import index, register, home, login, forgot, logout, contact, about, privacy, impressum, admin, settings, ext
 from myapp.routes._routes import *
 

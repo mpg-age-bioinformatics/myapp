@@ -132,6 +132,8 @@ def request_change(n_clicks, pathname, passA, passB):
         return passA_, passB_, submission_
 
     user=User.verify_reset_password_token(token)
+    if not user:
+        return passA_, passB_, dbc.Alert("Invalid or expired password reset link.", color="danger")
     user.password_set=datetime.utcnow()
     user.set_password(passA)
     db.session.commit()
@@ -190,7 +192,7 @@ def verify_email_token(pathname):
     if not token:
         return request_form
     
-    user = User.verify_email_token(token)
+    user = User.verify_reset_password_token(token)
     if not user:
         return dbc.Alert( "INVALID" , style={"textAlign":"center","verticalAlign": "middle"}, color="danger")
     
