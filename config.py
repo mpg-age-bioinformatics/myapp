@@ -56,7 +56,8 @@ class Config(object):
     PREAUTH = os.environ.get('PREAUTH') or False
     WHITELISTED_IPS = os.environ.get('WHITELISTED_IPS') or ""
     SLACK_HOOK = os.environ.get('SLACK_HOOK') or None
-    GWDG_CHAT_API = os.environ.get('GWDG_CHAT_API') or ""
+    MAGE_LLM_KEY = os.environ.get('MAGE_LLM_KEY') or ""
+    MAGE_LLM_URL = os.environ.get('MAGE_LLM_URL') or ""
 
     # PRIVATE_APPS = os.environ.get('PRIVATE_APPS') or None
 

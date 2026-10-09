@@ -34,7 +34,19 @@ elif app.config["CACHE_TYPE"] == "RedisSentinelCache" :
     connection=sentinel.master_for(os.environ.get('CACHE_REDIS_SENTINEL_MASTER'), socket_timeout=100)
     app.config["SESSION_REDIS"]=connection
 
-db = SQLAlchemy(app ,engine_options={"pool_pre_ping":True, "pool_size":0,"pool_recycle":-1} )
+# Gunicorn uses synchronous workers, but a request can temporarily need a
+# second connection when code enters a nested Flask application context. Keep
+# the per-process pool bounded while allowing that nested database access.
+db = SQLAlchemy(
+    app,
+    engine_options={
+        "pool_pre_ping": True,
+        "pool_size": 2,
+        "max_overflow": 0,
+        "pool_timeout": 30,
+        "pool_recycle": 1800,
+    },
+)
 migrate = Migrate(app, db)
 PAGE_PREFIX=app.config["PAGE_PREFIX"]
 login_manager = LoginManager(app)
@@ -57,7 +69,16 @@ def ignore_known_missing_dash_assets():
     prefix, _, rest = filename.partition(".")
     if filename.endswith(".map") or (prefix.isdigit() and rest.startswith("async-") and rest.endswith(".js")):
         return make_response("", 204)
- 
+
+from dash.exceptions import DependencyException
+
+@app.errorhandler(DependencyException)
+def handle_missing_dash_asset(e):
+    # To handle noise: dash raises this only after checking its registry, so valid assets are never affected
+    if "/_dash-component-suites/" in request.path:
+        return make_response("", 404)
+    raise e
+
 if not app.debug:
     if app.config['MAIL_SERVER']:
         auth = None

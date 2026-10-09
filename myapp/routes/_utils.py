@@ -119,16 +119,12 @@ def make_nav_dropdown(nav_dic, label):
 
     dd=dbc.DropdownMenu(
         label=label,
-        children=dropdown_children,
+        # wrap items in a scrollable div so long menus (eg. Apps) scroll
+        children=[ html.Div(dropdown_children, style={"maxHeight": "85vh", "overflowY": "auto", "overflowX": "hidden"}) ],
         className="mr-1",#"mb-3",
         nav=True,
         in_navbar=True,
         align_end=True,
-        # style={"optionHeight":"280px"}#,'overflow-y': 'auto'}
-        # style={'max-height': '280px','overflow-y': 'auto'} #,'overflow-y': 'auto'}
-        # style={"white-space": "nowrap", "overflow": "scroll", "text-overflow": "ellipsis"}
-        #optionHeight=280
-        # style={'height': '280px','overflow-y': 'auto'}
     )
 
     return [ dd ]
@@ -160,17 +156,13 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
                 if not route_obj :
                     continue
 
-                users=route_obj.users
-                if not users :
+                users=route_obj.users or []
+                udomains=route_obj.users_domains or []
+                if not users and not udomains :
                     continue
 
-                uid=current_user.id
-                if uid not in users :
-                    udomains=route_obj.users_domains
-                    if not udomains:
-                        continue
-                    if current_user.domain not in udomains :
-                        continue
+                if ( current_user.id not in users ) and ( current_user.domain not in udomains ) :
+                    continue
 
             l_=dd_links_[l]
             dd_links[l]=f"{l_}"
@@ -229,8 +221,8 @@ def make_navbar_logged(page_title, current_user, other_dropdowns=other_nav_dropd
         dark=False,
         sticky="top",
         expand=expand,
-        # style={"overflow":"auto"}
-        
+        # keep the navbar (and its dropdowns) above app content
+        style={"zIndex": 1030},
     )
 
     return navbar
