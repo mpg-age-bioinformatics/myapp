@@ -132,13 +132,23 @@ Collecting usage entries:
 docker-compose run --entrypoint="python3 /${APP_NAME}/${APP_NAME}.py stats /backup/stats" init
 ```
 
-If you need to re-initiate your database
-```bash
-rm -rf migrations && flask db init && flask db migrate -m "users table" && flask db upgrade 
-```
+Database initialization and upgrades
 
-upgrading
+The init service with `UPGRADE_DB=1` initializes the migration directory only
+when it is missing, applies existing revisions, generates a revision for model
+changes, and applies it. This includes the email revalidation columns; no
+separate migration utility is needed. A migration failure stops initialization.
+
+The repository is mounted into the init container, so generated migration files
+persist in the local `migrations/` directory. That directory is currently ignored
+by Git: back it up together with the database and retain it between deployments.
+Do not delete it or drop `alembic_version` to perform an upgrade. If the database
+references a missing revision, recover the matching migration files from the
+deployment or backup before retrying.
+
+To perform the equivalent upgrade manually inside the configured container:
 ```bash
+flask db upgrade
 flask db migrate -m "new fields in user model"
 flask db upgrade
 ```

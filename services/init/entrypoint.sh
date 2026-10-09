@@ -87,13 +87,17 @@ fi
 
 if [[ "$UPGRADE_DB" == "1" ]] ; then
 
-mysql --user=${MYSQL_USER} --password="${MYSQL_PASSWORD}" --host=${MYSQL_HOST} << _EOF_
-USE ${DB_NAME}
-DROP TABLE IF EXISTS alembic_version;
-_EOF_
+    # Keep both the revision files and the database's alembic_version history.
+    # The repository is mounted into this container, so revisions persist.
+    if [[ ! -f migrations/alembic.ini ]] ; then
+        flask db init || exit 1
+    fi
 
-rm -rf migrations/* 
-flask db init && flask db migrate -m "Initial migration." && flask db upgrade
+    # Apply pending revisions before comparing the database with the models.
+    # Missing revision history must be recovered, never silently reset.
+    flask db upgrade || exit 1
+    flask db migrate -m "Update application schema." || exit 1
+    flask db upgrade || exit 1
 
 fi
 
